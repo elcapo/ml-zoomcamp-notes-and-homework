@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-marimo export html -f 01-contents.py -o results/01-contents.html
-marimo export html -f module-1/01-contents.py -o results/module-1/01-contents.html
-marimo export html -f module-1/02-homework.py -o results/module-1/02-homework.html
+marimo export html -f notes.py -o results/notes.html
+marimo export html -f module-1/notes.py -o results/module-1/notes.html
+marimo export html -f module-1/homework.py -o results/module-1/homework.html

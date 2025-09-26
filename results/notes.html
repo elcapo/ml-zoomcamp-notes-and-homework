@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/favicon.ico" />
+    <!-- Preload is necessary because we show these images when we disconnect from the server,
+    but at that point we cannot load these images from the server -->
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/gradient-yHQUC_QB.png" as="image" />
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/noise-60BoTA8O.png" as="image" />
+    <!-- Preload the fonts -->
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/Lora-VariableFont_wght-B2ootaw-.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/PTSans-Regular-CxL0S8W7.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/PTSans-Bold-D9fedIX3.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/FiraMono-Regular-BTCkDNvf.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/FiraMono-Medium-DU3aDxX5.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/FiraMono-Bold-CLVRCuM9.ttf" as="font" crossorigin="anonymous" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="a marimo app" />
+    <link rel="apple-touch-icon" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/apple-touch-icon.png" />
+    <link rel="manifest" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/manifest.json" />
+
+    <script data-marimo="true">
+      function __resizeIframe(obj) {
+        var scrollbarHeight = 20; // Max between windows, mac, and linux
+
+        function setHeight() {
+          var element = obj.contentWindow.document.documentElement;
+          // If there is no vertical scrollbar, we don't need to resize the iframe
+          if (element.scrollHeight === element.clientHeight) {
+            return;
+          }
+
+          // Create a new height that includes the scrollbar height if it's visible
+          var hasHorizontalScrollbar = element.scrollWidth > element.clientWidth;
+          var newHeight = element.scrollHeight + (hasHorizontalScrollbar ? scrollbarHeight : 0);
+
+          // Only update the height if it's different from the current height
+          if (obj.style.height !== `${newHeight}px`) {
+            obj.style.height = `${newHeight}px`;
+          }
+        }
+
+        // Resize the iframe to the height of the content and bottom scrollbar height
+        setHeight();
+
+        // Resize the iframe when the content changes
+        const resizeObserver = new ResizeObserver((entries) => {
+          setHeight();
+        });
+        resizeObserver.observe(obj.contentWindow.document.body);
+      }
+    </script>
+    <marimo-filename hidden>notes.py</marimo-filename>
+    <!-- TODO(Trevor): Legacy, required by VS Code plugin. Remove when plugin is updated (see marimo/server/_templates/template.py) -->
+    <marimo-version data-version="{{ version }}" hidden></marimo-version>
+    <marimo-user-config data-config="{{ user_config }}" hidden></marimo-user-config>
+    <marimo-server-token data-token="{{ server_token }}" hidden></marimo-server-token>
+    <!-- /TODO -->
+    <title>notes</title>
+    <script type="module" crossorigin crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/index-DKEudB02.js"></script>
+    <link rel="stylesheet" crossorigin crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/@marimo-team/frontend@0.16.0/dist/assets/index-Cx0bsY1w.css">
+  
+<script data-marimo="true">
+    window.__MARIMO_STATIC__ = {};
+    window.__MARIMO_STATIC__.files = {};
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <!-- This is a portal for the data editor to render in -->
+    <div id="portal" data-testid="glide-portal" style="position: fixed; left: 0; top: 0; z-index: 9999"></div>
+    <script data-marimo="true">
+      window.__MARIMO_MOUNT_CONFIG__ = {
+            "filename": "notes.py",
+            "mode": "read",
+            "version": "0.16.0",
+            "serverToken": "static",
+            "config": {"ai": {"models": {"custom_models": [], "displayed_models": []}}, "completion": {"activate_on_typing": true, "copilot": false}, "display": {"cell_output": "above", "code_editor_font_size": 14, "dataframes": "rich", "default_table_max_columns": 50, "default_table_page_size": 10, "default_width": "medium", "reference_highlighting": false, "theme": "light"}, "formatting": {"line_length": 79}, "keymap": {"overrides": {}, "preset": "default"}, "language_servers": {"pylsp": {"enable_flake8": false, "enable_mypy": true, "enable_pydocstyle": false, "enable_pyflakes": false, "enable_pylint": false, "enable_ruff": true, "enabled": true}}, "package_management": {"manager": "pip"}, "runtime": {"auto_instantiate": true, "auto_reload": "off", "default_sql_output": "auto", "on_cell_change": "autorun", "output_max_bytes": 8000000, "reactive_tests": true, "std_stream_max_bytes": 1000000, "watcher_on_save": "lazy"}, "save": {"autosave": "after_delay", "autosave_delay": 1000, "format_on_save": false}, "server": {"browser": "default", "follow_symlink": false}, "snippets": {"custom_paths": [], "include_default_snippets": true}},
+            "configOverrides": {},
+            "appConfig": {"sql_output": "auto", "width": "medium"},
+            "view": {"showAppCode": true},
+            "notebook": {"cells": [{"code": "import marimo as mo\nimport pandas as pd", "code_hash": "f1ab4803c60ee908f8c0e3366c54bf87", "config": {"column": null, "disabled": false, "hide_code": true}, "id": "Hbol", "name": "_"}, {"code": "mo.md(\n    r\"\"\"\n# Machine Learning Zoomcamp\n\n## Course Launch\n\"\"\"\n)", "code_hash": "20f5b3a0e00c4ceacf2bbb4d61b90226", "config": {"column": null, "disabled": false, "hide_code": true}, "id": "MJUe", "name": "_"}, {"code": "chapters = pd.DataFrame([\n    {\n        \"title\": \"2025 Course Launch Stream\",\n        \"youtube_id\": \"z064DoidiKg\"\n    },\n])\n\nchapters.insert(loc=0, column=\"snapshot\", value=\"https://img.youtube.com/vi/\"+chapters.youtube_id.astype(str)+\"/hqdefault.jpg\")\nchapters.insert(loc=2, column=\"youtube\", value=\"https://youtube.com/watch?v=\"+chapters.youtube_id.astype(str))\n\nvideos = chapters[chapters[\"youtube_id\"].notnull()]\nvideos[[\"snapshot\", \"title\", \"youtube\"]]", "code_hash": "578b0962013cadf1314d21b6636caa21", "config": {"column": null, "disabled": false, "hide_code": true}, "id": "vblA", "name": "_"}, {"code": "mo.md(\n    r\"\"\"\n## Quick start checklist\n\n* Check [the course repository](https://github.com/DataTalksClub/machine-learning-zoomcamp) on GitHub and star it. All the materials are stored in this repo.\n* Subscribe to [DataTalks.Club's YouTube channel](https://www.youtube.com/c/DataTalksClub) and check [the course playlist](https://www.youtube.com/playlist?list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR).\n* Check the [FAQ](https://docs.google.com/document/d/1LpPanc33QJJ6BSsyxVg-pWNMplal84TdZtq10naIhD8/edit?tab=t.0) for the list of frequently asked questions.\n* Join the [Slack](https://datatalks-club.slack.com/ssb/redirect) course channel for discussions and the [Telegram channel](https://t.me/mlzoomcamp) for announcements.\n* Check the [course platform](https://courses.datatalks.club/) for deadlines and open submissions.\n\n\"\"\"\n)", "code_hash": "cce384663cdd7e25ddbc40a556e8e784", "config": {"column": null, "disabled": false, "hide_code": true}, "id": "bkHC", "name": "_"}], "metadata": {"marimo_version": "0.16.0"}, "version": "1"},
+            "session": {"cells": [{"code_hash": "f1ab4803c60ee908f8c0e3366c54bf87", "console": [], "id": "Hbol", "outputs": [{"data": {"text/plain": ""}, "type": "data"}]}, {"code_hash": "20f5b3a0e00c4ceacf2bbb4d61b90226", "console": [], "id": "MJUe", "outputs": [{"data": {"text/html": "<span class=\"markdown prose dark:prose-invert\"><h1 id=\"machine-learning-zoomcamp\">Machine Learning Zoomcamp</h1>\n<h2 id=\"course-launch\">Course Launch</h2></span>"}, "type": "data"}]}, {"code_hash": "578b0962013cadf1314d21b6636caa21", "console": [], "id": "vblA", "outputs": [{"data": {"text/html": "<marimo-ui-element object-id='vblA-0' random-id='1d690a55-8001-a053-adb5-6cd7a36599e9'><marimo-table data-initial-value='[]' data-label='null' data-data='&quot;[{&#92;&quot;snapshot&#92;&quot;:&#92;&quot;https://img.youtube.com/vi/z064DoidiKg/hqdefault.jpg&#92;&quot;,&#92;&quot;title&#92;&quot;:&#92;&quot;2025 Course Launch Stream&#92;&quot;,&#92;&quot;youtube&#92;&quot;:&#92;&quot;https://youtube.com/watch?v=z064DoidiKg&#92;&quot;}]&quot;' data-total-rows='1' data-total-columns='3' data-max-columns='50' data-banner-text='&quot;&quot;' data-pagination='true' data-page-size='10' data-field-types='[[&quot;snapshot&quot;,[&quot;string&quot;,&quot;object&quot;]],[&quot;title&quot;,[&quot;string&quot;,&quot;object&quot;]],[&quot;youtube&quot;,[&quot;string&quot;,&quot;object&quot;]]]' data-show-filters='true' data-show-download='true' data-show-column-summaries='false' data-show-data-types='true' data-show-page-size-selector='false' data-show-column-explorer='true' data-show-chart-builder='true' data-row-headers='[]' data-has-stable-row-id='false' data-lazy='false' data-preload='false'></marimo-table></marimo-ui-element>"}, "type": "data"}]}, {"code_hash": "cce384663cdd7e25ddbc40a556e8e784", "console": [], "id": "bkHC", "outputs": [{"data": {"text/html": "<span class=\"markdown prose dark:prose-invert\"><h2 id=\"quick-start-checklist\">Quick start checklist</h2>\n<ul>\n<li>Check <a href=\"https://github.com/DataTalksClub/machine-learning-zoomcamp\" rel=\"noopener\" target=\"_blank\">the course repository</a> on GitHub and star it. All the materials are stored in this repo.</li>\n<li>Subscribe to <a href=\"https://www.youtube.com/c/DataTalksClub\" rel=\"noopener\" target=\"_blank\">DataTalks.Club's YouTube channel</a> and check <a href=\"https://www.youtube.com/playlist?list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR\" rel=\"noopener\" target=\"_blank\">the course playlist</a>.</li>\n<li>Check the <a href=\"https://docs.google.com/document/d/1LpPanc33QJJ6BSsyxVg-pWNMplal84TdZtq10naIhD8/edit?tab=t.0\" rel=\"noopener\" target=\"_blank\">FAQ</a> for the list of frequently asked questions.</li>\n<li>Join the <a href=\"https://datatalks-club.slack.com/ssb/redirect\" rel=\"noopener\" target=\"_blank\">Slack</a> course channel for discussions and the <a href=\"https://t.me/mlzoomcamp\" rel=\"noopener\" target=\"_blank\">Telegram channel</a> for announcements.</li>\n<li>Check the <a href=\"https://courses.datatalks.club/\" rel=\"noopener\" target=\"_blank\">course platform</a> for deadlines and open submissions.</li>\n</ul></span>"}, "type": "data"}]}], "metadata": {"marimo_version": "0.16.0"}, "version": "1"},
+            "runtimeConfig": null,
+        };
+    </script>
+  
+<marimo-code hidden="">
+    import%20marimo%0A%0A__generated_with%20%3D%20%220.16.0%22%0Aapp%20%3D%20marimo.App(width%3D%22medium%22)%0A%0A%0A%40app.cell(hide_code%3DTrue)%0Adef%20_()%3A%0A%20%20%20%20import%20marimo%20as%20mo%0A%20%20%20%20import%20pandas%20as%20pd%0A%20%20%20%20return%20mo%2C%20pd%0A%0A%0A%40app.cell(hide_code%3DTrue)%0Adef%20_(mo)%3A%0A%20%20%20%20mo.md(%0A%20%20%20%20%20%20%20%20r%22%22%22%0A%20%20%20%20%23%20Machine%20Learning%20Zoomcamp%0A%0A%20%20%20%20%23%23%20Course%20Launch%0A%20%20%20%20%22%22%22%0A%20%20%20%20)%0A%20%20%20%20return%0A%0A%0A%40app.cell(hide_code%3DTrue)%0Adef%20_(pd)%3A%0A%20%20%20%20chapters%20%3D%20pd.DataFrame(%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22title%22%3A%20%222025%20Course%20Launch%20Stream%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22youtube_id%22%3A%20%22z064DoidiKg%22%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%5D)%0A%0A%20%20%20%20chapters.insert(loc%3D0%2C%20column%3D%22snapshot%22%2C%20value%3D%22https%3A%2F%2Fimg.youtube.com%2Fvi%2F%22%2Bchapters.youtube_id.astype(str)%2B%22%2Fhqdefault.jpg%22)%0A%20%20%20%20chapters.insert(loc%3D2%2C%20column%3D%22youtube%22%2C%20value%3D%22https%3A%2F%2Fyoutube.com%2Fwatch%3Fv%3D%22%2Bchapters.youtube_id.astype(str))%0A%0A%20%20%20%20videos%20%3D%20chapters%5Bchapters%5B%22youtube_id%22%5D.notnull()%5D%0A%20%20%20%20videos%5B%5B%22snapshot%22%2C%20%22title%22%2C%20%22youtube%22%5D%5D%0A%20%20%20%20return%0A%0A%0A%40app.cell(hide_code%3DTrue)%0Adef%20_(mo)%3A%0A%20%20%20%20mo.md(%0A%20%20%20%20%20%20%20%20r%22%22%22%0A%20%20%20%20%23%23%20Quick%20start%20checklist%0A%0A%20%20%20%20*%20Check%20%5Bthe%20course%20repository%5D(https%3A%2F%2Fgithub.com%2FDataTalksClub%2Fmachine-learning-zoomcamp)%20on%20GitHub%20and%20star%20it.%20All%20the%20materials%20are%20stored%20in%20this%20repo.%0A%20%20%20%20*%20Subscribe%20to%20%5BDataTalks.Club's%20YouTube%20channel%5D(https%3A%2F%2Fwww.youtube.com%2Fc%2FDataTalksClub)%20and%20check%20%5Bthe%20course%20playlist%5D(https%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3DPL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR).%0A%20%20%20%20*%20Check%20the%20%5BFAQ%5D(https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F1LpPanc33QJJ6BSsyxVg-pWNMplal84TdZtq10naIhD8%2Fedit%3Ftab%3Dt.0)%20for%20the%20list%20of%20frequently%20asked%20questions.%0A%20%20%20%20*%20Join%20the%20%5BSlack%5D(https%3A%2F%2Fdatatalks-club.slack.com%2Fssb%2Fredirect)%20course%20channel%20for%20discussions%20and%20the%20%5BTelegram%20channel%5D(https%3A%2F%2Ft.me%2Fmlzoomcamp)%20for%20announcements.%0A%20%20%20%20*%20Check%20the%20%5Bcourse%20platform%5D(https%3A%2F%2Fcourses.datatalks.club%2F)%20for%20deadlines%20and%20open%20submissions.%0A%0A%20%20%20%20%22%22%22%0A%20%20%20%20)%0A%20%20%20%20return%0A%0A%0Aif%20__name__%20%3D%3D%20%22__main__%22%3A%0A%20%20%20%20app.run()%0A
+</marimo-code>
+
+<marimo-code-hash hidden="">308be7af1250bd269c6753bcae040bbc2fdfb08295a8df9cff3a4ea93e554b20</marimo-code-hash>
+</body>
+</html>
