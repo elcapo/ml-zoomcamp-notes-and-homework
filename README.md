@@ -1,19 +1,14 @@
-# Notes and Homework of the Machine Learning Zoomcamp
+# Machine Learning Zoomcamp
 
-## Summary
+This repository contains my personal **notes and homework** of the Machine Learning Zoomcamp.
 
-This repository contains my personal notes and homework of the Machine Learning Zoomcamp.
+### Content
 
-| Content | Editable Version | Readable Version |
-| --- | --- | --- |
-| Launch Stream | [Marimo Notebook](./notes.py) | [Rendered HTML](./results/notes.html) |
-
-### Module 1: Introduction to Machine Learning
-
-| Content | Editable Version | Readable Version |
-| --- | --- | --- |
-| Notes | [Marimo Notebook](./module-1/notes.py) | [Rendered HTML](./results/module-1/notes.html) |
-| Homework | [Marimo Notebook](./module-1/homework.py) | [Rendered HTML](./results/module-1/homework.html) |
+| Module | Content | Editable Version | Readable Version |
+| --- | --- | --- | --- |
+| Welcome | **Launch Stream** | [Marimo Notebook](./notes.py) | [Rendered HTML](./results/notes.html) |
+| Introduction to Machine Learning | **Notes**  | [Marimo Notebook](./module-1/notes.py) | [Rendered HTML](./results/module-1/notes.html) |
+| Introduction to Machine Learning | **Homework** | [Marimo Notebook](./module-1/homework.py) | [Rendered HTML](./results/module-1/homework.html) |
 
 ## Installation
 
