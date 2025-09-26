@@ -6,9 +6,9 @@ This repository contains my personal **notes and homework** of the Machine Learn
 
 | Module | Content | Editable Version | Readable Version |
 | --- | --- | --- | --- |
-| Welcome | **Launch Stream** | [Marimo Notebook](./notes.py) | [Rendered HTML](./results/notes.html) |
-| Introduction to Machine Learning | **Notes**  | [Marimo Notebook](./module-1/notes.py) | [Rendered HTML](./results/module-1/notes.html) |
-| Introduction to Machine Learning | **Homework** | [Marimo Notebook](./module-1/homework.py) | [Rendered HTML](./results/module-1/homework.html) |
+| Welcome | **Launch Stream** | [Marimo Notebook](./notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/notes.html) |
+| Introduction to Machine Learning | **Notes**  | [Marimo Notebook](./module-1/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-1/notes.html) |
+| Introduction to Machine Learning | **Homework** | [Marimo Notebook](./module-1/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-1/homework.html) |
 
 ## Installation
 
