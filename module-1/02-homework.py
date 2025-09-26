@@ -62,7 +62,7 @@ def _(mo):
 
 @app.cell
 def _(pd):
-    cars = pd.read_csv("./data/car_fuel_efficiency.csv")
+    cars = pd.read_csv("./module-1/data/car_fuel_efficiency.csv")
     return (cars,)
 
 

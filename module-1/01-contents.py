@@ -18,8 +18,6 @@ def _(mo):
     # Machine Learning Zoomcamp
 
     ## Module 1: **Introduction to Machine Learning**
-
-    ### Videos
     """
     )
     return
@@ -92,12 +90,6 @@ def _(pd):
     videos = chapters[chapters["youtube_id"].notnull()]
     videos[["snapshot", "title", "youtube"]]
     return (chapters,)
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""### Contents""")
-    return
 
 
 @app.cell(hide_code=True)
@@ -366,13 +358,119 @@ def _(
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""## CRoss-Industry Standard Process for Data Mining""")
+    mo.md(
+        r"""
+    ## CRoss-Industry Standard Process for Data Mining
+
+    ### The Problem
+
+    Going back to the spam detection example, what we did was:
+
+    * we defined our goal (to detect whether a message is spam, or not)
+    * we extracted some features
+    * we trained a model
+    * we used the model with test data to evaluate it
+
+    These steps were a basic representation of whet the "CRISP-DM" methodology tries to solve.
+    """
+    )
     return
 
 
 @app.cell
 def _(mo):
     mo.image("./module-1/assets/crisp-dm.jpeg")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Business Understanding
+
+    In a real world case, many departments of a big organization have participate in a data mining problem. The first step consists in uderstanding the problem that we are trying to solve but not from a technical point of view but from a business point of view instead. Actually, we shouldn't decide whether to start a Machine Learning problem until we really understand the business problem we are facing.
+
+    At this step, the most important thing is to stablish measurable goals.
+
+    /// details | **Example Goal for the Spam Detection Problem**
+        type: info
+
+    We want to reduce the number of spam messages to a 50%.
+    ///
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Data Understanding
+
+    Once we understand the problem that we are trying to solve, we have to gather the data that we have available and make our best to understand it. At this step, we have to ask ourselves a few questions:
+
+    * Where do the data come from?
+    * Is it reliable?
+    * Is the dataset big enough?
+    * Can we collect more?
+
+    /// details | **Example Questions for the Spam Detection Problem**
+        type: info
+
+    Can we ask our users to mark incoming messages as spam (or not spam)?
+    ///
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Data Preparation
+
+    To prepare the data so that it can be put into a Machine Learning algorithm involves several steps:
+
+    * Extract some features from raw data
+    * Remove duplicated records
+    * Transform the data into numeric values
+    * Creating different splits for training and validation
+
+    /// details | **Example Preparations for the Spam Detection Problem**
+        type: info
+
+    Does the subject contain more than 25 characters?
+    Does the sender contain "mailinator"?
+    ///
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Modeling
+
+    At this step we choose different models, train them with our training dataset split and choose the best one according to some metrics.
+
+    /// details | **Example Models for the Spam Detection Problem**
+        type: info
+
+    In the spam detection case we could choose between logistic regression, decision trees, neural networks, etc.
+    ///
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Evaluation""")
     return
 
 

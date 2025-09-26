@@ -40,5 +40,22 @@ def _(pd):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Quick start checklist
+
+    * Check [the course repository](https://github.com/DataTalksClub/machine-learning-zoomcamp) on GitHub and star it. All the materials are stored in this repo.
+    * Subscribe to [DataTalks.Club's YouTube channel](https://www.youtube.com/c/DataTalksClub) and check [the course playlist](https://www.youtube.com/playlist?list=PL3MmuxUbc_hIhxl5Ji8t4O6lPAOpHaCLR).
+    * Check the [FAQ](https://docs.google.com/document/d/1LpPanc33QJJ6BSsyxVg-pWNMplal84TdZtq10naIhD8/edit?tab=t.0) for the list of frequently asked questions.
+    * Join the [Slack](https://datatalks-club.slack.com/ssb/redirect) course channel for discussions and the [Telegram channel](https://t.me/mlzoomcamp) for announcements.
+    * Check the [course platform](https://courses.datatalks.club/) for deadlines and open submissions.
+
+    """
+    )
+    return
+
+
 if __name__ == "__main__":
     app.run()

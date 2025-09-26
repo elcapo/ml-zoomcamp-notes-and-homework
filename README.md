@@ -6,7 +6,7 @@ This repository contains my personal notes and homework of the Machine Learning 
 
 * [Launch Stream](./results/01-contents.html)
 
-**Module 1**
+### Module 1: Introduction to Machine Learning
 
 * [Contents](./results/module-1/01-contents.html)
 * [Homework](./results/module-1/02-homework.html)
@@ -31,4 +31,16 @@ source .venv/bin/activate
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Edit the Notebooks
+
+```bash
+marimo edit
+```
+
+### Export the Results (as HTML)
+
+```bash
+./export.sh
 ```
