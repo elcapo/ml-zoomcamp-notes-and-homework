@@ -51,7 +51,6 @@ def _(mo):
     * Check the [FAQ](https://docs.google.com/document/d/1LpPanc33QJJ6BSsyxVg-pWNMplal84TdZtq10naIhD8/edit?tab=t.0) for the list of frequently asked questions.
     * Join the [Slack](https://datatalks-club.slack.com/ssb/redirect) course channel for discussions and the [Telegram channel](https://t.me/mlzoomcamp) for announcements.
     * Check the [course platform](https://courses.datatalks.club/) for deadlines and open submissions.
-
     """
     )
     return
