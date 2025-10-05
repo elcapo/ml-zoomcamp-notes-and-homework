@@ -424,7 +424,7 @@ def _(mo):
     Our function evaluated with those features approaches the target price:
 
     \[
-        g(x_{i1}, x_{i2}, ..., x_{in}) \approx y_i
+        g_i(x_{i1}, x_{i2}, ..., x_{in}) \approx y_i
     \]
     """
     )
@@ -433,11 +433,13 @@ def _(mo):
 
 @app.cell
 def _(np):
-    def linear_regression(x, w):
+    def raw_linear_regression(x, w):
         assert len(x) + 1 == len(w), "The size of the features vector does not match the size of the weights"
 
-        return w[0] + np.sum([x[i] * w[i + 1] for i in range(len(x))])
-    return (linear_regression,)
+        y_log = w[0] + np.sum([x[i] * w[i + 1] for i in range(len(x))])
+
+        return np.expm1(y_log).astype(int)
+    return (raw_linear_regression,)
 
 
 @app.cell(hide_code=True)
@@ -464,7 +466,7 @@ def _(X_train, np, y_train):
 
     {
         "x": x,
-        "y": np.expm1(y_train[10:11])
+        "y": np.expm1(y_train[10:11]).astype(int)
     }
     return (x,)
 
@@ -476,10 +478,230 @@ def _(mo):
 
 
 @app.cell
-def _(linear_regression, np, x):
-    prediction = linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+def _(raw_linear_regression, x):
+    raw_linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+    return
 
-    np.expm1(prediction)
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Linear Regression in Vector Form
+
+    We want now to generalize our previous linear regression formula so that it works with any number of features:
+
+    \[
+        g_i(x_i) = w_o + \sum_{j=1}^n x_{ij} w_j
+    \]
+
+    As the right term of the equation corresponds with a dot product, we can rewrite it in a simplified form:
+
+    \[
+        g_i(x_i) = w_0 + \bold{w}^T \bold{x}_i
+    \]
+    """
+    )
+    return
+
+
+@app.cell
+def _(np):
+    def vectorial_linear_regression(x, w):
+        assert len(x) + 1 == len(w), "The size of the features vector does not match the size of the weights"
+
+        y_log = w[0] + np.dot(x, w[1:])
+
+        return np.expm1(y_log).astype(int)
+    return (vectorial_linear_regression,)
+
+
+@app.cell
+def _(vectorial_linear_regression, x):
+    vectorial_linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    If we want, we can simplify our expression even further by defining an extra feature that always equals $1$. By doing so, we'd get $\bold{w}$ and $\bold{x}$ vectors with $n+1$ elements:
+
+    \[
+        w = [w_0, w_1, ..., w_n]
+    \]
+
+    \[
+        x_i = [1, x_{i1}, x_{i2}, ..., x_{in}]
+    \]
+
+    Therefore, our estimator could be written as:
+
+    \[
+        g_i(x_i) = \bold{w}^T \bold{x}_i
+    \]
+    """
+    )
+    return
+
+
+@app.cell
+def _(np):
+    def final_linear_regression(x, w):
+        assert len(x) + 1 == len(w), "The size of the features vector does not match the size of the weights"
+
+        x = np.concat((np.array([1]), np.array(x)))
+        y_log = np.dot(x, w)
+
+        return np.expm1(y_log).astype(int)
+    return (final_linear_regression,)
+
+
+@app.cell
+def _(final_linear_regression, x):
+    final_linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    We can write our $g$ function for all samples as a matrix multiplication.
+
+    \[
+    \bold{y_p} = 
+    \begin{bmatrix}
+    1 & x_{11} & x_{12} & \cdots & x_{1n} \\
+    1 & x_{21} & x_{22} & \cdots & x_{2n} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    1 & x_{m1} & x_{m2} & \cdots & x_{mn}
+    \end{bmatrix}
+    \begin{bmatrix}
+    w_0 \\
+    w_1 \\
+    w_2 \\
+    \vdots \\
+    w_n
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \bold{x_1}^T · \bold{w} \\
+    \bold{x_2}^T · \bold{w} \\
+    \vdots \\
+    \bold{x_m}^T · \bold{w} \\
+    \end{bmatrix}
+    \]
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_train, np):
+    X_matrix = X_train.iloc[10:15][["engine_hp", "city_mpg", "popularity"]].values
+    X_matrix = np.c_[np.ones(X_matrix.shape[0]), X_matrix]
+
+    X_matrix
+    return (X_matrix,)
+
+
+@app.cell
+def _(np, y_train):
+    y_matrix = y_train[10:15]
+
+    np.expm1(y_matrix).astype(int)
+    return (y_matrix,)
+
+
+@app.cell
+def _():
+    w = [7.5, 0.01, 0.07, 0.003]
+
+    w
+    return (w,)
+
+
+@app.cell
+def _(X_matrix, np, w):
+    np.expm1(X_matrix.dot(w)).astype(int)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Training a Linear Regression Model
+
+    We already saw that our $g$ estimator looks like this:
+
+    \[
+        \bold{X} \bold{w} \approx \bold{y}
+    \]
+
+    So now we have to solve $\bold{w}$ so that we can find the weights.
+
+    \[
+        \bold{X}^{-1} \bold{X} \bold{w} \approx \bold{X}^{-1} \bold{y}
+    \]
+
+    What gives us:
+
+    \[
+        \bold{w} \approx \bold{X}^{-1} \bold{y}
+    \]
+
+    But there is an issue: we are working with a rectangular matrix, not with a squared one. So we won't be able to find its inverse.
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Gram Matrix
+
+    The first thing we can do to try to solve this is to take into account that $X^T X$ is actually an squared matrix, it may have an inverse.
+
+    Therefore, we could start with:
+
+    \[
+        \bold{X}^{T} \bold{X} \bold{w} \approx \bold{X}^{T} \bold{y}
+    \]
+
+    ... and try to solve it with:
+
+    \[
+        (\bold{X}^{T} \bold{X})^{-1} \bold{X}^{T} \bold{X} \bold{w} \approx (\bold{X}^{T} \bold{X})^{-1} \bold{X}^{T} \bold{y}
+    \]
+
+    ... which simplifies to:
+
+    \[
+        \bold{w} \approx (\bold{X}^{T} \bold{X})^{-1} \bold{X}^{T} \bold{y}
+    \]
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_matrix, np, y_matrix):
+    w_solved = np.linalg.inv(X_matrix.T.dot(X_matrix)).dot(X_matrix.T).dot(y_matrix)
+
+    w_solved
+    return (w_solved,)
+
+
+@app.cell
+def _(X_matrix, np, w_solved):
+    y_solved = X_matrix.dot(w_solved)
+
+    np.expm1(y_solved).astype(int)
     return
 
 
