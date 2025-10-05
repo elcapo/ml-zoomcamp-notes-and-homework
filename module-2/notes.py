@@ -388,7 +388,7 @@ def _(car_prices_test, car_prices_train, car_prices_val, np):
     y_train = np.log1p(car_prices_train.msrp.values)
     y_val = np.log1p(car_prices_val.msrp.values)
     y_test = np.log1p(car_prices_test.msrp.values)
-    return
+    return (y_train,)
 
 
 @app.cell(hide_code=True)
@@ -406,6 +406,80 @@ def _(car_prices_test, car_prices_train, car_prices_val):
     del X_train["msrp"]
     del X_val["msrp"]
     del X_test["msrp"]
+    return (X_train,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Linear Regression
+
+    We are trying to compute a $g$ estimator function so that given the features of a car $i$:
+
+    \[
+        x_i = (x_{i1}, x_{i2}, ..., x_{in})
+    \]
+
+    Our function evaluated with those features approaches the target price:
+
+    \[
+        g(x_{i1}, x_{i2}, ..., x_{in}) \approx y_i
+    \]
+    """
+    )
+    return
+
+
+@app.cell
+def _(np):
+    def linear_regression(x, w):
+        assert len(x) + 1 == len(w), "The size of the features vector does not match the size of the weights"
+
+        return w[0] + np.sum([x[i] * w[i + 1] for i in range(len(x))])
+    return (linear_regression,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""In order to show how linear regression works, we'll manually compute it for a selection of features: `engine_hp`, `city_mpg` and `popularity`.""")
+    return
+
+
+@app.cell
+def _(X_train):
+    X_train.iloc[10:11][["make", "model", "engine_hp", "city_mpg", "popularity"]]
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Given the "randomly" chosen car, we'll extract the selected features and its corresponding price:""")
+    return
+
+
+@app.cell
+def _(X_train, np, y_train):
+    x = X_train.iloc[10:11][["engine_hp", "city_mpg", "popularity"]].values[0]
+
+    {
+        "x": x,
+        "y": np.expm1(y_train[10:11])
+    }
+    return (x,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Now we need to define some weights. Typically, we'd be running a process that finds the optimal values but for the moment we'll manually assign them some numbers:""")
+    return
+
+
+@app.cell
+def _(linear_regression, np, x):
+    prediction = linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+
+    np.expm1(prediction)
     return
 
 
