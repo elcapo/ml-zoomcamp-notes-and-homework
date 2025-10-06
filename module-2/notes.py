@@ -11,7 +11,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
     import seaborn as sns
-    return mo, np, pd, sns
+    return mo, np, pd, plt, sns
 
 
 @app.cell(hide_code=True)
@@ -1111,6 +1111,72 @@ def _(
         )
 
     regularize_categorized_eval(delta)
+    return (regularize_categorized_eval,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Tuning the Model
+
+    To obtain the best $delta$ for our model, we can start by just trying some values:
+    """
+    )
+    return
+
+
+@app.cell
+def _(np, regularize_categorized_eval):
+    def find_delta():
+        results = {}
+
+        for n in np.linspace(9.5, 10, 20):
+            delta = 1/(10**n)
+            results[delta] = regularize_categorized_eval(delta)
+
+        return results
+
+    regularization_deltas = find_delta()
+
+    regularization_deltas
+    return (regularization_deltas,)
+
+
+@app.cell
+def _(plt, regularization_deltas):
+    def plot_deltas(regularization_deltas):
+        x = regularization_deltas.keys()
+        y = regularization_deltas.values()
+        plt.plot(x, y)
+        plt.xlabel('δ')
+        plt.ylabel('RMSE')
+        plt.show()
+
+    plot_deltas(regularization_deltas)
+    return
+
+
+@app.cell
+def _(regularization_deltas):
+    def get_min_regularization(regularization_deltas):
+        min_delta = None
+        min_rmse = None
+    
+        for delta, rmse in regularization_deltas.items():
+            if min_rmse is None or rmse < min_rmse:
+                min_rmse = rmse
+                min_delta = delta
+
+        return (min_delta, min_rmse)
+
+    (regularization_delta, _) = get_min_regularization(regularization_deltas)
+    return (regularization_delta,)
+
+
+@app.cell
+def _(regularization_delta, regularize_categorized_eval):
+    regularize_categorized_eval(regularization_delta)
     return
 
 
