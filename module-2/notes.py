@@ -113,12 +113,12 @@ def _(pd):
         },
         {
             "title": "Explore more",
-            "youtube_id": "",
+            "youtube_id": None,
             "contents": repository_root+"02-regression/17-explore-more.md"
         },
         {
             "title": "Homework",
-            "youtube_id": "",
+            "youtube_id": None,
             "contents": repository_root+"02-regression/homework.md"
         },
     ])
@@ -208,17 +208,20 @@ def _(mo):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def _(car_prices):
-    string_columns = list(car_prices.dtypes[car_prices.dtypes == 'object'].index)
-    string_columns
-    return (string_columns,)
+    def get_string_columns(df):
+        return list(df.dtypes[df.dtypes == 'object'].index)
+
+    get_string_columns(car_prices)
+    return (get_string_columns,)
 
 
 @app.cell(hide_code=True)
-def _(car_prices, string_columns):
-    for string_column in string_columns:
+def _(car_prices, get_string_columns):
+    for string_column in get_string_columns(car_prices):
         car_prices[string_column] = car_prices[string_column].str.lower().str.replace(' ', '_')
+
     car_prices.head()
     return
 
@@ -235,17 +238,20 @@ def _(mo):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def _(car_prices):
-    unique_values = {}
+    def show_unique_values(df):
+        unique_values = {}
+    
+        for described_column in df.columns:
+            unique_values[described_column] = {
+                "sample": df[described_column].unique()[:5],
+                "count": df[described_column].nunique()
+            }
 
-    for described_column in car_prices.columns:
-        unique_values[described_column] = {
-            "sample": car_prices[described_column].unique()[:5],
-            "count": car_prices[described_column].nunique()
-        }
+        return unique_values
 
-    unique_values
+    show_unique_values(car_prices)
     return
 
 
@@ -287,9 +293,11 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(car_prices, np, sns):
-    price_logs = np.log1p(car_prices.msrp)
+    def plot_price_logs(df):
+        price_logs = np.log1p(df.msrp)
+        sns.histplot(price_logs, bins=100)
 
-    sns.histplot(price_logs, bins=100)
+    plot_price_logs(car_prices)
     return
 
 
@@ -388,7 +396,7 @@ def _(car_prices_test, car_prices_train, car_prices_val, np):
     y_train = np.log1p(car_prices_train.msrp.values)
     y_val = np.log1p(car_prices_val.msrp.values)
     y_test = np.log1p(car_prices_test.msrp.values)
-    return (y_train,)
+    return y_test, y_train
 
 
 @app.cell(hide_code=True)
@@ -399,14 +407,14 @@ def _(mo):
 
 @app.cell
 def _(car_prices_test, car_prices_train, car_prices_val):
-    X_train = car_prices_train
-    X_val = car_prices_val
-    X_test = car_prices_test
+    X_train = car_prices_train.fillna(0)
+    X_val = car_prices_val.fillna(0)
+    X_test = car_prices_test.fillna(0)
 
     del X_train["msrp"]
     del X_val["msrp"]
     del X_test["msrp"]
-    return (X_train,)
+    return X_test, X_train
 
 
 @app.cell(hide_code=True)
@@ -444,14 +452,36 @@ def _(np):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""In order to show how linear regression works, we'll manually compute it for a selection of features: `engine_hp`, `city_mpg` and `popularity`.""")
+    mo.md(r"""In order to show how linear regression works, we'll manually compute it for a selection of features: `engine_hp`, `city_mpg` and `popularity` of a randomly selected car.""")
     return
 
 
 @app.cell
 def _(X_train):
-    X_train.iloc[10:11][["make", "model", "engine_hp", "city_mpg", "popularity"]]
-    return
+    def select_car(df, id):
+        return df.iloc[id:id + 1]
+
+    random_car_id = 10
+    select_car(X_train, random_car_id)
+    return random_car_id, select_car
+
+
+@app.cell
+def _(X_train):
+    def select_features(df):
+        return df[["engine_hp", "city_mpg", "popularity"]].values
+
+    select_features(X_train)
+    return (select_features,)
+
+
+@app.cell
+def _(X_train, random_car_id, select_car, select_features):
+    def get_random_car():
+        return select_features(select_car(X_train, random_car_id))
+
+    get_random_car()
+    return (get_random_car,)
 
 
 @app.cell(hide_code=True)
@@ -461,14 +491,12 @@ def _(mo):
 
 
 @app.cell
-def _(X_train, np, y_train):
-    x = X_train.iloc[10:11][["engine_hp", "city_mpg", "popularity"]].values[0]
-
+def _(get_random_car, np, random_car_id, y_train):
     {
-        "x": x,
-        "y": np.expm1(y_train[10:11]).astype(int)
+        "x": get_random_car()[0],
+        "y": np.expm1(y_train[random_car_id:random_car_id + 1]).astype(int)
     }
-    return (x,)
+    return
 
 
 @app.cell(hide_code=True)
@@ -478,8 +506,8 @@ def _(mo):
 
 
 @app.cell
-def _(raw_linear_regression, x):
-    raw_linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+def _(get_random_car, raw_linear_regression):
+    raw_linear_regression(get_random_car()[0], [7.5, 0.01, 0.07, 0.003])
     return
 
 
@@ -517,8 +545,8 @@ def _(np):
 
 
 @app.cell
-def _(vectorial_linear_regression, x):
-    vectorial_linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+def _(get_random_car, vectorial_linear_regression):
+    vectorial_linear_regression(get_random_car()[0], [7.5, 0.01, 0.07, 0.003])
     return
 
 
@@ -559,8 +587,8 @@ def _(np):
 
 
 @app.cell
-def _(final_linear_regression, x):
-    final_linear_regression(x, [7.5, 0.01, 0.07, 0.003])
+def _(final_linear_regression, get_random_car):
+    final_linear_regression(get_random_car()[0], [7.5, 0.01, 0.07, 0.003])
     return
 
 
@@ -599,8 +627,8 @@ def _(mo):
 
 
 @app.cell
-def _(X_train, np):
-    X_matrix = X_train.iloc[10:15][["engine_hp", "city_mpg", "popularity"]].values
+def _(X_train, np, select_features):
+    X_matrix = select_features(X_train.iloc[10:15])
     X_matrix = np.c_[np.ones(X_matrix.shape[0]), X_matrix]
 
     X_matrix
@@ -691,17 +719,200 @@ def _(mo):
 
 @app.cell
 def _(X_matrix, np, y_matrix):
-    w_solved = np.linalg.inv(X_matrix.T.dot(X_matrix)).dot(X_matrix.T).dot(y_matrix)
+    def solve_linear_regression(X, y):
+        return np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
 
-    w_solved
-    return (w_solved,)
+    solve_linear_regression(X_matrix, y_matrix)
+    return (solve_linear_regression,)
 
 
 @app.cell
-def _(X_matrix, np, w_solved):
-    y_solved = X_matrix.dot(w_solved)
+def _(X_matrix, np, solve_linear_regression, y_matrix):
+    def predict_price(X, y):
+        w = solve_linear_regression(X, y)
+        y = X.dot(w)
+        return np.expm1(y).astype(int)
 
-    np.expm1(y_solved).astype(int)
+    predict_price(X_matrix, y_matrix)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Baseline Model for Car Price Prediction Project
+
+    We'll start by selecting all the numerical features from our train dataset.
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_train):
+    def naive_prepare_X(X):
+        return X.select_dtypes(include="number").values
+
+    naive_prepare_X(X_train)
+    return (naive_prepare_X,)
+
+
+@app.cell
+def _(y_train):
+    y_train
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Now, following the same formula we used in the previous section, we define our training function, which will take the features and target variable and return the corresponding weights.""")
+    return
+
+
+@app.cell
+def _(X_train, naive_prepare_X, solve_linear_regression, y_train):
+    solve_linear_regression(naive_prepare_X(X_train), y_train)
+    return
+
+
+@app.cell
+def _(X_train, naive_prepare_X, solve_linear_regression, y_train):
+    def naive_predict(X, y):
+        w = solve_linear_regression(naive_prepare_X(X), y)
+        return naive_prepare_X(X).dot(w)
+
+    naive_predict(X_train, y_train)
+    return (naive_predict,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""By plotting at the same time the target variable we used during training and our predictions, we can have a first idea about how good our model is.""")
+    return
+
+
+@app.cell
+def _(X_train, naive_predict, sns, y_train):
+    sns.histplot(y_train, color="blue")
+    sns.histplot(naive_predict(X_train, y_train), color="red", alpha=0.5)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Root Mean Squared Error
+
+    In order to measure how good our model performs, we'll use `RMSE`, which is a metric that will tell us how good (or bad) our model predicted by checking the average of the squared difference between our predictions`g(x_i)` and the target values `y_i`:
+
+    \[
+        RMSE = \frac{1}{n} \sum_{i=0}^n (g(x_i) - y_i)^2
+    \]
+    """
+    )
+    return
+
+
+@app.function
+def rmse(y_predicted, y_real):
+    n = len(y_real)
+    return (((y_predicted - y_real)**2) / n).sum()
+
+
+@app.cell
+def _(X_train, naive_predict, y_train):
+    rmse(
+        naive_predict(X_train, y_train),
+        y_train
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Using RMSE on Validation Data
+
+    In the previous chapter we used `RMSE` on the same dataset we used to train our model, which isn't what we want. Instead, we want to use the validate split we created already.
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_test, naive_predict, y_test):
+    naive_predict(X_test, y_test)
+    return
+
+
+@app.cell
+def _(X_test, naive_predict, y_test):
+    rmse(
+        naive_predict(X_test, y_test),
+        y_test
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Feature Engineering
+
+    Let's add a feature that computes the age of the cars.
+    """
+    )
+    return
+
+
+@app.cell
+def _():
+    from datetime import datetime
+
+    def prepare_X(X):
+        X = X.copy()
+        X["age"] = datetime.today().year - X.year
+        return X.select_dtypes(include="number").values
+    return (prepare_X,)
+
+
+@app.cell
+def _(X_train, prepare_X):
+    prepare_X(X_train)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Retraining our model we can see how it performs better with the additional feature.""")
+    return
+
+
+@app.cell
+def _(prepare_X, solve_linear_regression):
+    def predict(X, y):
+        w = solve_linear_regression(prepare_X(X), y)
+        return prepare_X(X).dot(w)
+    return (predict,)
+
+
+@app.cell
+def _(X_test, predict, y_test):
+    rmse(
+        predict(X_test, y_test),
+        y_test
+    )
+    return
+
+
+@app.cell
+def _(X_test, predict, sns, y_test):
+    sns.histplot(y_test, color="blue")
+    sns.histplot(predict(X_test, y_test), color="red", alpha=0.5)
     return
 
 
