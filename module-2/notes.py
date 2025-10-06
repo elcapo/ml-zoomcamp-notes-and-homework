@@ -242,7 +242,7 @@ def _(mo):
 def _(car_prices):
     def show_unique_values(df):
         unique_values = {}
-    
+
         for described_column in df.columns:
             unique_values[described_column] = {
                 "sample": df[described_column].unique()[:5],
@@ -396,7 +396,7 @@ def _(car_prices_test, car_prices_train, car_prices_val, np):
     y_train = np.log1p(car_prices_train.msrp.values)
     y_val = np.log1p(car_prices_val.msrp.values)
     y_test = np.log1p(car_prices_test.msrp.values)
-    return y_test, y_train
+    return y_train, y_val
 
 
 @app.cell(hide_code=True)
@@ -414,7 +414,42 @@ def _(car_prices_test, car_prices_train, car_prices_val):
     del X_train["msrp"]
     del X_val["msrp"]
     del X_test["msrp"]
-    return X_test, X_train
+    return X_train, X_val
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Finally, let's wrap all this into a funciton.""")
+    return
+
+
+@app.cell
+def _(np):
+    def prepare_split(df):
+        df = df.copy()
+        df.reset_index(drop=True, inplace=True)
+
+        y = np.log1p(df.msrp.values)
+
+        del df["msrp"]
+
+        return df, y
+
+    def split_dataset(df):
+        n = len(df)
+        n_val = n_test = int(len(df) * 0.2)
+        n_train = len(df) - n_val - n_test
+
+        np.random.seed(2)
+        shuffled_indexes = np.arange(n)
+        np.random.shuffle(shuffled_indexes)
+
+        train = prepare_split(df.iloc[shuffled_indexes[:n_train]])
+        val = prepare_split(df.iloc[shuffled_indexes[n_train:n_train+n_val]])
+        test = prepare_split(df.iloc[shuffled_indexes[n_train+n_val:]])
+
+        return train, val, test
+    return (split_dataset,)
 
 
 @app.cell(hide_code=True)
@@ -843,16 +878,16 @@ def _(mo):
 
 
 @app.cell
-def _(X_test, naive_predict, y_test):
-    naive_predict(X_test, y_test)
+def _(X_val, naive_predict, y_val):
+    naive_predict(X_val, y_val)
     return
 
 
 @app.cell
-def _(X_test, naive_predict, y_test):
+def _(X_val, naive_predict, y_val):
     rmse(
-        naive_predict(X_test, y_test),
-        y_test
+        naive_predict(X_val, y_val),
+        y_val
     )
     return
 
@@ -873,16 +908,16 @@ def _(mo):
 def _():
     from datetime import datetime
 
-    def prepare_X(X):
+    def feature_prepare_X(X):
         X = X.copy()
         X["age"] = datetime.today().year - X.year
         return X.select_dtypes(include="number").values
-    return (prepare_X,)
+    return datetime, feature_prepare_X
 
 
 @app.cell
-def _(X_train, prepare_X):
-    prepare_X(X_train)
+def _(X_train, feature_prepare_X):
+    feature_prepare_X(X_train)
     return
 
 
@@ -893,26 +928,189 @@ def _(mo):
 
 
 @app.cell
-def _(prepare_X, solve_linear_regression):
-    def predict(X, y):
-        w = solve_linear_regression(prepare_X(X), y)
-        return prepare_X(X).dot(w)
-    return (predict,)
+def _(feature_prepare_X, solve_linear_regression):
+    def feature_train_and_predict(X_train, y_train, X_val, y_val):
+        w = solve_linear_regression(feature_prepare_X(X_train), y_train)
+        return feature_prepare_X(X_val).dot(w)
+    return (feature_train_and_predict,)
 
 
 @app.cell
-def _(X_test, predict, y_test):
+def _(X_train, X_val, feature_train_and_predict, y_train, y_val):
     rmse(
-        predict(X_test, y_test),
-        y_test
+        feature_train_and_predict(X_train, y_train, X_val, y_val),
+        y_val
     )
     return
 
 
 @app.cell
-def _(X_test, predict, sns, y_test):
-    sns.histplot(y_test, color="blue")
-    sns.histplot(predict(X_test, y_test), color="red", alpha=0.5)
+def _(X_train, X_val, feature_train_and_predict, sns, y_train, y_val):
+    sns.histplot(y_val, color="blue")
+    sns.histplot(feature_train_and_predict(X_train, y_train, X_val, y_val), color="red", alpha=0.5)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""## Categorical Variables""")
+    return
+
+
+@app.cell
+def _(X_train):
+    def categorize_column(df, column_name, transform=None, drop_first=True):
+        df = df.copy()
+
+        if not transform:
+            unique_values = sorted(df[column_name].unique().astype(str))
+        else:
+            unique_values = sorted(df[column_name].unique())
+
+        # Skip the first value if drop_first is True
+        start_idx = 1 if drop_first else 0
+
+        for value in unique_values[start_idx:]:
+            transformed_value = transform(value) if callable(transform) else value
+            df[column_name + "_" + str(transformed_value)] = (df[column_name] == value).astype(int)
+
+        return df
+
+    categorize_column(X_train, "number_of_doors", int)
+    return (categorize_column,)
+
+
+@app.cell
+def _(car_prices, categorize_column, datetime):
+    def categorize_prepare(X):
+        X = X.copy()
+        X = X.fillna(0)
+
+        X["age"] = datetime.today().year - X.year
+
+        # We'll ignore model and market category as they are too fragmented
+        if "model" in X:
+            del X["model"]
+
+        if "market_category" in X:
+            del X["market_category"]
+
+        X = categorize_column(X, "number_of_doors", int)
+
+        X = categorize_column(X, "make")    
+        X = categorize_column(X, "engine_fuel_type")
+        X = categorize_column(X, "transmission_type")
+        X = categorize_column(X, "driven_wheels")
+        X = categorize_column(X, "vehicle_size")
+        X = categorize_column(X, "vehicle_style")
+
+        del X["number_of_doors"]
+        del X["make"]
+        del X["engine_fuel_type"]
+        del X["transmission_type"]
+        del X["driven_wheels"]
+        del X["vehicle_size"]
+        del X["vehicle_style"]
+
+        return X
+
+    categorize_prepare(car_prices).head()
+    return (categorize_prepare,)
+
+
+@app.cell
+def _(solve_linear_regression):
+    def categorized_train_and_predict(X_train, y_train, X_val, y_val):
+        w = solve_linear_regression(X_train, y_train)
+        return X_val.dot(w)
+    return (categorized_train_and_predict,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""At this point we'd expect to solve our system and obtain a better performance. But we'll very likely get a horrible result. Maybe even a _Singular matrix_ error!""")
+    return
+
+
+@app.cell
+def _(
+    car_prices,
+    categorize_prepare,
+    categorized_train_and_predict,
+    split_dataset,
+):
+    def categorized_eval():
+        df_categorized = categorize_prepare(car_prices)
+        df_train, df_val, df_test = split_dataset(df_categorized)
+
+        X_train, y_train = df_train
+        X_val, y_val = df_val
+
+        return rmse(
+            categorized_train_and_predict(X_train, y_train, X_val, y_val),
+            y_val
+        )
+
+    categorized_eval()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Regularization
+
+    When we introduced categorical variables in our model, we also increased the chance of having features that are dependent of each other. For instance, if we had 3 possible values for **number of doors** and we created 3 boolean columns, one for each of the values, then each of the columns could be deduced from the others. In other words, they would be linearly dependent. That means that the inverse of $X^T X$ won't even be defined.
+
+    In order to solve this, one approach is to add a diagonal multiplied by a small factor so that we get a $X^T X + \delta \mathbb{I}$ that has an inverse.
+    """
+    )
+    return
+
+
+@app.cell
+def _():
+    delta = 0.01
+    return (delta,)
+
+
+@app.cell
+def _(np):
+    def regularize_and_solve_linear_regression(X, y, delta):
+        return np.linalg.inv(X.T.dot(X) + delta * np.eye(X.shape[1])).dot(X.T).dot(y)
+    return (regularize_and_solve_linear_regression,)
+
+
+@app.cell
+def _(regularize_and_solve_linear_regression):
+    def regularized_train_and_predict(X_train, y_train, X_val, y_val, delta):
+        w = regularize_and_solve_linear_regression(X_train, y_train, delta)
+        return X_val.dot(w)
+    return (regularized_train_and_predict,)
+
+
+@app.cell
+def _(
+    car_prices,
+    categorize_prepare,
+    delta,
+    regularized_train_and_predict,
+    split_dataset,
+):
+    def regularize_categorized_eval(delta):
+        df_categorized = categorize_prepare(car_prices)
+        df_train, df_val, df_test = split_dataset(df_categorized)
+
+        X_train, y_train = df_train
+        X_val, y_val = df_val
+
+        return rmse(
+            regularized_train_and_predict(X_train, y_train, X_val, y_val, delta),
+            y_val
+        )
+
+    regularize_categorized_eval(delta)
     return
 
 
