@@ -982,7 +982,10 @@ def _(X_train):
 
 @app.cell
 def _(car_prices, categorize_column, datetime):
-    def categorize_prepare(X):
+    def categorize_prepare(
+        X,
+        categorical_columns = ["make", "engine_fuel_type", "transmission_type", "driven_wheels", "vehicle_size", "vehicle_style"]
+    ):
         X = X.copy()
         X = X.fillna(0)
 
@@ -997,12 +1000,8 @@ def _(car_prices, categorize_column, datetime):
 
         X = categorize_column(X, "number_of_doors", int)
 
-        X = categorize_column(X, "make")    
-        X = categorize_column(X, "engine_fuel_type")
-        X = categorize_column(X, "transmission_type")
-        X = categorize_column(X, "driven_wheels")
-        X = categorize_column(X, "vehicle_size")
-        X = categorize_column(X, "vehicle_style")
+        for categorical_column in categorical_columns:
+            X = categorize_column(X, categorical_column)
 
         del X["number_of_doors"]
         del X["make"]
@@ -1040,7 +1039,7 @@ def _(
     split_dataset,
 ):
     def categorized_eval():
-        df_categorized = categorize_prepare(car_prices)
+        df_categorized = categorize_prepare(car_prices, ["make", "vehicle_size"])
         df_train, df_val, df_test = split_dataset(df_categorized)
 
         X_train, y_train = df_train
@@ -1162,7 +1161,7 @@ def _(regularization_deltas):
     def get_min_regularization(regularization_deltas):
         min_delta = None
         min_rmse = None
-    
+
         for delta, rmse in regularization_deltas.items():
             if min_rmse is None or rmse < min_rmse:
                 min_rmse = rmse
@@ -1177,6 +1176,150 @@ def _(regularization_deltas):
 @app.cell
 def _(regularization_delta, regularize_categorized_eval):
     regularize_categorized_eval(regularization_delta)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Using the Model
+
+    At this point, we'll train our `g` model on a split that combines the train and validation splits.
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Prepare a Merged Dataset with Train and Validation""")
+    return
+
+
+@app.cell
+def _(car_prices, categorize_prepare, np, split_dataset):
+    def get_full_train():
+        df_categorized = categorize_prepare(car_prices)
+        df_train, df_val, df_test = split_dataset(df_categorized)
+
+        X_train, y_train = df_train
+        X_val, y_val = df_val
+        X_test, y_test = df_test
+
+        X = np.concat([X_train, X_val])
+        y = np.concat([y_train, y_val])
+
+        return X, y, X_test.values, y_test
+
+    get_full_train()
+    return (get_full_train,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Train the Model
+
+    Here we are training the model in our merged dataset and displaying its weights.
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    get_full_train,
+    regularization_delta,
+    regularize_and_solve_linear_regression,
+):
+    def solve_full_train(delta):
+        X, y, X_test, y_test = get_full_train()
+
+        return regularize_and_solve_linear_regression(X, y, delta)
+
+    solve_full_train(regularization_delta)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Check that we Can Predict Prices""")
+    return
+
+
+@app.cell
+def _(
+    get_full_train,
+    regularization_delta,
+    regularize_and_solve_linear_regression,
+):
+    def full_train_and_predict(delta):
+        X, y, X_test, y_test = get_full_train()
+        w = regularize_and_solve_linear_regression(X, y, delta)
+
+        return X.dot(w)
+
+    full_train_and_predict(regularization_delta)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Evaluate the Model on the Test Split""")
+    return
+
+
+@app.cell
+def _(
+    get_full_train,
+    regularization_delta,
+    regularize_and_solve_linear_regression,
+):
+    def full_train_eval(delta):
+        X, y, X_test, y_test = get_full_train()
+        w = regularize_and_solve_linear_regression(X, y, delta)
+
+        return rmse(
+            X_test.dot(w),
+            y_test
+        )
+
+    full_train_eval(regularization_delta)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Use the Model to Predict a Car's Price
+
+    Now we can use our model to predict the price of a given car.
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    get_full_train,
+    np,
+    regularization_delta,
+    regularize_and_solve_linear_regression,
+):
+    def get_test_car_price(car_id, delta):
+        X, y, X_test, y_test = get_full_train()
+        w = regularize_and_solve_linear_regression(X, y, delta)
+
+        return {
+            "y": np.expm1(y_test[car_id]),
+            "y_predicted": np.expm1(np.array([X_test[car_id]]).dot(w)[0])
+        }
+
+    car_id = 20
+    get_test_car_price(car_id, regularization_delta)
     return
 
 
