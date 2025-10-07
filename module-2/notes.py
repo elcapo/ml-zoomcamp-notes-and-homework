@@ -843,21 +843,23 @@ def _(mo):
     In order to measure how good our model performs, we'll use `RMSE`, which is a metric that will tell us how good (or bad) our model predicted by checking the average of the squared difference between our predictions`g(x_i)` and the target values `y_i`:
 
     \[
-        RMSE = \frac{1}{n} \sum_{i=0}^n (g(x_i) - y_i)^2
+        RMSE^2 = \frac{1}{n} \sum_{i=0}^n (g(x_i) - y_i)^2
     \]
     """
     )
     return
 
 
-@app.function
-def rmse(y_predicted, y_real):
-    n = len(y_real)
-    return (((y_predicted - y_real)**2) / n).sum()
+@app.cell
+def _(np):
+    def rmse(y_predicted, y_real):
+        n = len(y_real)
+        return np.sqrt(((y_predicted - y_real)**2).sum() / n)
+    return (rmse,)
 
 
 @app.cell
-def _(X_train, naive_predict, y_train):
+def _(X_train, naive_predict, rmse, y_train):
     rmse(
         naive_predict(X_train, y_train),
         y_train
@@ -884,7 +886,7 @@ def _(X_val, naive_predict, y_val):
 
 
 @app.cell
-def _(X_val, naive_predict, y_val):
+def _(X_val, naive_predict, rmse, y_val):
     rmse(
         naive_predict(X_val, y_val),
         y_val
@@ -936,7 +938,7 @@ def _(feature_prepare_X, solve_linear_regression):
 
 
 @app.cell
-def _(X_train, X_val, feature_train_and_predict, y_train, y_val):
+def _(X_train, X_val, feature_train_and_predict, rmse, y_train, y_val):
     rmse(
         feature_train_and_predict(X_train, y_train, X_val, y_val),
         y_val
@@ -1036,6 +1038,7 @@ def _(
     car_prices,
     categorize_prepare,
     categorized_train_and_predict,
+    rmse,
     split_dataset,
 ):
     def categorized_eval():
@@ -1095,6 +1098,7 @@ def _(
     categorize_prepare,
     delta,
     regularized_train_and_predict,
+    rmse,
     split_dataset,
 ):
     def regularize_categorized_eval(delta):
@@ -1276,6 +1280,7 @@ def _(
     get_full_train,
     regularization_delta,
     regularize_and_solve_linear_regression,
+    rmse,
 ):
     def full_train_eval(delta):
         X, y, X_test, y_test = get_full_train()
