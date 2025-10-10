@@ -11,7 +11,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
     import seaborn as sns
-    return mo, pd
+    return mo, pd, sns
 
 
 @app.cell(hide_code=True)
@@ -238,6 +238,14 @@ def _(mo):
     return
 
 
+@app.cell
+def _(pd):
+    df = pd.read_csv("module-3/data/customer-churn.csv")
+
+    df.head()
+    return (df,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(
@@ -251,6 +259,171 @@ def _(mo):
     We'll train a binary classification model that will attempt to classify customers in two groups, the ones that are right about to churn and the ones who are not.
     """
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Data Preparation
+
+    ### Histograms of Numeric Columns
+    """
+    )
+    return
+
+
+@app.cell
+def _(df, sns):
+    sns.histplot(df.SeniorCitizen, bins=15)
+    return
+
+
+@app.cell
+def _(df, sns):
+    sns.histplot(df.tenure, bins=15)
+    return
+
+
+@app.cell
+def _(df, sns):
+    sns.histplot(df.MonthlyCharges, bins=15)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Standardize Column Names""")
+    return
+
+
+@app.cell
+def _(df, pd):
+    def standardize_column_names(dataframe: pd.DataFrame) -> pd.DataFrame:
+        standardized = dataframe.copy()
+        standardized.columns = standardized.columns.str.lower().str.replace(' ', '_')
+
+        return standardized
+
+    standardize_column_names(df)
+    return (standardize_column_names,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Standardize Column Values""")
+    return
+
+
+@app.cell
+def _(df, pd):
+    def get_cateogorical_columns(dataframe: pd.DataFrame) -> list[str]:
+        return list(list(dataframe.dtypes[dataframe.dtypes == 'object'].index))
+
+    def standardize_categorical_values(dataframe: pd.DataFrame) -> pd.DataFrame:
+        standardized = dataframe.copy()
+
+        for column in get_cateogorical_columns(standardized):
+            standardized[column] = standardized[column].str.lower().str.replace(' ', '_')
+
+        return standardized
+
+    standardize_categorical_values(df)
+    return (standardize_categorical_values,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Prepare a Standardized Dataset""")
+    return
+
+
+@app.cell
+def _(df, standardize_categorical_values, standardize_column_names):
+    df_standardized = standardize_column_names(df)
+    df_standardized = standardize_categorical_values(df_standardized)
+
+    df_standardized
+    return (df_standardized,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Fix Column Data Types
+
+    #### Total Charges
+
+    First we'll convert the `totalcharges` column to numeric coercing (setting to null) the values that cannot be converted to numeric.
+    """
+    )
+    return
+
+
+@app.cell
+def _(df_standardized, pd):
+    totalcharges = pd.to_numeric(df_standardized.totalcharges, errors='coerce')
+
+    totalcharges
+    return (totalcharges,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Now, we'll check what values were lost during the transformation.""")
+    return
+
+
+@app.cell
+def _(df_standardized, totalcharges):
+    df_standardized[totalcharges.isnull()][["customerid", "totalcharges"]]
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Finally, we'll fill the empty values with zeroes.""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(df_standardized, sns, totalcharges):
+    df_standardized.totalcharges = totalcharges.fillna(0)
+
+    sns.histplot(df_standardized.totalcharges, bins=25)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Churn
+
+
+    Rather than a boolean column, the `churn` column contains strings with the values **yes** or **no**.
+    """
+    )
+    return
+
+
+@app.cell
+def _(df_standardized):
+    df_standardized.churn.unique()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Let's fix it!""")
+    return
+
+
+@app.cell
+def _(df_standardized):
+    df_standardized.churn = (df_standardized.churn == 'yes').astype(int)
     return
 
 
