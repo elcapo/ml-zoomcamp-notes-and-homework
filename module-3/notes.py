@@ -427,5 +427,64 @@ def _(df_standardized):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""## Setting up the Validation Framework""")
+    return
+
+
+@app.cell
+def _(df_standardized, pd):
+    from sklearn.model_selection import train_test_split
+
+    def split_dataframe(dataframe: pd.DataFrame) -> pd.DataFrame:
+        full_train, test = train_test_split(dataframe, test_size=0.2, random_state=1)
+        train, val = train_test_split(full_train, test_size=0.25, random_state=1)
+
+        return train, val, test
+
+    df_train, df_val, df_test = split_dataframe(df_standardized)
+
+    df_train = df_train.reset_index(drop=True)
+    df_val = df_val.reset_index(drop=True)
+    df_test = df_test.reset_index(drop=True)
+    return df_test, df_train, df_val
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Check the Size of the Splits""")
+    return
+
+
+@app.cell
+def _(df_test, df_train, df_val):
+    (len(df_train), len(df_val), len(df_test))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Get our Features and Targets""")
+    return
+
+
+@app.cell
+def _(df_test, df_train, df_val):
+    y_train = df_train.churn
+    y_val = df_val.churn
+    y_test = df_test.churn
+
+    X_train = df_train.copy()
+    del X_train["churn"]
+
+    X_val = df_val.copy()
+    del X_val["churn"]
+
+    X_test = df_test.copy()
+    del X_test["churn"]
+    return
+
+
 if __name__ == "__main__":
     app.run()
