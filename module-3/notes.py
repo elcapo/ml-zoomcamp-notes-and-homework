@@ -441,14 +441,15 @@ def _(df_standardized, pd):
         full_train, test = train_test_split(dataframe, test_size=0.2, random_state=1)
         train, val = train_test_split(full_train, test_size=0.25, random_state=1)
 
-        return train, val, test
+        return train, val, test, full_train
 
-    df_train, df_val, df_test = split_dataframe(df_standardized)
+    df_train, df_val, df_test, df_full = split_dataframe(df_standardized)
 
     df_train = df_train.reset_index(drop=True)
     df_val = df_val.reset_index(drop=True)
     df_test = df_test.reset_index(drop=True)
-    return df_test, df_train, df_val
+    df_full = df_full.reset_index(drop=True)
+    return df_full, df_test, df_train, df_val
 
 
 @app.cell(hide_code=True)
@@ -465,24 +466,353 @@ def _(df_test, df_train, df_val):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""### Get our Features and Targets""")
+    mo.md(
+        r"""
+    ## Exploratory Data Analysis
+
+    ### Check for Missing Values
+
+    After a quick check we see that there are no missing values.
+    """
+    )
     return
 
 
 @app.cell
-def _(df_test, df_train, df_val):
-    y_train = df_train.churn
-    y_val = df_val.churn
-    y_test = df_test.churn
+def _(df_full):
+    df_full.isnull().sum()
+    return
 
-    X_train = df_train.copy()
-    del X_train["churn"]
 
-    X_val = df_val.copy()
-    del X_val["churn"]
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Look at the Target Variable""")
+    return
 
-    X_test = df_test.copy()
-    del X_test["churn"]
+
+@app.cell
+def _(df_full):
+    df_full.churn.value_counts()
+    return
+
+
+@app.cell
+def _(df_full):
+    df_full.churn.mean().round(2)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Look at the Categorical Variables""")
+    return
+
+
+@app.cell
+def _(df_full):
+    df_full.dtypes
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""#### Display the Numerical Features""")
+    return
+
+
+@app.cell
+def _(df_full):
+    numerical_columns = ["tenure", "monthlycharges", "totalcharges"]
+
+    df_full[["customerid"] + numerical_columns]
+    return (numerical_columns,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""#### Count the Different Values for Each Categorical Value""")
+    return
+
+
+@app.cell
+def _(df_full):
+    categorical_columns = [
+        'gender', 'seniorcitizen', 'partner', 'dependents',
+        'phoneservice', 'multiplelines', 'internetservice', 'onlinesecurity',
+        'onlinebackup', 'deviceprotection', 'techsupport', 'streamingtv',
+        'streamingmovies', 'contract', 'paperlessbilling', 'paymentmethod'
+    ]
+
+    df_full[categorical_columns].nunique()
+    return (categorical_columns,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Feature Importance: Churn Rate and Risk Ratio
+
+    ### Churn Rate
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    #### Check the Churn Rate for Each Gender
+
+    As the mean of the churn for each gender is almost equal to the general mean, we can start guessing that gender is not going to be a very important feature when trying to predict the churn.
+    """
+    )
+    return
+
+
+@app.cell
+def _(df_full):
+    {
+        "churn_female": df_full[df_full.gender == "female"].churn.mean().round(2),
+        "churn_male": df_full[df_full.gender == "male"].churn.mean().round(2),
+        "churn_general": df_full.churn.mean().round(2),
+    }
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    #### Check the Churn Rate for Each Partner
+
+    As the mean of the churn changes significantly depending on whether the client has a partner or not, we can guess that this column will have a bigger impact when trying to predict the churn.
+    """
+    )
+    return
+
+
+@app.cell
+def _(df_full):
+    {
+        "churn_partner": df_full[df_full.partner == "yes"].churn.mean().round(2),
+        "churn_no_partner": df_full[df_full.partner == "no"].churn.mean().round(2),
+        "churn_general": df_full.churn.mean().round(2),
+    }
+    return
+
+
+@app.cell
+def _(df_full, pd):
+    def check_importance(column_name: str, dataframe: pd.DataFrame) -> pd.DataFrame:
+        group = dataframe.groupby(column_name).churn.agg(["mean", "count"]).round(2)
+        group["diff"] = (group["mean"] - dataframe.churn.mean()).round(2)
+        group["risk"] = (group["mean"] / dataframe.churn.mean()).round(2)
+
+        return group
+
+    check_importance("gender", df_full)
+    return (check_importance,)
+
+
+@app.cell
+def _(categorical_columns, check_importance, df_full, pd):
+    def check_importances(dataframe: pd.DataFrame) -> list[pd.DataFrame]:
+        importances = []
+
+        for categorical_column in categorical_columns:
+            importances.append(check_importance(categorical_column, dataframe))
+    
+        return importances
+
+    check_importances(df_full)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Feature Importance: Mutual Information
+
+    The mutual information metric tells us how much we know a variable through another variable.
+    """
+    )
+    return
+
+
+@app.cell
+def _(df_full):
+    from sklearn.metrics import mutual_info_score
+
+    mutual_info_score(df_full.churn, df_full.contract)
+    return (mutual_info_score,)
+
+
+@app.cell
+def _(categorical_columns, df_full, mutual_info_score, pd):
+    def check_churn_importance(series: pd.Series) -> list[pd.Series]:
+        return round(mutual_info_score(df_full.churn, series), 3)
+
+    df_full[categorical_columns].apply(check_churn_importance).sort_values(ascending=False)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Feature Importance: Correlation
+
+    We'll now consider correlation metrics between our variables. In particular, we'll use the [Pearson correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient).
+    """
+    )
+    return
+
+
+@app.cell
+def _(df_full, numerical_columns):
+    df_full[numerical_columns].corrwith(df_full.churn).abs()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Now, we'll check that as tenure increases, churn decreases.""")
+    return
+
+
+@app.cell
+def _(df_full):
+    churn_by_tenure = {
+        "to_2": df_full[df_full.tenure < 2].churn.mean(),
+        "from_2_to_12": df_full[(df_full.tenure >= 2) & (df_full.tenure < 12)].churn.mean(),
+        "from_12": df_full[df_full.tenure >= 12].churn.mean(),
+    }
+
+    churn_by_tenure
+    return (churn_by_tenure,)
+
+
+@app.cell
+def _(churn_by_tenure, sns):
+    sns.barplot(x=["x < 2", "2 <= x < 12", "x >= 12"], y=churn_by_tenure.values())
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Finally, we'll check that as monthly charges increase, churn also increases.""")
+    return
+
+
+@app.cell
+def _(df_full):
+    churn_by_monthly_charges = {
+        "to_30": df_full[df_full.monthlycharges < 30].churn.mean(),
+        "from_30_to_80": df_full[(df_full.monthlycharges >= 30) & (df_full.monthlycharges < 80)].churn.mean(),
+        "from_80": df_full[df_full.monthlycharges >= 80].churn.mean(),
+    }
+
+    churn_by_monthly_charges
+    return (churn_by_monthly_charges,)
+
+
+@app.cell
+def _(churn_by_monthly_charges, sns):
+    sns.barplot(x=["x < 30", "30 <= x < 80", "x >= 80"], y=churn_by_monthly_charges.values())
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""## One-hot Encoding""")
+    return
+
+
+@app.cell
+def _():
+    from sklearn.feature_extraction import DictVectorizer
+    return (DictVectorizer,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""First we define a dictionary vectorizer and fit it with our full train dataframe.""")
+    return
+
+
+@app.cell
+def _(DictVectorizer, categorical_columns, df_full, numerical_columns, pd):
+    def get_trained_vectorizer(dataframe: pd.DataFrame) -> list[dict]:
+        dictionary = dataframe[numerical_columns + categorical_columns].to_dict(orient="records")
+
+        dict_vectorizer = DictVectorizer(sparse=False)
+        dict_vectorizer.fit(dictionary)
+
+        return dict_vectorizer, dictionary
+
+    dict_vectorizer, dictionary = get_trained_vectorizer(df_full)
+    return dict_vectorizer, get_trained_vectorizer
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Now, let's test it with the first rows.""")
+    return
+
+
+@app.cell
+def _(categorical_columns, df_full, dict_vectorizer):
+    dict_vectorizer.transform(df_full[categorical_columns].iloc[:3].to_dict(orient="records"))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Finally, let's check the list of columns for each of the generated features.""")
+    return
+
+
+@app.cell
+def _(dict_vectorizer):
+    list(dict_vectorizer.get_feature_names_out())
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Prepare our Feature Matrices and Target Vectors""")
+    return
+
+
+@app.cell
+def _(
+    DictVectorizer,
+    categorical_columns,
+    df_train,
+    df_val,
+    get_trained_vectorizer,
+    numerical_columns,
+    pd,
+):
+    def get_features_and_target(dataframe: pd.DataFrame, dict_vectorizer: DictVectorizer, dictionary):
+        y = dataframe.churn
+
+        df_copy = dataframe.copy()
+        del df_copy["churn"]
+
+        X = dict_vectorizer_train.transform(dictionary_train)
+        y = dataframe.churn
+
+        return X, y
+
+    dict_vectorizer_train, dictionary_train = get_trained_vectorizer(df_train)
+    X_train, y_train = get_features_and_target(df_train, dict_vectorizer_train, dictionary_train)
+
+    dictionary_val = df_val[numerical_columns + categorical_columns].to_dict(orient="records")
+    X_val, y_val = get_features_and_target(df_val, dict_vectorizer_train, dictionary_val)
     return
 
 
