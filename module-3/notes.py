@@ -11,7 +11,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
     import seaborn as sns
-    return mo, pd, sns
+    return mo, np, pd, sns
 
 
 @app.cell(hide_code=True)
@@ -813,6 +813,94 @@ def _(
 
     dictionary_val = df_val[numerical_columns + categorical_columns].to_dict(orient="records")
     X_val, y_val = get_features_and_target(df_val, dict_vectorizer_train, dictionary_val)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Logistic Regression
+
+    In logistic regresion, our target variable can only have two values:
+
+    \[
+      \bold y_i = \{0, 1\}
+    \]
+
+
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Similarity with Linear Regression
+
+    As a recall, in linear regression we used this formula for our estimator function:
+
+    \[
+        g(\bold x_i) = w_0 + \bold w^T \bold x_i
+    \]
+
+    Which was a function that had an image that could take any value between $-\infty$ and $\infty$.
+
+    In other words, $g(\bold x_i) \in \mathbb{R}$.
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Sigmoid
+
+    The difference with linear regresion is that in the case of the logistic regression, we'll use a sigmoid function that will keep the values constrained between $0$ and $1$:
+
+    \[
+        g(\bold x_i) = sigmoid(w_0 + \bold w^T \bold x_i)
+    \]
+    """
+    )
+    return
+
+
+@app.cell
+def _(np, sns):
+    def sigmoid(z):
+        return 1 / (1 + np.exp(-z))
+
+    def plot_sigmoid():
+        z = np.linspace(-15, 15, 500)
+        y = sigmoid(z)
+
+        return sns.lineplot(x=z, y=y)
+
+    plot_sigmoid()
+    return (sigmoid,)
+
+
+@app.function
+def linear_regression(xi, w0, wi):
+    result = w0
+
+    for x, w in zip(xi, wi):
+        result += x * w
+
+    return result
+
+
+@app.cell
+def _(sigmoid):
+    def logistic_regression(xi, w0, wi):
+        z = linear_regression(xi, w0, wi)
+
+        return sigmoid(z)
     return
 
 
