@@ -11,7 +11,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
     import seaborn as sns
-    return mo, np, pd, sns
+    return mo, np, pd, plt, sns
 
 
 @app.cell(hide_code=True)
@@ -275,20 +275,20 @@ def _(mo):
 
 
 @app.cell
-def _(df, sns):
-    sns.histplot(df.SeniorCitizen, bins=15)
-    return
+def _(df, plt, sns):
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
+    sns.histplot(df.SeniorCitizen, bins=15, ax=axes[0])
+    axes[0].set_title('Senior Citizen')
 
-@app.cell
-def _(df, sns):
-    sns.histplot(df.tenure, bins=15)
-    return
+    sns.histplot(df.tenure, bins=15, ax=axes[1])
+    axes[1].set_title('Tenure')
 
+    sns.histplot(df.MonthlyCharges, bins=15, ax=axes[2])
+    axes[2].set_title('Monthly Charges')
 
-@app.cell
-def _(df, sns):
-    sns.histplot(df.MonthlyCharges, bins=15)
+    plt.tight_layout()
+    plt.show()
     return
 
 
@@ -459,8 +459,13 @@ def _(mo):
 
 
 @app.cell
-def _(df_test, df_train, df_val):
-    (len(df_train), len(df_val), len(df_test))
+def _(df_full, df_test, df_train, df_val):
+    {
+        "train": len(df_train),
+        "val": len(df_val),
+        "test": len(df_test),
+        "full": len(df_full),
+    }
     return
 
 
@@ -496,10 +501,30 @@ def _(df_full):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Get the global average churn.""")
+    return
+
+
 @app.cell
 def _(df_full):
     df_full.churn.mean().round(2)
     return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Display the Numerical Features""")
+    return
+
+
+@app.cell
+def _(df_full):
+    numerical_columns = ["tenure", "monthlycharges", "totalcharges"]
+
+    df_full[["customerid"] + numerical_columns]
+    return (numerical_columns,)
 
 
 @app.cell(hide_code=True)
@@ -512,20 +537,6 @@ def _(mo):
 def _(df_full):
     df_full.dtypes
     return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""#### Display the Numerical Features""")
-    return
-
-
-@app.cell
-def _(df_full):
-    numerical_columns = ["tenure", "monthlycharges", "totalcharges"]
-
-    df_full[["customerid"] + numerical_columns]
-    return (numerical_columns,)
 
 
 @app.cell(hide_code=True)
@@ -623,7 +634,7 @@ def _(categorical_columns, check_importance, df_full, pd):
 
         for categorical_column in categorical_columns:
             importances.append(check_importance(categorical_column, dataframe))
-    
+
         return importances
 
     check_importances(df_full)
@@ -798,12 +809,7 @@ def _(
     pd,
 ):
     def get_features_and_target(dataframe: pd.DataFrame, dict_vectorizer: DictVectorizer, dictionary):
-        y = dataframe.churn
-
-        df_copy = dataframe.copy()
-        del df_copy["churn"]
-
-        X = dict_vectorizer_train.transform(dictionary_train)
+        X = dict_vectorizer_train.transform(dictionary)
         y = dataframe.churn
 
         return X, y
@@ -813,7 +819,7 @@ def _(
 
     dictionary_val = df_val[numerical_columns + categorical_columns].to_dict(orient="records")
     X_val, y_val = get_features_and_target(df_val, dict_vectorizer_train, dictionary_val)
-    return
+    return X_train, X_val, y_train, y_val
 
 
 @app.cell(hide_code=True)
@@ -827,8 +833,6 @@ def _(mo):
     \[
       \bold y_i = \{0, 1\}
     \]
-
-
     """
     )
     return
@@ -885,6 +889,12 @@ def _(np, sns):
     return (sigmoid,)
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""As a quick recall of previous chapters, this is how linear regression looks like:""")
+    return
+
+
 @app.function
 def linear_regression(xi, w0, wi):
     result = w0
@@ -895,12 +905,331 @@ def linear_regression(xi, w0, wi):
     return result
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""With that in mind, it's quite easy to implement the logistic regression.""")
+    return
+
+
 @app.cell
 def _(sigmoid):
     def logistic_regression(xi, w0, wi):
         z = linear_regression(xi, w0, wi)
 
         return sigmoid(z)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""## Training Logistic Regression with Scikit-Learn""")
+    return
+
+
+@app.cell
+def _(X_train, y_train):
+    from sklearn.linear_model import LogisticRegression
+
+    model = LogisticRegression(max_iter=5000)
+    model.fit(X_train, y_train)
+
+    {
+        "coefficients": model.coef_[0].round(3),
+        "bias": model.intercept_[0].round(3),
+    }
+    return LogisticRegression, model
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Use the Model
+
+    First, we'll use the model to create some **hard predictions** for us. In other words, we'll force the model to generate booleans for us. We'll also take a look at the corresponding estimated **probabilities** and we'll compare all that with the real values.
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_val, model, y_val):
+    {
+        "hard_predictions": model.predict(X_val[0:5]).astype(bool),
+        "probabilities": model.predict_proba(X_val[0:5])[:,1].round(3),
+        "references": y_val[0:5].values.astype(bool),
+    }
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""By setting a manual **cut** point we can obtain a different set of predictions.""")
+    return
+
+
+@app.cell
+def _(X_val, model):
+    cut = 0.5
+
+    {
+        "soft_predictions": model.predict_proba(X_val[0:5])[:,1] > cut,
+    }
+    return (cut,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Finally, let's do a quick evaluation of our model.""")
+    return
+
+
+@app.cell
+def _(X_val, cut, model, y_val):
+    predicted_churn = model.predict_proba(X_val)[:,1] > cut
+
+    (predicted_churn == y_val).mean().round(3)
+    return (predicted_churn,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Inspect the Correct and Wrong Predictions""")
+    return
+
+
+@app.cell
+def _(X_val, model, pd, predicted_churn, y_val):
+    def inspect_predictions():
+        dataframe = pd.DataFrame()
+        dataframe["probability"] = model.predict_proba(X_val)[:,1].round(2)
+        dataframe["prediction"] = predicted_churn.astype(int)
+        dataframe["reference"] = y_val.astype(int)
+        dataframe["correct"] = dataframe["prediction"] == dataframe["reference"]
+
+        return dataframe
+
+    inspect_predictions()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Model Interpretation
+
+    Our model has too many coefficients to study them one by one.
+    """
+    )
+    return
+
+
+@app.cell
+def _(dict_vectorizer, model):
+    list(zip(dict_vectorizer.get_feature_names_out(), model.coef_[0].round(3)))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""So we'll create a small version of it.""")
+    return
+
+
+@app.cell
+def _(DictVectorizer, df_train, pd):
+    small_feature_set = ["contract", "monthlycharges", "tenure"]
+
+    def get_small_trained_vectorizer(dataframe: pd.DataFrame) -> list[dict]:
+        dictionary = dataframe[small_feature_set].to_dict(orient="records")
+
+        dict_vectorizer = DictVectorizer(sparse=False)
+        dict_vectorizer.fit(dictionary)
+
+        return dict_vectorizer, dictionary
+
+    def get_small_dataset():
+        return df_train[small_feature_set + ["churn"]]
+
+    def get_small_features_and_target(dataframe: pd.DataFrame, dict_vectorizer: DictVectorizer, dictionary):
+        X = dict_vectorizer.transform(dictionary)
+        y = dataframe.churn
+
+        return X, y
+
+    df_small = get_small_dataset()
+    dict_vectorizer_small, dictionary_small = get_small_trained_vectorizer(df_small)
+    X_small, y_small = get_small_features_and_target(df_small, dict_vectorizer_small, dictionary_small)
+    return X_small, dict_vectorizer_small, y_small
+
+
+@app.cell
+def _(LogisticRegression, X_small, dict_vectorizer_small, y_small):
+    model_small = LogisticRegression(max_iter=5000)
+    model_small.fit(X_small, y_small)
+
+    coefficients = dict(zip(dict_vectorizer_small.get_feature_names_out(), model_small.coef_[0].round(3)))
+    coefficients
+    return coefficients, model_small
+
+
+@app.cell
+def _(model_small):
+    bias_small = model_small.intercept_[0].round(3)
+
+    {
+        "bias": bias_small,
+    }
+    return (bias_small,)
+
+
+@app.cell
+def _(X_small, bias_small, coefficients, sigmoid):
+    def evaluate_row(row_number: int):
+        x = X_small[row_number]
+
+        return sigmoid(
+            bias_small +
+            coefficients["contract=month-to-month"] * x[0] +
+            coefficients["contract=one_year"] * x[1] +
+            coefficients["contract=two_year"] * x[2] +
+            coefficients["monthlycharges"] * x[3] +
+            coefficients["tenure"] * x[4]
+        ).round(2)
+
+    [evaluate_row(row_number) for row_number in range(10)]
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Using the Model
+
+    ### Train a Model on the Full Dataset
+    """
+    )
+    return
+
+
+@app.cell
+def _(DictVectorizer, df_full, pd):
+    def get_full_trained_vectorizer(dataframe: pd.DataFrame) -> list[dict]:
+        copy = dataframe.copy()
+        del copy["churn"]
+        dictionary = copy.to_dict(orient="records")
+
+        dict_vectorizer = DictVectorizer(sparse=False)
+        dict_vectorizer.fit(dictionary)
+
+        return dict_vectorizer, dictionary
+
+    def get_full_features_and_target(dataframe: pd.DataFrame, dict_vectorizer: DictVectorizer, dictionary):
+        X = dict_vectorizer.transform(dictionary)
+        y = dataframe.churn
+
+        return X, y
+
+    dict_vectorizer_full, dictionary_full = get_full_trained_vectorizer(df_full)
+    X_full, y_full = get_full_features_and_target(df_full, dict_vectorizer_full, dictionary_full)
+    return X_full, dict_vectorizer_full, get_full_features_and_target, y_full
+
+
+@app.cell
+def _(LogisticRegression, X_full, y_full):
+    model_full = LogisticRegression(max_iter=5000)
+    model_full.fit(X_full, y_full)
+    return (model_full,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Evaluate the Model on the Test Dataset""")
+    return
+
+
+@app.cell
+def _(
+    categorical_columns,
+    df_test,
+    dict_vectorizer_full,
+    get_full_features_and_target,
+    numerical_columns,
+):
+    dictionary_test = df_test[numerical_columns + categorical_columns].to_dict(orient="records")
+    X_test, y_test = get_full_features_and_target(df_test, dict_vectorizer_full, dictionary_test)
+
+    y_test[y_test.values == 1].sum() / y_test.count()
+    return X_test, dictionary_test, y_test
+
+
+@app.cell
+def _(X_test, model_full, pd):
+    def predict_full(X):
+        predictions = pd.DataFrame()
+        predictions["probability"] = model_full.predict_proba(X)[:, 1]
+        predictions["prediction"] = predictions["probability"] > 0.5
+
+        return predictions
+
+    y_pred = predict_full(X_test)
+    y_pred
+    return predict_full, y_pred
+
+
+@app.cell
+def _(y_pred):
+    (y_pred.prediction == True).sum() / len(y_pred)
+    return
+
+
+@app.cell
+def _(X_test, predict_full, y_test):
+    def evaluate_full(X, y):
+        y_pred = predict_full(X)
+
+        return (y == y_pred.prediction).mean()
+
+    evaluate_full(X_test, y_test)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Use the Model with Data from some Random Customer Records""")
+    return
+
+
+@app.cell
+def _(dictionary_test):
+    from random import randrange
+
+    def get_random_customer_ids(n):
+        test_records = len(dictionary_test)
+
+        return [randrange(1, test_records) for _ in range(n)]
+
+    get_random_customer_ids(10)
+    return (get_random_customer_ids,)
+
+
+@app.cell
+def _(dict_vectorizer_full, dictionary_test, get_random_customer_ids, np):
+    def get_random_customers(n):
+        random_customer_ids = get_random_customer_ids(n)
+        dictionary_items = np.array(dictionary_test)[random_customer_ids]
+        return dict_vectorizer_full.transform(dictionary_items)
+
+    X_random_test = get_random_customers(10)
+    X_random_test
+    return (X_random_test,)
+
+
+@app.cell
+def _(X_random_test, predict_full):
+    predict_full(X_random_test)
     return
 
 
