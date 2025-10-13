@@ -11,6 +11,7 @@ This repository contains my personal **notes and homework** of the Machine Learn
 | Introduction to Machine Learning | **Homework** | [Marimo Notebook](./module-1/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-1/homework.html) |
 | Linear Regression | **Notes** | [Marimo Notebook](./module-2/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-2/notes.html)
 | Linear Regression | **Homework** | [Marimo Notebook](./module-2/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-2/homework.html) |
+| Classification | **Notes** | [Marimo Notebook](./module-3/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/notes.html)
 
 ## Installation
 
