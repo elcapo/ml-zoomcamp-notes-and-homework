@@ -331,5 +331,64 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Confusion Matrix
+
+    If we want a complete version of the story, we'll have to check the confusion matrix. It's the matrix that divides our dataset into at least four categories:
+
+    |                            | Predicted as: Churn | Predicted as: No Churn |
+    | ---                        | ---                 | ---                    |
+    | **Actual state: Churn**    | True positive       | False negative         |
+    | **Actual state: No Churn** | False positive      | True negative          |
+
+    In our case there are 4 categories because we are dealing with a binary problem but in other classification problems we'll see a bigger confusion matrix.
+
+    ### Actual values
+
+    Let's obtain the actual counts of those four categories for our validation dataset with our $0.55$ chosen threshold.
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(X_val, df_val, predict):
+    chosen_threshold = 0.55
+
+    TP = (df_val[predict(X_val, chosen_threshold).prediction == True].churn == "yes").sum()
+    FN = (df_val[predict(X_val, chosen_threshold).prediction == False].churn == "yes").sum()
+    FP = (df_val[predict(X_val, chosen_threshold).prediction == True].churn != "yes").sum()
+    TN = (df_val[predict(X_val, chosen_threshold).prediction == False].churn != "yes").sum()
+
+    {
+        "True positive": TP,
+        "False negative": FN,
+        "False positive": FP,
+        "True negative": TN,
+        "All cases": TP + FN + FP + TN,
+    }
+    return FN, FP, TN, TP
+
+
+@app.cell(hide_code=True)
+def _(FN, FP, TN, TP, np):
+    confusion_matrix = np.array([
+        [TP, FN],
+        [FP, TN],
+    ])
+
+    confusion_matrix
+    return (confusion_matrix,)
+
+
+@app.cell
+def _(confusion_matrix):
+    (confusion_matrix / confusion_matrix.sum()).round(2)
+    return
+
+
 if __name__ == "__main__":
     app.run()
