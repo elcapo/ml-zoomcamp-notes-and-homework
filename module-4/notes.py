@@ -390,5 +390,87 @@ def _(confusion_matrix):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""## Precision and Recall""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Precision and Recall
+
+    In this section, we'll see how we can extract some interesting and useful metrics from the confusion matrix.
+
+    ### Accuracy
+
+    Actually, we've already been working with accuracy, which we could express in terms of elements of the confusion matrix as follows:
+
+    \[
+        Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+    \]
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(FN, FP, TN, TP):
+    (TP + TN) / (TP + TN + FP + FN)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Precision
+
+    Precision tells us how many positive predictions turn out to be correct.
+
+    \[
+        Precision = \frac{TP}{TP + FP}
+    \]
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(FP, TP):
+    TP / (TP + FP)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Recall
+
+    Recall tells us the fraction of correctly identified positive examples.
+
+    \[
+        Recall = \frac{TP}{TP + FN}
+    \]
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(FN, TP):
+    TP / (TP + FN)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Now we can see that our model, which had an accuracy of 81% has a precision of 72% and a recall of 51%. This is telling us a richer story than the accuracy by itself. If we only looked at the accuracy we may have thought that our model was good enough but now we can see why the model is actually not that good.""")
+    return
+
+
 if __name__ == "__main__":
     app.run()
