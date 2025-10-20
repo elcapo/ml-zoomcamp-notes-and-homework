@@ -392,12 +392,6 @@ def _(confusion_matrix):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""## Precision and Recall""")
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
     mo.md(
         r"""
     ## Precision and Recall
@@ -469,6 +463,367 @@ def _(FN, TP):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""Now we can see that our model, which had an accuracy of 81% has a precision of 72% and a recall of 51%. This is telling us a richer story than the accuracy by itself. If we only looked at the accuracy we may have thought that our model was good enough but now we can see why the model is actually not that good.""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## ROC Curves
+
+    We'll introduce here two new metrics that we can read from the confusion matrix.
+
+    ### False Positive Rate (FPR)
+
+    The False Positive Rate metric tells us how many of the negative cases we predicted as positive.
+
+    \[
+        FPR = \frac{FP}{TN + FP}
+    \]
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(FP, TN):
+    FP / (TN + FP)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### True Positive Rate (TPR)
+
+    The True Positive Rate metric tells us how many of the positive cases were predicted as positive.
+
+    \[
+        TPR = \frac{TP}{TP + FN}
+    \]
+
+    This is actually the same as recall.
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(FN, TP):
+    TP / (TP + FN)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""We want to plot FPR and TPR for each possible threshold.""")
+    return
+
+
+@app.cell
+def _(X_val, df_val, np, plt, predict):
+    def get_confusion_matrix(threshold):
+        TP = (df_val[predict(X_val, threshold).prediction == True].churn == "yes").sum()
+        FN = (df_val[predict(X_val, threshold).prediction == False].churn == "yes").sum()
+        FP = (df_val[predict(X_val, threshold).prediction == True].churn != "yes").sum()
+        TN = (df_val[predict(X_val, threshold).prediction == False].churn != "yes").sum()
+
+        return np.array([[TP, FN], [FP, TN]])
+
+    def track_tprs_and_fprs():
+        thresholds = np.linspace(0, 1, 50)
+        tprs = []
+        fprs = []
+
+        for threshold in thresholds:
+            confusion_matrix = get_confusion_matrix(threshold)
+
+            TP = confusion_matrix[0][0]
+            FN = confusion_matrix[0][1]
+            FP = confusion_matrix[1][0]
+            TN = confusion_matrix[1][1]
+
+            tprs.append(TP / (TP + FN))
+            fprs.append(FP / (TN + FP))
+
+        return thresholds, tprs, fprs
+
+    def plot_tprs_and_fprs(axis):
+        thresholds, tprs, fprs = track_tprs_and_fprs()
+    
+        axis.plot(thresholds, tprs, label="Our model TPR", color='b')
+        axis.plot(thresholds, fprs, label="Our model FPR", color='b', linestyle='dashed')
+        axis.legend()
+        axis.set_xlabel('Threshold')
+
+    def plot_tprs_vs_fprs(axis):
+        thresholds, tprs, fprs = track_tprs_and_fprs()
+    
+        axis.plot(fprs, tprs, label="Our model's TPR vs. FPR", color='b')
+        axis.legend()
+        axis.set_xlabel('FPR')
+        axis.set_ylabel('TPR')
+
+    def plot_model():
+        fig, ax = plt.subplots(1, 2, figsize=(16, 4))
+    
+        plot_tprs_and_fprs(ax[0])
+        plot_tprs_vs_fprs(ax[1])
+
+    plot_model()
+    plt.show()
+    return plot_tprs_and_fprs, plot_tprs_vs_fprs
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Random Model
+
+    The issue with the TPR vs FPR plot is that we have nothing to compare it with. To fix that, we'll now create a model that decides randomly wether a client will churn, or not.
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_val, np, pd):
+    def get_random_predictions(X: pd.DataFrame, threshold = 0.5) -> np.array:
+        return np.random.uniform(0, 1, size=len(X)) > threshold
+
+    get_random_predictions(X_val)
+    return (get_random_predictions,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Let's quickly check the accuracy of this model:""")
+    return
+
+
+@app.cell
+def _(X_val, get_random_predictions, y_val):
+    (get_random_predictions(X_val) == y_val).mean()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Finally, let's plot its corresponding TPR and FPR curves:""")
+    return
+
+
+@app.cell
+def _(X_val, df_val, get_random_predictions, np, plt):
+    def get_random_confusion_matrix(threshold):
+        random_predictions = get_random_predictions(X_val, threshold)
+    
+        TP = (df_val[random_predictions == True].churn == "yes").sum()
+        FN = (df_val[random_predictions == False].churn == "yes").sum()
+        FP = (df_val[random_predictions == True].churn != "yes").sum()
+        TN = (df_val[random_predictions == False].churn != "yes").sum()
+
+        return np.array([[TP, FN], [FP, TN]])
+
+    def track_random_tprs_and_fprs():
+        thresholds = np.linspace(0, 1, 50)
+        tprs = []
+        fprs = []
+
+        for threshold in thresholds:
+            confusion_matrix = get_random_confusion_matrix(threshold)
+
+            TP = confusion_matrix[0][0]
+            FN = confusion_matrix[0][1]
+            FP = confusion_matrix[1][0]
+            TN = confusion_matrix[1][1]
+
+            tprs.append(TP / (TP + FN))
+            fprs.append(FP / (TN + FP))
+
+        return thresholds, tprs, fprs
+
+    def plot_random_tprs_and_fprs(axis):
+        thresholds, tprs, fprs = track_random_tprs_and_fprs()
+    
+        axis.plot(thresholds, tprs, label="Random TPR", color='r')
+        axis.plot(thresholds, fprs, label="Random FPR", color='r', linestyle='dashed')
+        axis.legend()
+        axis.set_xlabel('Threshold')
+
+    def plot_random_tprs_vs_fprs(axis):
+        thresholds, tprs, fprs = track_random_tprs_and_fprs()
+    
+        axis.plot(fprs, tprs, label="Random TPR vs. FPR", color='r')
+        axis.legend()
+        axis.set_xlabel('FPR')
+        axis.set_ylabel('TPR')
+
+    def plot_random_model():
+        fig, ax = plt.subplots(1, 2, figsize=(16, 4))
+    
+        plot_random_tprs_and_fprs(ax[0])
+        plot_random_tprs_vs_fprs(ax[1])
+
+    plot_random_model()
+    plt.show()
+    return plot_random_tprs_and_fprs, plot_random_tprs_vs_fprs
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Ideal Model
+
+    Now we have an idea about how the TPR vs FPR plot would look for the worse possible model. But we haven't seen how it should look like for the best model. Let's set it up.
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_val, np, pd, y_val):
+    positive_val_count = (y_val == True).sum()
+    negative_val_count = (y_val == False).sum()
+
+    y_ideal = np.repeat([False, True], [negative_val_count, positive_val_count])
+
+    def get_ideal_predictions(X: pd.DataFrame, threshold = 0.5) -> np.array:
+        predictions = np.linspace(0, 1, len(X_val))
+
+        return predictions >= threshold
+
+    get_ideal_predictions(X_val)
+    return (
+        get_ideal_predictions,
+        negative_val_count,
+        positive_val_count,
+        y_ideal,
+    )
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""Evaluated at the ideal threshold, the accuracy of this model should be 100%.""")
+    return
+
+
+@app.cell
+def _(
+    X_val,
+    get_ideal_predictions,
+    negative_val_count,
+    positive_val_count,
+    y_ideal,
+):
+    ideal_threshold = negative_val_count / (negative_val_count + positive_val_count)
+
+    (get_ideal_predictions(X_val, ideal_threshold) == y_ideal).mean()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""Let's now plot its corresponding TPR and FPR curves:""")
+    return
+
+
+@app.cell
+def _(X_val, get_ideal_predictions, np, plt, y_ideal):
+    def get_ideal_confusion_matrix(threshold):
+        ideal_predictions = get_ideal_predictions(X_val, threshold)
+    
+        TP = (y_ideal[ideal_predictions == True] == True).sum()
+        FN = (y_ideal[ideal_predictions == False] == True).sum()
+        FP = (y_ideal[ideal_predictions == True] == False).sum()
+        TN = (y_ideal[ideal_predictions == False] == False).sum()
+
+        return np.array([[TP, FN], [FP, TN]])
+
+    def track_ideal_tprs_and_fprs():
+        thresholds = np.linspace(0, 1, 50)
+        tprs = []
+        fprs = []
+
+        for threshold in thresholds:
+            confusion_matrix = get_ideal_confusion_matrix(threshold)
+
+            TP = confusion_matrix[0][0]
+            FN = confusion_matrix[0][1]
+            FP = confusion_matrix[1][0]
+            TN = confusion_matrix[1][1]
+
+            tprs.append(TP / (TP + FN))
+            fprs.append(FP / (TN + FP))
+
+        return thresholds, tprs, fprs
+
+    def plot_ideal_tprs_and_fprs(axis):
+        thresholds, tprs, fprs = track_ideal_tprs_and_fprs()
+    
+        axis.plot(thresholds, tprs, label="Ideal TPR", color='g')
+        axis.plot(thresholds, fprs, label="Ideal FPR", color='g', linestyle='dashed')
+        axis.legend()
+        axis.set_xlabel('Threshold')
+
+    def plot_ideal_tprs_vs_fprs(axis):
+        thresholds, tprs, fprs = track_ideal_tprs_and_fprs()
+    
+        axis.plot(fprs, tprs, label="Ideal TPR vs. FPR", color='g')
+        axis.legend()
+        axis.set_xlabel('FPR')
+        axis.set_ylabel('TPR')
+
+    def plot_ideal_model():
+        fig, ax = plt.subplots(1, 2, figsize=(16, 4))
+    
+        plot_ideal_tprs_and_fprs(ax[0])
+        plot_ideal_tprs_vs_fprs(ax[1])
+
+    plot_ideal_model()
+    plt.show()
+    return plot_ideal_tprs_and_fprs, plot_ideal_tprs_vs_fprs
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Put it All Together
+
+    Now, let's merge these three plots.
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    plot_ideal_tprs_and_fprs,
+    plot_ideal_tprs_vs_fprs,
+    plot_random_tprs_and_fprs,
+    plot_random_tprs_vs_fprs,
+    plot_tprs_and_fprs,
+    plot_tprs_vs_fprs,
+    plt,
+):
+    def plot_all_models():
+        fig, ax = plt.subplots(1, 2, figsize=(16, 4))
+
+        plot_tprs_and_fprs(ax[0])
+        plot_random_tprs_and_fprs(ax[0])
+        plot_ideal_tprs_and_fprs(ax[0])
+
+        plot_tprs_vs_fprs(ax[1])
+        plot_random_tprs_vs_fprs(ax[1])
+        plot_ideal_tprs_vs_fprs(ax[1])
+
+    plot_all_models()
+    plt.show()
     return
 
 
