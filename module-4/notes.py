@@ -219,7 +219,16 @@ def _(df_full, df_val, pd):
         "X_val": len(X_val),
         "y_val": len(y_val),
     }
-    return X_full, X_val, y_full, y_val
+    return (
+        X_full,
+        X_val,
+        categorical_columns,
+        get_features_and_target,
+        get_full_trained_vectorizer,
+        numerical_columns,
+        y_full,
+        y_val,
+    )
 
 
 @app.cell(hide_code=True)
@@ -235,7 +244,7 @@ def _(X_full, X_val, y_full, y_val):
     model = LogisticRegression(max_iter=5000)
     model.fit(X_full, y_full)
     model.score(X_val, y_val)
-    return (model,)
+    return LogisticRegression, model
 
 
 @app.cell(hide_code=True)
@@ -957,6 +966,63 @@ def _(X_val, chosen_threshold, predict, y_val):
         return success / n
 
     manually_estimate_auc()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## K-Fold Cross Validation
+
+    The K-Fold cross validation process consists in holding a small part of our dataset (the **test** split) and taking the remaining part. We call that part the **full** split, which results from combining our **train** and **val** splits.
+
+    We'll split it into a certain **k** number of folds. Then we use each fold for a round of training where the fold is used as an evaluation split and the rest of the dataset is used for training. That way. we can compute 3 independent AUC values for the same model.
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    LogisticRegression,
+    categorical_columns,
+    df_full,
+    get_features_and_target,
+    get_full_trained_vectorizer,
+    np,
+    numerical_columns,
+    pd,
+):
+    from sklearn.model_selection import KFold
+    from sklearn.metrics import roc_auc_score
+
+    def train_folds(df: pd.DataFrame, C: float = 1.0):
+        kfolds = KFold(n_splits=5, shuffle=True)
+
+        auc_scores = []
+        for train_idx, val_idx in kfolds.split(df_full):
+            df_train = df_full.iloc[train_idx]
+            df_val = df_full.iloc[val_idx]
+
+            dict_vectorizer, dictionary = get_full_trained_vectorizer(df_train)
+            X_train, y_train = get_features_and_target(df_train, dict_vectorizer, dictionary)
+
+            model = LogisticRegression(C=C, max_iter=5000)
+            model.fit(X_train, y_train)
+
+            dictionary_val = df_val[numerical_columns + categorical_columns].to_dict(orient="records")
+            X_val, y_val = get_features_and_target(df_val, dict_vectorizer, dictionary_val)
+            y_pred = model.predict_proba(X_val)[:,1]
+
+            auc_scores.append(roc_auc_score(y_val, y_pred))
+
+        print("C={:.3f}: {:.3f} +- {:.3f}".format(C, np.mean(auc_scores), np.std(auc_scores)))
+
+        return auc_scores
+
+    train_folds(df_full, 0.1)
+    train_folds(df_full, 1.0)
     return
 
 
