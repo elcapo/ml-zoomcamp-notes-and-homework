@@ -370,7 +370,7 @@ def _(X_val, df_val, predict):
         "True negative": TN,
         "All cases": TP + FN + FP + TN,
     }
-    return FN, FP, TN, TP
+    return FN, FP, TN, TP, chosen_threshold
 
 
 @app.cell(hide_code=True)
@@ -552,7 +552,7 @@ def _(X_val, df_val, np, plt, predict):
 
     def plot_tprs_and_fprs(axis):
         thresholds, tprs, fprs = track_tprs_and_fprs()
-    
+
         axis.plot(thresholds, tprs, label="Our model TPR", color='b')
         axis.plot(thresholds, fprs, label="Our model FPR", color='b', linestyle='dashed')
         axis.legend()
@@ -560,7 +560,7 @@ def _(X_val, df_val, np, plt, predict):
 
     def plot_tprs_vs_fprs(axis):
         thresholds, tprs, fprs = track_tprs_and_fprs()
-    
+
         axis.plot(fprs, tprs, label="Our model's TPR vs. FPR", color='b')
         axis.legend()
         axis.set_xlabel('FPR')
@@ -568,13 +568,13 @@ def _(X_val, df_val, np, plt, predict):
 
     def plot_model():
         fig, ax = plt.subplots(1, 2, figsize=(16, 4))
-    
+
         plot_tprs_and_fprs(ax[0])
         plot_tprs_vs_fprs(ax[1])
 
     plot_model()
     plt.show()
-    return plot_tprs_and_fprs, plot_tprs_vs_fprs
+    return plot_tprs_and_fprs, plot_tprs_vs_fprs, track_tprs_and_fprs
 
 
 @app.cell(hide_code=True)
@@ -620,7 +620,7 @@ def _(mo):
 def _(X_val, df_val, get_random_predictions, np, plt):
     def get_random_confusion_matrix(threshold):
         random_predictions = get_random_predictions(X_val, threshold)
-    
+
         TP = (df_val[random_predictions == True].churn == "yes").sum()
         FN = (df_val[random_predictions == False].churn == "yes").sum()
         FP = (df_val[random_predictions == True].churn != "yes").sum()
@@ -648,7 +648,7 @@ def _(X_val, df_val, get_random_predictions, np, plt):
 
     def plot_random_tprs_and_fprs(axis):
         thresholds, tprs, fprs = track_random_tprs_and_fprs()
-    
+
         axis.plot(thresholds, tprs, label="Random TPR", color='r')
         axis.plot(thresholds, fprs, label="Random FPR", color='r', linestyle='dashed')
         axis.legend()
@@ -656,7 +656,7 @@ def _(X_val, df_val, get_random_predictions, np, plt):
 
     def plot_random_tprs_vs_fprs(axis):
         thresholds, tprs, fprs = track_random_tprs_and_fprs()
-    
+
         axis.plot(fprs, tprs, label="Random TPR vs. FPR", color='r')
         axis.legend()
         axis.set_xlabel('FPR')
@@ -664,7 +664,7 @@ def _(X_val, df_val, get_random_predictions, np, plt):
 
     def plot_random_model():
         fig, ax = plt.subplots(1, 2, figsize=(16, 4))
-    
+
         plot_random_tprs_and_fprs(ax[0])
         plot_random_tprs_vs_fprs(ax[1])
 
@@ -736,7 +736,7 @@ def _(mo):
 def _(X_val, get_ideal_predictions, np, plt, y_ideal):
     def get_ideal_confusion_matrix(threshold):
         ideal_predictions = get_ideal_predictions(X_val, threshold)
-    
+
         TP = (y_ideal[ideal_predictions == True] == True).sum()
         FN = (y_ideal[ideal_predictions == False] == True).sum()
         FP = (y_ideal[ideal_predictions == True] == False).sum()
@@ -764,7 +764,7 @@ def _(X_val, get_ideal_predictions, np, plt, y_ideal):
 
     def plot_ideal_tprs_and_fprs(axis):
         thresholds, tprs, fprs = track_ideal_tprs_and_fprs()
-    
+
         axis.plot(thresholds, tprs, label="Ideal TPR", color='g')
         axis.plot(thresholds, fprs, label="Ideal FPR", color='g', linestyle='dashed')
         axis.legend()
@@ -772,7 +772,7 @@ def _(X_val, get_ideal_predictions, np, plt, y_ideal):
 
     def plot_ideal_tprs_vs_fprs(axis):
         thresholds, tprs, fprs = track_ideal_tprs_and_fprs()
-    
+
         axis.plot(fprs, tprs, label="Ideal TPR vs. FPR", color='g')
         axis.legend()
         axis.set_xlabel('FPR')
@@ -780,13 +780,17 @@ def _(X_val, get_ideal_predictions, np, plt, y_ideal):
 
     def plot_ideal_model():
         fig, ax = plt.subplots(1, 2, figsize=(16, 4))
-    
+
         plot_ideal_tprs_and_fprs(ax[0])
         plot_ideal_tprs_vs_fprs(ax[1])
 
     plot_ideal_model()
     plt.show()
-    return plot_ideal_tprs_and_fprs, plot_ideal_tprs_vs_fprs
+    return (
+        plot_ideal_tprs_and_fprs,
+        plot_ideal_tprs_vs_fprs,
+        track_ideal_tprs_and_fprs,
+    )
 
 
 @app.cell(hide_code=True)
@@ -824,6 +828,135 @@ def _(
 
     plot_all_models()
     plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Plot ROC Curves with Scikit Learn""")
+    return
+
+
+@app.cell
+def _(X_val, chosen_threshold, plt, predict, y_val):
+    from sklearn.metrics import roc_curve
+
+    def track_scikit_tprs_and_fprs():
+        fprs, tprs, thresholds = roc_curve(y_val, predict(X_val, chosen_threshold).probability)
+
+        return thresholds, tprs, fprs
+
+    def plot_scikit_tprs_and_fprs(axis):
+        thresholds, tprs, fprs = track_scikit_tprs_and_fprs()
+
+        axis.plot(thresholds, tprs, label="Our model TPR", color='b')
+        axis.plot(thresholds, fprs, label="Our model FPR", color='b', linestyle='dashed')
+        axis.legend()
+        axis.set_xlabel('Threshold')
+
+    def plot_scikit_tprs_vs_fprs(axis):
+        thresholds, tprs, fprs = track_scikit_tprs_and_fprs()
+
+        axis.plot(fprs, tprs, label="Our model TPR vs. FPR", color='b')
+        axis.legend()
+        axis.set_xlabel('FPR')
+        axis.set_ylabel('TPR')
+
+    def plot_scikit_model():
+        fig, ax = plt.subplots(1, 2, figsize=(16, 4))
+
+        plot_scikit_tprs_and_fprs(ax[0])
+        plot_scikit_tprs_vs_fprs(ax[1])
+
+    plot_scikit_model()
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## ROC AUC
+
+    The ROC AUC refers to the "area under the curve" and when applied to the "TPR vs. FPR" curve is a good metric for our classification model. To get an intuition of what it measures, we can quickly check that:
+
+    * if we applied it to the **ideal** model, we'd get an area of around 1.0, its maximum value
+    * if we applied it to the **random** model, we'd get an area of around 0.5, its minimum value
+    """
+    )
+    return
+
+
+@app.cell
+def _(plot_ideal_tprs_vs_fprs, plot_random_tprs_vs_fprs, plt):
+    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+
+    plot_random_tprs_vs_fprs(ax)
+    plot_ideal_tprs_vs_fprs(ax)
+
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""We'll use Scikit's learn specific function to obtain it.""")
+    return
+
+
+@app.cell
+def _(track_ideal_tprs_and_fprs, track_tprs_and_fprs):
+    from sklearn.metrics import auc
+
+    def get_all_auc():
+        _, tprs, fprs = track_tprs_and_fprs()
+        _, ideal_tprs, ideal_fprs = track_ideal_tprs_and_fprs()
+
+        return {
+            "our_model_auc": auc(fprs, tprs),
+            "ideal_auc": auc(ideal_fprs, ideal_tprs),
+        }
+
+    get_all_auc()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Interpreting ROC AUC
+
+    The AUC metric tells us how good our model is at sorting customers according to how likely they are to churn. A way to picture it is to imagine that it takes pairs of customers where one of them churned and the other way didn't, and checks if our model actually predicted a greater posibility of churn for the positive one.
+    """
+    )
+    return
+
+
+@app.cell
+def _(X_val, chosen_threshold, predict, y_val):
+    from random import randint
+
+    def manually_estimate_auc():
+        y_pred = predict(X_val, chosen_threshold)
+
+        negatives = y_pred[y_val == False].probability.to_list()
+        positives = y_pred[y_val == True].probability.to_list()
+
+        n = 100000
+        success = 0
+
+        for i in range(n):
+            positive_index = randint(0, len(positives) - 1)
+            negative_index = randint(0, len(negatives) - 1)
+
+            if positives[positive_index] > negatives[negative_index]:
+                success += 1
+
+        return success / n
+
+    manually_estimate_auc()
     return
 
 
