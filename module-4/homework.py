@@ -29,7 +29,6 @@ def _(mo):
     wget [https://raw.githubusercontent.com/alexeygrigorev/datasets/master/course_lead_scoring.csv](https://raw.githubusercontent.com/alexeygrigorev/datasets/master/course_lead_scoring.csv)
 
     In this dataset our desired target for classification task will be **converted** variable - has the client signed up to the platform or not.
-
     """
     )
     return
@@ -138,7 +137,7 @@ def _(filled_dataframe):
         "len(val_dataframe)": len(val_dataframe),
         "len(test_dataframe)": len(test_dataframe),
     }
-    return train_dataframe, val_dataframe
+    return full_dataframe, train_dataframe, val_dataframe
 
 
 @app.cell(hide_code=True)
@@ -456,6 +455,191 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""F1 is maximal at 0.74.""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Question 5: 5-Fold CV
+
+
+    Use the `KFold` class from Scikit-Learn to evaluate our model on 5 different folds:
+
+    ```
+    KFold(n_splits=5, shuffle=True, random_state=1)
+    ```
+
+    * Iterate over different folds of `df_full_train`
+    * Split the data into train and validation
+    * Train the model on train with these parameters: `LogisticRegression(solver='liblinear', C=1.0, max_iter=1000)`
+    * Use AUC to evaluate the model on validation
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    DictVectorizer,
+    LogisticRegression,
+    categorical_columns,
+    full_dataframe,
+    np,
+    numeric_columns,
+    pd,
+    roc_auc_score,
+):
+    from sklearn.model_selection import KFold
+
+    def get_trained_vectorizer(dataframe: pd.DataFrame) -> list[dict]:
+        copy = dataframe.copy()
+        del copy["converted"]
+        dictionary = copy.to_dict(orient="records")
+
+        dict_vectorizer = DictVectorizer(sparse=False)
+        dict_vectorizer.fit(dictionary)
+
+        return dict_vectorizer, dictionary
+
+    def get_features_and_target(dataframe: pd.DataFrame, dict_vectorizer: DictVectorizer, dictionary):
+        X = dict_vectorizer.transform(dictionary)
+        y = dataframe.converted == 1
+
+        return X, y
+
+    def train_folds(df_full: pd.DataFrame):
+        kfolds = KFold(n_splits=5, shuffle=True, random_state=1)
+
+        auc_scores = []
+        for train_idx, val_idx in kfolds.split(df_full):
+            df_train = df_full.iloc[train_idx]
+            df_val = df_full.iloc[val_idx]
+
+            dict_vectorizer, dictionary = get_trained_vectorizer(df_train)
+            X_train, y_train = get_features_and_target(df_train, dict_vectorizer, dictionary)
+
+            model = LogisticRegression(solver='liblinear', C=1.0, max_iter=1000)
+            model.fit(X_train, y_train)
+
+            dictionary_val = df_val[numeric_columns + categorical_columns].to_dict(orient="records")
+            X_val, y_val = get_features_and_target(df_val, dict_vectorizer, dictionary_val)
+            y_pred = model.predict_proba(X_val)[:,1]
+
+            auc_scores.append(roc_auc_score(y_val, y_pred))
+
+        print("{:.3f} +- {:.3f}".format(np.mean(auc_scores), np.std(auc_scores)))
+
+        return auc_scores
+
+    train_folds(full_dataframe)
+    return KFold, get_features_and_target, get_trained_vectorizer
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    How large is standard deviation of the scores across different folds?
+
+    - 0.0001
+    - 0.006
+    - 0.06
+    - 0.36
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""The closest value to the standard deviation across folds is $0.06$.""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Question 6: Hyperparameter Tuning
+
+    Now let's use 5-Fold cross-validation to find the best parameter `C`
+
+    * Iterate over the following `C` values: `[0.000001, 0.001, 1]`
+    * Initialize `KFold` with the same parameters as previously
+    * Use these parameters for the model: `LogisticRegression(solver='liblinear', C=C, max_iter=1000)`
+    * Compute the mean score as well as the std (round the mean and std to 3 decimal digits)
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    KFold,
+    LogisticRegression,
+    categorical_columns,
+    full_dataframe,
+    get_features_and_target,
+    get_trained_vectorizer,
+    np,
+    numeric_columns,
+    pd,
+    roc_auc_score,
+):
+    def hypertune_folds(df_full: pd.DataFrame, C: float):
+        kfolds = KFold(n_splits=5, shuffle=True, random_state=1)
+
+        auc_scores = []
+        for train_idx, val_idx in kfolds.split(df_full):
+            df_train = df_full.iloc[train_idx]
+            df_val = df_full.iloc[val_idx]
+
+            dict_vectorizer, dictionary = get_trained_vectorizer(df_train)
+            X_train, y_train = get_features_and_target(df_train, dict_vectorizer, dictionary)
+
+            model = LogisticRegression(solver='liblinear', C=C, max_iter=1000)
+            model.fit(X_train, y_train)
+
+            dictionary_val = df_val[numeric_columns + categorical_columns].to_dict(orient="records")
+            X_val, y_val = get_features_and_target(df_val, dict_vectorizer, dictionary_val)
+            y_pred = model.predict_proba(X_val)[:,1]
+
+            auc_scores.append(roc_auc_score(y_val, y_pred))
+
+        print("C={:.3f}: {:.3f} +- {:.3f}".format(C, np.mean(auc_scores), np.std(auc_scores)))
+
+        return auc_scores
+
+    def test_c_values(df_full: pd.DataFrame, C_values: list[float]):
+        auc_scores = []
+        for C_value in C_values:
+            auc_scores.append(hypertune_folds(full_dataframe, C_value))
+
+        return auc_scores
+
+    test_c_values(full_dataframe, [0.000001, 0.001, 1])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    Which `C` leads to the best mean score?
+
+    - 0.000001
+    - 0.001
+    - 1
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""The best score corresponds to $C = 0.001$.""")
     return
 
 

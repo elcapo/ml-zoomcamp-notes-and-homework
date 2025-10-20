@@ -14,6 +14,7 @@ This repository contains my personal **notes and homework** of the Machine Learn
 | Classification | **Notes** | [Marimo Notebook](./module-3/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/notes.html)
 | Classification | **Homework** | [Marimo Notebook](./module-3/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/homework.html) |
 | Evaluation | **Notes** | [Marimo Notebook](./module-4/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/notes.html)
+| Evaluation | **Homework** | [Marimo Notebook](./module-4/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/homework.html) |
 
 ## Installation
 
