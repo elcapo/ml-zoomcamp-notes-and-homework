@@ -285,7 +285,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""The AUC of this model is 0.72.""")
+    mo.md(r"""The closest suggested answer to the AUC of this model is 0.72.""")
     return
 
 
@@ -353,6 +353,7 @@ def _(
 
         plt.plot(evaluation.threshold, evaluation.precision, label="Precision", color="g")
         plt.plot(evaluation.threshold, evaluation.recall, label="Recall", color="r")
+        plt.vlines(0.64, 0, 1)
         plt.xlabel("Threshold")
         plt.show()
 
@@ -377,7 +378,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Precision and recall intersect at 0.745.""")
+    mo.md(r"""The closest suggested is 0.745.""")
     return
 
 
@@ -422,18 +423,18 @@ def _(
 
         return evaluation
 
-    def plot_f1(
-        model: LogisticRegression,
-        dict_vectorizer: DictVectorizer,
-        dataframe: pd.DataFrame,
-    ):
-        evaluation = evaluate_with_f1(model, dict_vectorizer, val_dataframe)
-
+    def plot_f1(evaluation: pd.DataFrame):
         plt.plot(evaluation.threshold, evaluation.f1, label="F1", color="b")
         plt.xlabel("Threshold")
         plt.show()
 
-    plot_f1(model, dict_vectorizer, val_dataframe)
+    def find_max(evaluation: pd.DataFrame):
+        f1_max = evaluation[evaluation.f1 == evaluation.f1.max()].iloc[0]
+        print("F1 max is {:.3f} and it's reach at {:.3f}".format(f1_max.f1, f1_max.threshold))
+
+    f1_evaluation = evaluate_with_f1(model, dict_vectorizer, val_dataframe)
+    plot_f1(f1_evaluation)
+    find_max(f1_evaluation)
     return
 
 
@@ -454,7 +455,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""F1 is maximal at 0.74.""")
+    mo.md(r"""The closest suggested option to the threshold where F1 is maximal is 0.54.""")
     return
 
 
