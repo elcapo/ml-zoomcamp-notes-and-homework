@@ -378,7 +378,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""The closest suggested is 0.745.""")
+    mo.md(r"""The closest suggested is 0.545.""")
     return
 
 
