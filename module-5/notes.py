@@ -284,12 +284,18 @@ def _(mo):
     * [train.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/train.py)
     * [predict.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/predict.py)
 
+    Before running any of these programs, first make sure that you have loaded the virtual environment for the course:
+
+    ```bash
+    source .venv/bin/activate
+    cd module-5/
+    ```
+
     ### Train
 
     To run the training:
 
     ```bash
-    cd module-5/
     python -m model_package.train
     ```
 
@@ -298,8 +304,35 @@ def _(mo):
     To run a prediction:
 
     ```bash
-    cd module-5/
     python -m model_package.predict
+    ```
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Web Services: Introduction to Flask
+
+    The REST API server has been implemented in [api.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/api.py) a single method that responds **PONG** when the `/ping` method is accessed via GET.
+
+    To run it:
+
+    ```bash
+    python -m model_package.api
+    ```
+
+    When you run it, you'll see a message telling you where the service is listening. Something like:
+
+    > Running on http://127.0.0.1:5000
+
+    You can use that address to test the service:
+
+    ```bash
+    curl http://127.0.0.1:5000/ping
     ```
     """
     )
