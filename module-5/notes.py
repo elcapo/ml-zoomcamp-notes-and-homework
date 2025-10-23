@@ -280,9 +280,9 @@ def _(mo):
         r"""
     To facilitate the deployment, a the code necessary to train, save and load the model has been extracted to these files:
 
-    * [model.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/model.py)
-    * [train.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/train.py)
-    * [predict.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/predict.py)
+    * [model.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/model_package/model.py)
+    * [train.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/model_package/train.py)
+    * [predict.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/model_package/predict.py)
 
     Before running any of these programs, first make sure that you have loaded the virtual environment for the course:
 
@@ -317,7 +317,7 @@ def _(mo):
         r"""
     ## Web Services: Introduction to Flask
 
-    The REST API server has been implemented in [api.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/api.py) a single method that responds **PONG** when the `/ping` method is accessed via GET.
+    The REST API server has been implemented in [api.py](https://github.com/elcapo/ml-zoomcamp-notes-and-homework/blob/main/module-5/model_package/api.py) a single method that responds **PONG** when the `/ping` method is accessed via GET.
 
     To run it:
 
