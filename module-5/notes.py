@@ -339,5 +339,45 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Serving the Churn Model with Flask
+
+    In this chapter we added a `/predict` method to our API that responds to POST requests with JSONs similar to the dictionaries that we were obtaining from the dataset:
+
+    ```json
+    {
+        "customerid": "7590-vhveg",
+        "gender": "female",
+        "seniorcitizen": 0,
+        "partner": "yes",
+        "dependents": "no",
+        "tenure": 1,
+        "phoneservice": "no",
+        "multiplelines": "no_phone_service",
+        "internetservice": "dsl",
+        "onlinesecurity": "no",
+        "onlinebackup": "yes",
+        "deviceprotection": "no",
+        "techsupport": "no",
+        "streamingtv": "no",
+        "streamingmovies": "no",
+        "contract": "month-to-month",
+        "paperlessbilling": "yes",
+        "paymentmethod": "electronic_check",
+        "monthlycharges": 29.85,
+        "totalcharges": 29.85,
+        "churn": "no"
+    }
+    ```
+
+    ... and returns the corresponding prediction.
+    """
+    )
+    return
+
+
 if __name__ == "__main__":
     app.run()
