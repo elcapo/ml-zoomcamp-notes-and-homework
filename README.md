@@ -15,6 +15,7 @@ This repository contains my personal **notes and homework** of the Machine Learn
 | Classification | **Homework** | [Marimo Notebook](./module-3/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/homework.html) |
 | Evaluation | **Notes** | [Marimo Notebook](./module-4/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/notes.html)
 | Evaluation | **Homework** | [Marimo Notebook](./module-4/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/homework.html) |
+| Deployment | **Notes** | [Marimo Notebook](./module-5/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/notes.html)
 
 ## Installation
 
@@ -38,7 +39,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Edit the Notebooks
+## Edit the Notebooks
 
 ```bash
 marimo edit
@@ -48,4 +49,23 @@ marimo edit
 
 ```bash
 ./export.sh
+```
+
+## Run the Model
+
+To run the REST API implemented in module 5 that serves the model:
+
+```bash
+source .venv/bin/activate
+cd module-5/
+python -m model_package.api
+```
+
+This will run the model "naked". If we want it in the context of a Docker container, we should do:
+
+```bash
+cd module-5/
+
+docker build -t ml-zoomcamp .
+docker run -d -p 5000:5000 -it ml-zoomcamp
 ```

@@ -346,34 +346,98 @@ def _(mo):
     ## Serving the Churn Model with Flask
 
     In this chapter we added a `/predict` method to our API that responds to POST requests with JSONs similar to the dictionaries that we were obtaining from the dataset:
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(df_val):
+    import json
+
+    print(json.dumps(df_val[1:2].to_dict(orient='records')[0], indent=4))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ... and returns the corresponding prediction:
 
     ```json
     {
-        "customerid": "7590-vhveg",
-        "gender": "female",
-        "seniorcitizen": 0,
-        "partner": "yes",
-        "dependents": "no",
-        "tenure": 1,
-        "phoneservice": "no",
-        "multiplelines": "no_phone_service",
-        "internetservice": "dsl",
-        "onlinesecurity": "no",
-        "onlinebackup": "yes",
-        "deviceprotection": "no",
-        "techsupport": "no",
-        "streamingtv": "no",
-        "streamingmovies": "no",
+      "customer": {
+        "churn": "no",
         "contract": "month-to-month",
-        "paperlessbilling": "yes",
-        "paymentmethod": "electronic_check",
-        "monthlycharges": 29.85,
-        "totalcharges": 29.85,
-        "churn": "no"
+        "customerid": "3645-deygf",
+        "dependents": "yes",
+        "deviceprotection": "no_internet_service",
+        "gender": "male",
+        "internetservice": "no",
+        "monthlycharges": 20.75,
+        "multiplelines": "no",
+        "onlinebackup": "no_internet_service",
+        "onlinesecurity": "no_internet_service",
+        "paperlessbilling": "no",
+        "partner": "no",
+        "paymentmethod": "mailed_check",
+        "phoneservice": "yes",
+        "seniorcitizen": 0,
+        "streamingmovies": "no_internet_service",
+        "streamingtv": "no_internet_service",
+        "techsupport": "no_internet_service",
+        "tenure": 1,
+        "totalcharges": 20.75
+      },
+      "predicted_churn": false
     }
     ```
+    """
+    )
+    return
 
-    ... and returns the corresponding prediction.
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Python Virtual Environment
+
+    For this project's dependencies we used a **requirements.txt** with the dependencies listed:
+
+    ```
+    pandas==2.3.2
+    scikit-learn==1.7.2
+    flask==3.1.2
+    ```
+
+    We also added a README with some installation instructions.
+
+    ### Create and Activate a Virtual Environment
+
+    ```bash
+    python -m venv .venv
+    source .venv/bin/activate
+    ```
+
+    ### Install Dependencies
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Environment Management: Docker
+
+    The next step to isolate our services is Docker. With Docker we can automate the deployment of our programs including their dependencies in isolated environments. What gives us the warrant that our environments would be similar in development and production.
     """
     )
     return
