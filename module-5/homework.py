@@ -98,23 +98,26 @@ def _(mo):
     uv add scikit-learn==1.6.1
     ```
 
-    The first has hound was the one that corresponds with **joblib**:
+    The first hash found for **scikit-learn** was:
 
     ```
     [[package]]
-    name = "joblib"
-    version = "1.5.2"
+    name = "scikit-learn"
+    version = "1.6.1"
     source = { registry = "https://pypi.org/simple" }
-    sdist = { url = "https://files.pythonhosted.org/packages/e8/5d/447af5ea094b9e4c4054f82e223ada074c552335b9b4b2d14bd9b35a67c4/joblib-1.5.2.tar.gz", hash = "sha256:3faa5c39054b2f03ca547da9b2f52fde67c06240c31853f306aea97f13647b55", size = 331077, upload-time = "2025-08-27T12:15:46.575Z" }
-    wheels = [
-        { url = "https://files.pythonhosted.org/packages/1e/e8/685f47e0d754320684db4425a0967f7d3fa70126bffd76110b7009a0090f/joblib-1.5.2-py3-none-any.whl", hash = "sha256:4e1f0bdbb987e6d843c70cf43714cb276623def372df3c22fe5266b2670bc241", size = 308396, upload-time = "2025-08-27T12:15:45.188Z" },
+    dependencies = [
+        { name = "joblib" },
+        { name = "numpy" },
+        { name = "scipy" },
+        { name = "threadpoolctl" },
     ]
+    sdist = { url = "https://files.pythonhosted.org/packages/9e/a5/4ae3b3a0755f7b35a280ac90b28817d1f380318973cff14075ab41ef50d9/scikit_learn-1.6.1.tar.gz", hash = "sha256:b4fc2525eca2c69a59260f583c56a7557c6ccdf8deafdba6e060f94c1c59738e", size = 7068312, upload-time = "2025-01-10T08:07:55.348Z" }
     ```
 
-    In other words, this was the first hash:
+    Which refers to this hash:
 
     ```
-    sha256:3faa5c39054b2f03ca547da9b2f52fde67c06240c31853f306aea97f13647b55
+    sha256:b4fc2525eca2c69a59260f583c56a7557c6ccdf8deafdba6e060f94c1c59738e
     ```
     """
     )
