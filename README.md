@@ -1,6 +1,6 @@
 # Machine Learning Zoomcamp
 
-This repository contains my personal **notes and homework** of the Machine Learning Zoomcamp.
+This repository contains my personal **notes and homework** of the [Machine Learning Zoomcamp](https://github.com/DataTalksClub/machine-learning-zoomcamp/).
 
 ### Content
 
