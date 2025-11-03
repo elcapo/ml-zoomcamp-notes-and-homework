@@ -11,7 +11,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
     import seaborn as sns
-    return mo, np, pd, plt
+    return mo, np, pd, plt, sns
 
 
 @app.cell(hide_code=True)
@@ -317,7 +317,7 @@ def _(
         return df_full, df_train, df_val, df_test
 
     df_full, df_train, df_val, df_test = split(preprocess(df_raw))
-    return df_full, df_train, df_val
+    return df_full, df_test, df_train, df_val
 
 
 @app.cell
@@ -358,7 +358,7 @@ def _(df_full, pd, separate_target):
         return X, y, dict_vectorizer
 
     get_features_and_target(df_full)
-    return DictVectorizer, get_features_and_target
+    return DictVectorizer, Optional, get_features_and_target
 
 
 @app.cell(hide_code=True)
@@ -377,20 +377,17 @@ def _(mo):
 def _(DictVectorizer, df_train, get_features_and_target, pd):
     from sklearn.tree import DecisionTreeClassifier
 
-    def train_decision_tree(df: pd.DataFrame, max_depth: int = None) -> (DecisionTreeClassifier, DictVectorizer):
-        decision_tree = DecisionTreeClassifier(max_depth=max_depth)
+    def train_decision_tree(df: pd.DataFrame, max_depth: int = None, min_samples_leaf: int = 1) \
+        -> (DecisionTreeClassifier, DictVectorizer
+    ):
+        decision_tree = DecisionTreeClassifier(max_depth=max_depth, min_samples_leaf=min_samples_leaf)
         X, y, dict_vectorizer = get_features_and_target(df)
         decision_tree.fit(X, y)
 
         return decision_tree, dict_vectorizer
 
     overfitted_decision_tree, dict_vectorizer = train_decision_tree(df_train)
-    return (
-        DecisionTreeClassifier,
-        dict_vectorizer,
-        overfitted_decision_tree,
-        train_decision_tree,
-    )
+    return dict_vectorizer, overfitted_decision_tree, train_decision_tree
 
 
 @app.cell(hide_code=True)
@@ -407,7 +404,6 @@ def _(mo):
 
 @app.cell
 def _(
-    DecisionTreeClassifier,
     DictVectorizer,
     df_train,
     df_val,
@@ -417,10 +413,11 @@ def _(
     pd,
 ):
     from sklearn.metrics import roc_auc_score
+    from sklearn.base import ClassifierMixin
 
-    def get_roc_auc_score(df: pd.DataFrame, dict_vectorizer: DictVectorizer, decision_tree: DecisionTreeClassifier) -> float:
+    def get_roc_auc_score(df: pd.DataFrame, dict_vectorizer: DictVectorizer, model: ClassifierMixin) -> float:
         X, y, _ = get_features_and_target(df, dict_vectorizer)
-        y_pred = decision_tree.predict_proba(X)[:,1]
+        y_pred = model.predict_proba(X)[:,1]
 
         return roc_auc_score(y, y_pred)
 
@@ -428,7 +425,7 @@ def _(
         "roc_auc_val": get_roc_auc_score(df_val, dict_vectorizer, overfitted_decision_tree),
         "roc_auc_train": get_roc_auc_score(df_train, dict_vectorizer, overfitted_decision_tree)
     }
-    return (get_roc_auc_score,)
+    return get_roc_auc_score, roc_auc_score
 
 
 @app.cell(hide_code=True)
@@ -502,6 +499,507 @@ def _(mo):
     ```
     """
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""## Decision Tree Tuning""")
+    return
+
+
+@app.cell
+def _(
+    df_train,
+    df_val,
+    dict_vectorizer,
+    get_roc_auc_score,
+    pd,
+    train_decision_tree,
+):
+    def search_best_decision_tree():
+        scores = []
+
+        for depth in [None, 1, 2, 4, 8, 16, 32]:
+            for min_samples in [1, 5, 10, 50, 100, 250, 500]:
+                decision_tree, _ = train_decision_tree(df_train, max_depth=depth, min_samples_leaf=min_samples)
+                score = get_roc_auc_score(df_val, dict_vectorizer, decision_tree)
+                scores.append((depth, min_samples, score))
+
+        columns = ["max_depth", "min_samples_leaf", "roc_auc"]
+        df_scores = pd.DataFrame(scores, columns=columns)
+    
+        return df_scores
+
+    decision_tree_scores = search_best_decision_tree()
+    decision_tree_scores.sort_values("roc_auc", ascending=False).head()
+    return (decision_tree_scores,)
+
+
+@app.cell
+def _(decision_tree_scores, sns):
+    sns.heatmap(decision_tree_scores.pivot(index="min_samples_leaf", columns=["max_depth"]), annot=True, fmt='.2f')
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Random Forest
+
+    A random forest is an ensemble model that improves on decision trees by combining many of them to make more reliable predictions. Each tree in the forest is trained on a slightly different random subset of the data and considers only a random selection of features when choosing splits, which helps reduce overfitting and increases generalization.
+
+    When making a prediction, all the trees “vote”: for classification, the class chosen by most trees is the final output; for regression, their average prediction is used. In essence, a random forest uses the wisdom of many diverse trees to make decisions that are more stable and accurate than any single tree alone.
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Train""")
+    return
+
+
+@app.cell
+def _(DictVectorizer, Optional, df_train, get_features_and_target, pd):
+    from sklearn.ensemble import RandomForestClassifier
+
+    def train_random_forest(df: pd.DataFrame, n_estimators: int = 10, max_depth: Optional[int] = None, min_samples_leaf: int = 1) \
+        -> (RandomForestClassifier, DictVectorizer
+    ):
+        random_forest = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, min_samples_leaf=min_samples_leaf)
+        X, y, dict_vectorizer = get_features_and_target(df)
+        random_forest.fit(X, y)
+
+        return random_forest, dict_vectorizer
+
+    overfitted_random_forest, _ = train_random_forest(df_train)
+    return overfitted_random_forest, train_random_forest
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Evaluate
+
+    With a quick evaluation we can see that, as it happened before, we are overfitting.
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    df_train,
+    df_val,
+    dict_vectorizer,
+    get_roc_auc_score,
+    overfitted_random_forest,
+):
+    {
+        "roc_auc_val": get_roc_auc_score(df_val, dict_vectorizer, overfitted_random_forest),
+        "roc_auc_train": get_roc_auc_score(df_train, dict_vectorizer, overfitted_random_forest)
+    }
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Choose the Number of Estimators""")
+    return
+
+
+@app.cell
+def _(
+    df_train,
+    df_val,
+    dict_vectorizer,
+    get_roc_auc_score,
+    pd,
+    train_random_forest,
+):
+    def choose_n_estimators():
+        scores = []
+
+        for estimators in [1, 5, 10, 50, 100, 200, 500]:
+            random_forest, _ = train_random_forest(df_train, n_estimators=estimators)
+            score = get_roc_auc_score(df_val, dict_vectorizer, random_forest)
+            scores.append((estimators, score))
+
+        columns = ["estimators", "roc_auc"]
+        df_scores = pd.DataFrame(scores, columns=columns)
+    
+        return df_scores
+
+    n_estimators_scores = choose_n_estimators()
+    n_estimators_scores.sort_values("roc_auc", ascending=False).head()
+    return (n_estimators_scores,)
+
+
+@app.cell
+def _(n_estimators_scores, sns):
+    sns.lineplot(x=n_estimators_scores.estimators, y=n_estimators_scores.roc_auc)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Tuning""")
+    return
+
+
+@app.cell
+def _(
+    df_train,
+    df_val,
+    dict_vectorizer,
+    get_roc_auc_score,
+    pd,
+    train_random_forest,
+):
+    def search_best_random_forest():
+        scores = []
+
+        for depth in [None, 1, 2, 4, 8, 16, 32]:
+            for min_samples in [1, 5, 10, 50, 100, 250, 500]:
+                random_forest, _ = train_random_forest(df_train, max_depth=depth, n_estimators=50)
+                score = get_roc_auc_score(df_val, dict_vectorizer, random_forest)
+                scores.append((depth, min_samples, score))
+
+        columns = ["max_depth", "min_samples_leaf", "roc_auc"]
+        df_scores = pd.DataFrame(scores, columns=columns)
+    
+        return df_scores
+
+    random_forest_scores = search_best_random_forest()
+    random_forest_scores.sort_values("roc_auc", ascending=False).head()
+    return (random_forest_scores,)
+
+
+@app.cell
+def _(random_forest_scores, sns):
+    sns.heatmap(random_forest_scores.pivot(index="min_samples_leaf", columns=["max_depth"]), annot=True, fmt='.2f')
+    return
+
+
+@app.cell
+def _(
+    df_train,
+    df_val,
+    dict_vectorizer,
+    get_roc_auc_score,
+    train_random_forest,
+):
+    random_forest, _ = train_random_forest(df_train, min_samples_leaf=100, max_depth=8, n_estimators=50)
+
+    {
+        "roc_auc_val": get_roc_auc_score(df_val, dict_vectorizer, random_forest),
+        "roc_auc_train": get_roc_auc_score(df_train, dict_vectorizer, random_forest)
+    }
+    return (random_forest,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Gradient boosting and XGBoost
+
+    XGBoost (Extreme Gradient Boosting) is an advanced machine learning algorithm that builds a powerful model by combining many weak decision trees in sequence, where each new tree focuses on correcting the mistakes made by the previous ones. Instead of training all trees independently (as in random forests), XGBoost adds them one at a time, optimizing the overall model through a process called gradient boosting, which minimizes errors using ideas from calculus.
+
+    It also includes clever techniques like regularization to prevent overfitting, handling of missing data, and efficient use of memory and computation. The result is a fast, scalable, and highly accurate model widely used in data science competitions and real-world applications.
+    """
+    )
+    return
+
+
+@app.cell
+def _(DictVectorizer, df_train, df_val, get_features_and_target, pd):
+    import xgboost as xgb
+    from xgboost.core import Booster
+
+
+    def train_booster(
+        df_train: pd.DataFrame, df_val: pd.DataFrame, xgb_params: dict = {}
+    ) -> (Booster, DictVectorizer):
+        X_train, y_train, dict_vectorizer = get_features_and_target(df_train)
+        dmatrix_train = xgb.DMatrix(
+            X_train,
+            label=y_train,
+            feature_names=dict_vectorizer.get_feature_names_out().tolist(),
+        )
+
+        X_val, y_val, _ = get_features_and_target(df_val, dict_vectorizer=dict_vectorizer)
+        dmatrix_val = xgb.DMatrix(
+            X_val,
+            label=y_val,
+            feature_names=dict_vectorizer.get_feature_names_out().tolist(),
+        )
+
+        watchlist = [(dmatrix_train, "train"), (dmatrix_val, "val")]
+        evals_result = {}
+
+        booster = xgb.train(
+            xgb_params,
+            dmatrix_train,
+            num_boost_round=100,
+            evals=watchlist,
+            evals_result=evals_result,
+            verbose_eval=False
+        )
+
+        return booster, dict_vectorizer, evals_result
+
+
+    xgb_params = {
+        "eta": 0.3,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "objective": "binary:logistic",
+        "nthread": 8,
+        "seed": 1,
+        "verbosity": 0,
+        "eval_metric": "auc"
+    }
+
+    non_tuned_booster, _, evals_result = train_booster(df_train, df_val, xgb_params)
+    return (
+        Booster,
+        evals_result,
+        non_tuned_booster,
+        train_booster,
+        xgb,
+        xgb_params,
+    )
+
+
+@app.cell
+def _(evals_result, sns):
+    sns.lineplot(evals_result["train"]["auc"], legend="brief", label="Train")
+    sns.lineplot(evals_result["val"]["auc"], legend="brief", label="Validation")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Predict""")
+    return
+
+
+@app.cell
+def _(
+    Booster,
+    DictVectorizer,
+    df_val,
+    dict_vectorizer,
+    get_features_and_target,
+    non_tuned_booster,
+    pd,
+    xgb,
+):
+    def booster_predict(df: pd.DataFrame, booster: Booster, dict_vectorizer: DictVectorizer):
+        X, y, _ = get_features_and_target(df, dict_vectorizer=dict_vectorizer)
+        dmatrix = xgb.DMatrix(X, label=y, feature_names=dict_vectorizer.get_feature_names_out().tolist())
+
+        return booster.predict(dmatrix)
+
+    booster_predict(df_val[10:20], non_tuned_booster, dict_vectorizer)
+    return (booster_predict,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Evaluate""")
+    return
+
+
+@app.cell
+def _(
+    Booster,
+    booster_predict,
+    df_val,
+    dict_vectorizer,
+    get_features_and_target,
+    non_tuned_booster,
+    pd,
+    roc_auc_score,
+):
+    def booster_evaluate(df: pd.DataFrame, booster: Booster):
+        X, y, _ = get_features_and_target(df, dict_vectorizer=dict_vectorizer)
+        y_pred = booster_predict(df, booster, dict_vectorizer)
+
+        return roc_auc_score(y, y_pred)
+
+    booster_evaluate(df_val, non_tuned_booster)
+    return (booster_evaluate,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## XGBoost Parameter Tuning
+
+    In this section we'll be tunning these 3 parameters:
+
+    * `eta`
+    * `max_depth`
+    * `min_child_weight`
+    """
+    )
+    return
+
+
+@app.cell
+def _(df_train, df_val, train_booster):
+    def evaluate_parameters(eta: int = 0.3, max_depth: int = 6, min_child_weight: int = 1):
+        xgb_params = {
+            "eta": eta,
+            "max_depth": max_depth,
+            "min_child_weight": min_child_weight,
+            "objective": "binary:logistic",
+            "nthread": 8,
+            "seed": 1,
+            "verbosity": 1,
+            "eval_metric": "auc"
+        }
+
+        _, _, evals_result = train_booster(df_train, df_val, xgb_params)
+
+        return evals_result
+    return (evaluate_parameters,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Parameter `eta`""")
+    return
+
+
+@app.cell
+def _(evaluate_parameters, plt, sns):
+    def evaluate_eta():
+        eta_values = [0.1, 0.5, 1.0]
+
+        for eta_value in eta_values:
+            eta_eval = evaluate_parameters(eta=eta_value)
+            sns.lineplot(eta_eval["val"]["auc"], legend="brief", label="Eta = %s" % eta_value)
+
+        plt.show()
+
+    evaluate_eta()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Parameter `max_depth`""")
+    return
+
+
+@app.cell
+def _(evaluate_parameters, plt, sns):
+    def evaluate_max_depth():
+        max_depth_values = [5, 10, 20]
+
+        for max_depth_value in max_depth_values:
+            max_depth_eval = evaluate_parameters(max_depth=max_depth_value)
+            sns.lineplot(max_depth_eval["val"]["auc"], legend="brief", label="Maximum depth = %s" % max_depth_value)
+
+        plt.show()
+
+    evaluate_max_depth()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Parameter `min_child_weight`""")
+    return
+
+
+@app.cell
+def _(evaluate_parameters, plt, sns):
+    def evaluate_min_child_weight():
+        min_child_weight_values = [1, 5, 10]
+
+        for min_child_weight_value in min_child_weight_values:
+            min_child_weight_eval = evaluate_parameters(min_child_weight=min_child_weight_value)
+            sns.lineplot(min_child_weight_eval["val"]["auc"], legend="brief", label="Minimun child weight = %s" % min_child_weight_value)
+
+        plt.show()
+
+    evaluate_min_child_weight()
+    return
+
+
+@app.cell
+def _(df_train, df_val, train_booster, xgb_params):
+    final_xgb_params = {
+        "eta": 1,
+        "max_depth": 5,
+        "min_child_weight": 10,
+        "objective": "binary:logistic",
+        "nthread": 8,
+        "seed": 1,
+        "verbosity": 0,
+        "eval_metric": "auc"
+    }
+
+    tuned_booster, _, tuned_evals = train_booster(df_train, df_val, xgb_params)
+    return final_xgb_params, tuned_booster
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""## Final Model""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Compare the Current Models""")
+    return
+
+
+@app.cell(hide_code=True)
+def _(
+    booster_evaluate,
+    decision_tree,
+    df_val,
+    dict_vectorizer,
+    get_roc_auc_score,
+    random_forest,
+    tuned_booster,
+):
+    {
+        "decision_tree_auc": get_roc_auc_score(df_val, dict_vectorizer, decision_tree),
+        "random_forest_auc": get_roc_auc_score(df_val, dict_vectorizer, random_forest),
+        "xg_booster": booster_evaluate(df_val, tuned_booster),
+    }
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Train the Final Model""")
+    return
+
+
+@app.cell
+def _(
+    booster_evaluate,
+    df_full,
+    df_test,
+    df_val,
+    final_xgb_params,
+    train_booster,
+):
+    final_booster, _, final_evals = train_booster(df_full, df_val, final_xgb_params)
+    booster_evaluate(df_test, final_booster)
     return
 
 
