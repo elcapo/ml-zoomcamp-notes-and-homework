@@ -436,6 +436,9 @@ def _(n_estimators_and_max_depth_evals, plt, sns):
     plt.figure(figsize=(12, 7))
     plt.title("Best parameters")
 
+    n_estimators_and_max_depth_evals.max_depth = "max_depth=" + n_estimators_and_max_depth_evals.max_depth.astype(str)
+    n_estimators_and_max_depth_evals.pivot(index="n_estimators", columns="max_depth", values="rmse")
+
     sns.heatmap(
         n_estimators_and_max_depth_evals.pivot(index="n_estimators", columns=["max_depth"]),
         annot=True,
