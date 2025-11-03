@@ -11,7 +11,7 @@ def _():
     import numpy as np
     import matplotlib.pyplot as plt
     import seaborn as sns
-    return mo, np, pd
+    return mo, np, pd, plt
 
 
 @app.cell(hide_code=True)
@@ -317,19 +317,191 @@ def _(
         return df_full, df_train, df_val, df_test
 
     df_full, df_train, df_val, df_test = split(preprocess(df_raw))
-    return (df_full,)
+    return df_full, df_train, df_val
 
 
 @app.cell
 def _(df_full, pd):
-    def separate_features_and_target(df: pd.DataFrame) -> pd.DataFrame:
-        X = df.copy()
-        y = (df.status == 'default').astype(int).values
-        del X["status"]
+    def separate_target(df: pd.DataFrame) -> pd.DataFrame:
+        features = df.copy()
+        target = (df.status == 'default').astype(int).values
+        del features["status"]
 
-        return X, y
+        return features, target
 
-    X_full, y_full = separate_features_and_target(df_full)
+    separate_target(df_full)
+    return (separate_target,)
+
+
+@app.cell
+def _(df_full, pd, separate_target):
+    from typing import Optional
+    from sklearn.feature_extraction import DictVectorizer
+
+    def train_dictionary_vectorizer(df: pd.DataFrame) -> (DictVectorizer, dict):
+        dictionary = df.to_dict(orient='records')
+        dict_vectorizer = DictVectorizer(sparse=False)
+        X = dict_vectorizer.fit_transform(dictionary)
+
+        return dict_vectorizer, X
+
+    def get_features_and_target(df: pd.DataFrame, dict_vectorizer: Optional[DictVectorizer] = None) \
+        -> (pd.DataFrame, pd.DataFrame, DictVectorizer
+    ):
+        features, y = separate_target(df)
+
+        if not dict_vectorizer:
+            dict_vectorizer, X = train_dictionary_vectorizer(features)
+        else:
+            X = dict_vectorizer.transform(features.to_dict(orient='records'))
+
+        return X, y, dict_vectorizer
+
+    get_features_and_target(df_full)
+    return DictVectorizer, get_features_and_target
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Decision Tree
+
+    Decision trees are a data structure that encodes information about a dataset in the form of conditions (if statements). Each of the conditions typically relates with a field from the dataset, a comparison symbol (<, <=, >=, >) and a value. From each node, two branches are maintained to the records that match the condition and the records that don't match it.
+    """
+    )
+    return
+
+
+@app.cell
+def _(DictVectorizer, df_train, get_features_and_target, pd):
+    from sklearn.tree import DecisionTreeClassifier
+
+    def train_decision_tree(df: pd.DataFrame, max_depth: int = None) -> (DecisionTreeClassifier, DictVectorizer):
+        decision_tree = DecisionTreeClassifier(max_depth=max_depth)
+        X, y, dict_vectorizer = get_features_and_target(df)
+        decision_tree.fit(X, y)
+
+        return decision_tree, dict_vectorizer
+
+    overfitted_decision_tree, dict_vectorizer = train_decision_tree(df_train)
+    return (
+        DecisionTreeClassifier,
+        dict_vectorizer,
+        overfitted_decision_tree,
+        train_decision_tree,
+    )
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ### Evaluate the model
+
+    At the moment, we have 100% of accuracy on the train set but an accuracy of around 66% on our validation set. We are **overfitting** our model.
+    """
+    )
+    return
+
+
+@app.cell
+def _(
+    DecisionTreeClassifier,
+    DictVectorizer,
+    df_train,
+    df_val,
+    dict_vectorizer,
+    get_features_and_target,
+    overfitted_decision_tree,
+    pd,
+):
+    from sklearn.metrics import roc_auc_score
+
+    def get_roc_auc_score(df: pd.DataFrame, dict_vectorizer: DictVectorizer, decision_tree: DecisionTreeClassifier) -> float:
+        X, y, _ = get_features_and_target(df, dict_vectorizer)
+        y_pred = decision_tree.predict_proba(X)[:,1]
+
+        return roc_auc_score(y, y_pred)
+
+    {
+        "roc_auc_val": get_roc_auc_score(df_val, dict_vectorizer, overfitted_decision_tree),
+        "roc_auc_train": get_roc_auc_score(df_train, dict_vectorizer, overfitted_decision_tree)
+    }
+    return (get_roc_auc_score,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""By default, decision trees can grow as much as they want, what makes them prone to overfitting. To address this, we can set a maximum depth when we create them.""")
+    return
+
+
+@app.cell
+def _(
+    df_train,
+    df_val,
+    dict_vectorizer,
+    get_roc_auc_score,
+    train_decision_tree,
+):
+    decision_tree, _ = train_decision_tree(df_train, max_depth=3)
+
+    {
+        "roc_auc_val": get_roc_auc_score(df_val, dict_vectorizer, decision_tree),
+        "roc_auc_train": get_roc_auc_score(df_train, dict_vectorizer, decision_tree)
+    }
+    return (decision_tree,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""### Explore the tree""")
+    return
+
+
+@app.cell
+def _(decision_tree, dict_vectorizer, plt):
+    from sklearn.tree import plot_tree
+
+    plt.figure(figsize=(16, 9))
+    plot_tree(decision_tree, feature_names=dict_vectorizer.get_feature_names_out(), fontsize=10)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Decision Tree Learning
+
+    A decision tree is a model that makes predictions by following a series of yes/no questions based on the features of the data. Each internal node represents a question (for example, **income <= 74.5**), each branch represents an answer (*yes* or *no*) and each leaf node gives the final decision or prediction.
+
+    The tree learns these questions automatically from training data by finding, at each step, the feature and threshold that best separate the examples into groups that are as homogeneous as possible with respect to the target (for instance: all *yes* or all *no*).
+
+    This process continues recursively until the data are well classified or other stopping conditions are met, producing a model that can later be used to classify new, unseen examples by following the same sequence of decisions.
+
+    ### Simplified algorithm
+
+    This pseudocode shows how we could implement an algorithm that finds the best split.
+
+    ```python
+    decision_tree = {}
+
+    for feature in features:
+        thresholds = find_all_thresholds(feature)
+        impurities = {}
+
+        for threshold in thresholds:
+            condition = define_condition(feature, '<=', threshold)
+            splitted_dataset = split(condition)
+            impurity = compute_impurity(splitted_dataset)
+            impurities[condition] = impurity
+
+        decision_tree[feature] = select_condition_with_lowest_impurity(impurities)
+    ```
+    """
+    )
     return
 
 
