@@ -528,7 +528,7 @@ def _(
 
         columns = ["max_depth", "min_samples_leaf", "roc_auc"]
         df_scores = pd.DataFrame(scores, columns=columns)
-    
+
         return df_scores
 
     decision_tree_scores = search_best_decision_tree()
@@ -631,7 +631,7 @@ def _(
 
         columns = ["estimators", "roc_auc"]
         df_scores = pd.DataFrame(scores, columns=columns)
-    
+
         return df_scores
 
     n_estimators_scores = choose_n_estimators()
@@ -671,7 +671,7 @@ def _(
 
         columns = ["max_depth", "min_samples_leaf", "roc_auc"]
         df_scores = pd.DataFrame(scores, columns=columns)
-    
+
         return df_scores
 
     random_forest_scores = search_best_random_forest()
@@ -720,7 +720,6 @@ def _(mo):
 def _(DictVectorizer, df_train, df_val, get_features_and_target, pd):
     import xgboost as xgb
     from xgboost.core import Booster
-
 
     def train_booster(
         df_train: pd.DataFrame, df_val: pd.DataFrame, xgb_params: dict = {}
