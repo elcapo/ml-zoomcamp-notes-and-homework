@@ -6,7 +6,7 @@ def split_dataset(df: pd.DataFrame, random_state: int = 1) -> tuple[pd.DataFrame
     full, test = train_test_split(df, test_size=0.2, random_state=random_state)
     train, val = train_test_split(full, test_size=0.25, random_state=random_state)
 
-    return train, val, test
+    return train, full, val, test
 
 def separate_features_and_target(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     target = df.trarem.copy()

@@ -10,7 +10,6 @@ def _():
     import pandas as pd
     import seaborn as sns
     import matplotlib.pylab as plt
-
     import preprocess
     import process
     return mo, pd, plt, preprocess, process
@@ -242,14 +241,15 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(df_filtered, process):
-    df_train, df_val, df_test = process.split_dataset(df_filtered)
+    df_train, df_full, df_val, df_test = process.split_dataset(df_filtered)
 
     {
         "len(df_train)": len(df_train),
+        "len(df_full)": len(df_full),
         "len(df_val)": len(df_val),
         "len(df_test)": len(df_test),
     }
-    return df_train, df_val
+    return df_full, df_train, df_val
 
 
 @app.cell(hide_code=True)
@@ -257,7 +257,7 @@ def _(mo):
     mo.md(r"""
     ## Dictionary Vectorizer
 
-    As all our features are categoric columns, we'll nead to prepare the data using a dictionary vectorizer.
+    As all our features are categoric columns, we'll need to prepare the data using a dictionary vectorizer.
     """)
     return
 
@@ -278,15 +278,18 @@ def _(mo):
 
 
 @app.cell
-def _(df_val, dict_vectorizer, process, train_features, train_target):
+def _(df_full, df_val, dict_vectorizer, process, train_features, train_target):
     X_train = dict_vectorizer.transform(train_features.to_dict(orient="records"))
     y_train = train_target == "Yes"
 
-    val_features, val_target = process.separate_features_and_target(df_val)
+    full_features, full_target = process.separate_features_and_target(df_full)
+    X_full = dict_vectorizer.transform(full_features.to_dict(orient="records"))
+    y_full = full_target == "Yes"
 
+    val_features, val_target = process.separate_features_and_target(df_val)
     X_val = dict_vectorizer.transform(val_features.to_dict(orient="records"))
     y_val = val_target == "Yes"
-    return X_train, X_val, y_train, y_val
+    return X_full, X_train, X_val, y_full, y_train, y_val
 
 
 @app.cell(hide_code=True)
@@ -294,18 +297,18 @@ def _(mo):
     mo.md(r"""
     ## Random Forest
 
-    Our goal with this dataset is not be able to predict if someone will have an occupation or not depending on certain parameters but to understand what parameters correlate better with the fact that someone has an occupation. So creating a random forest models and analyzing their feature importances seems like the way to go.
+    Our goal with this dataset is not be able to predict if someone will have an occupation or not depending on certain parameters, but to understand what parameters correlate better with the fact that someone has an occupation instead. So we'll focus on interpretable (decision-tree based) models. Let's start by training a random forest.
     """)
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(X_train, pd, y_train):
     from time import time, sleep
     from sklearn.model_selection import RandomizedSearchCV
     from sklearn.ensemble import RandomForestClassifier
 
-    param_distributions = {
+    random_forest_param_distributions = {
         "n_estimators": [50, 100, 200],
         "max_depth": [None, 1, 2, 3, 5, 10, 25, 50],
         "min_samples_leaf": [1, 25, 50, 100, 500, 1000],
@@ -313,17 +316,24 @@ def _(X_train, pd, y_train):
 
     def search_random_forest(X_train: pd.DataFrame, y_train: pd.DataFrame, param_distributions: dict) -> RandomizedSearchCV:
         random_forest = RandomForestClassifier(random_state=1)
-        randomized_search = RandomizedSearchCV(random_forest, param_distributions, scoring="roc_auc")
-        randomized_search.fit(X_train, y_train)
+        random_forest_search = RandomizedSearchCV(random_forest, param_distributions, scoring="roc_auc", n_jobs=8)
+        random_forest_search.fit(X_train, y_train)
 
-        return randomized_search
+        return random_forest_search
 
     start_time = time()
-    randomized_search = search_random_forest(X_train, y_train, param_distributions)
+    random_forest_search = search_random_forest(X_train, y_train, random_forest_param_distributions)
     end_time = time()
 
     print("Execution time: %s s" % int(end_time - start_time))
-    return RandomizedSearchCV, end_time, randomized_search, start_time, time
+    return (
+        RandomForestClassifier,
+        RandomizedSearchCV,
+        end_time,
+        random_forest_search,
+        start_time,
+        time,
+    )
 
 
 @app.cell(hide_code=True)
@@ -331,48 +341,46 @@ def _(mo):
     mo.md(r"""
     ### Best Params
 
-    We will now examine the results of each experiment to obtain the parameters of the best model.
-
-    First, we'll check each of the experiments looking at its mean score and fit time.
+    Now, let's examine the results of each experiment to obtain the parameters of the best random forest model. First, we'll check each of the experiments looking at its mean score and fit time highlighting in green the winner experiment.
     """)
     return
 
 
 @app.cell(hide_code=True)
-def _(RandomizedSearchCV, plt, randomized_search):
+def _(RandomizedSearchCV, plt, random_forest_search):
     def plot_experiments(search: RandomizedSearchCV):
         fit_times = search.cv_results_["mean_fit_time"]
         scores = search.cv_results_["mean_test_score"]
-    
+
         fig, ax_scores = plt.subplots(figsize=(12, 6))
         ax_fit_times = ax_scores.twinx()
 
         colors = ["royalblue" for _ in range(len(search.cv_results_))]
         colors[search.best_index_] = "forestgreen"
-    
+
         ax_scores.bar(x=range(len(scores)), height=scores, color=colors)
         ax_scores.set_xlabel("Experiment")
         ax_scores.set_ylabel("Mean test score")
-    
+
         ax_fit_times.plot(range(len(scores)), fit_times, color="red")
         ax_scores.set_xticks(range(len(scores)))
         ax_fit_times.set_ylabel("Mean fit time")
-    
+
         plt.title("Experiment analysis")
         plt.show()
 
-    plot_experiments(randomized_search)
+    plot_experiments(random_forest_search)
     return (plot_experiments,)
 
 
 @app.cell(hide_code=True)
-def _(RandomizedSearchCV, plt, randomized_search):
+def _(RandomizedSearchCV, plt, random_forest_search):
     def plot_random_forest_parameters(search: RandomizedSearchCV):
         fig, axis = plt.subplots(1, 3, figsize=(16, 3))
 
         colors = ["royalblue" for _ in range(len(search.cv_results_))]
         colors[search.best_index_] = "forestgreen"
-    
+
         n_estimators = [param["n_estimators"] if param["n_estimators"] != None else 0 for param in search.cv_results_["params"]]
         ax_estimators = axis[0]
         ax_estimators.bar(x=range(len(n_estimators)), height=n_estimators, color=colors)
@@ -396,13 +404,13 @@ def _(RandomizedSearchCV, plt, randomized_search):
 
         plt.show()
 
-    plot_random_forest_parameters(randomized_search)
+    plot_random_forest_parameters(random_forest_search)
     return
 
 
 @app.cell
-def _(randomized_search):
-    randomized_search.best_params_
+def _(random_forest_search):
+    random_forest_search.best_params_
     return
 
 
@@ -411,15 +419,39 @@ def _(mo):
     mo.md(r"""
     ### Evaluation
 
-    As we can see below, with the params that achieved the best fit, the model reached a 75% accuracy.
+    With this params we'll now train an evaluate a Random Forest model using the full (train + validation) dataset.
     """)
     return
 
 
-@app.cell
-def _(X_val, randomized_search, y_val):
-    print("Randomized search score: %.2f %%" % (randomized_search.score(X_val, y_val) * 100))
-    return
+@app.cell(hide_code=True)
+def _(
+    RandomForestClassifier,
+    X_full,
+    X_val,
+    pd,
+    random_forest_search,
+    roc_auc_score,
+    y_full,
+    y_val,
+):
+    from sklearn.base import ClassifierMixin
+
+    def train_random_forest(X: pd.DataFrame, y: pd.DataFrame, param_distributions: dict) -> RandomForestClassifier:
+        random_forest = RandomForestClassifier(random_state=1, **param_distributions)
+        random_forest.fit(X, y)
+
+        return random_forest
+
+    def eval_model(X_val: pd.DataFrame, y_val: pd.DataFrame, model: ClassifierMixin):
+        y_pred = model.predict(X_val)
+
+        return roc_auc_score(y_val, y_pred)
+
+    optimized_random_forest = train_random_forest(X_full, y_full, param_distributions=random_forest_search.best_params_)
+
+    print("Randomized search score: %.2f %%" % (eval_model(X_val, y_val, optimized_random_forest) * 100))
+    return (eval_model,)
 
 
 @app.cell(hide_code=True)
@@ -432,7 +464,7 @@ def _(mo):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(
     RandomizedSearchCV,
     X_train,
@@ -448,9 +480,9 @@ def _(
     from sklearn.metrics import roc_auc_score
 
     booster_param_distributions = {
-        "eta": [0.3, 0.5, 0.7],
-        "max_depth": [0, 3, 6],
-        "min_child_weight": [0, 5, 10],
+        "eta": [0.1, 0.2, 0.3, 1.0],
+        "max_depth": [5, 25, 50],
+        "min_child_weight": [1, 3, 5, 7],
     }
 
     def search_xgboost(
@@ -460,9 +492,17 @@ def _(
         y_val: pd.DataFrame,
         param_distributions: dict
     ) -> RandomizedSearchCV:
-        booster = xgb.XGBClassifier(tree_method="hist", early_stopping_rounds=1, eval_metric=roc_auc_score, random_state=1)
+        booster = xgb.XGBClassifier(
+            tree_method="hist",
+            early_stopping_rounds=2,
+            eval_metric=roc_auc_score,
+            random_state=1,
+            objective="binary:logistic",
+            nthread=8,
+        )
+
         booster_search = RandomizedSearchCV(booster, param_distributions)
-        booster_search.fit(X_train, y_train, eval_set=[(X_val, y_val)])
+        booster_search.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
 
         return booster_search
 
@@ -471,7 +511,17 @@ def _(
     booster_end_time = time()
 
     print("Execution time: %s s" % int(end_time - start_time))
-    return (booster_search,)
+    return booster_search, roc_auc_score, xgb
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Best Params
+
+    As we did before, we'll now examine the results of each experiment to obtain the best parameters for the XGBoost model. First, we'll check each of the experiments looking at its mean score and fit time highlighting in green the winner experiment.
+    """)
+    return
 
 
 @app.cell
@@ -487,7 +537,7 @@ def _(RandomizedSearchCV, booster_search, plt):
 
         colors = ["royalblue" for _ in range(len(search.cv_results_))]
         colors[search.best_index_] = "forestgreen"
-    
+
         eta = [param["eta"] for param in search.cv_results_["params"]]
         ax_eta = axis[0]
         ax_eta.bar(x=range(len(eta)), height=eta, color=colors)
@@ -516,8 +566,93 @@ def _(RandomizedSearchCV, booster_search, plt):
 
 
 @app.cell
-def _(X_val, booster_search, y_val):
-    print("XGBoost search score: %.2f %%" % (booster_search.score(X_val, y_val) * 100))
+def _(booster_search):
+    booster_search.best_params_
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Evaluation
+
+    With this params we'll now train an evaluate a XGDBooster model using the full (train + validation) dataset.
+    """)
+    return
+
+
+@app.cell
+def _(X_full, X_val, booster_search, eval_model, pd, xgb, y_full, y_val):
+    def train_booster(X: pd.DataFrame, y: pd.DataFrame, param_distributions: dict) -> xgb.XGBClassifier:
+        booster = xgb.XGBClassifier(random_state=1, **param_distributions)
+        booster.fit(X, y)
+
+        return booster
+
+    optimized_booster = train_booster(X_full, y_full, param_distributions=booster_search.best_params_)
+
+    print("XGBoost search score: %.2f %%" % (eval_model(X_val, y_val, optimized_booster) * 100))
+    return (optimized_booster,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Inspection
+
+    The most influential features in the model are:
+
+    * **sexo1=Man** (Score: 4560.0): This is the single most important feature. Being a man is, by far, the most effective feature for making splits that accurately predict the target variable. Which, as a recall, identifies whether the interviewed person had a paid occupation the week before the interview happened. This suggests a strong correlation between being male and having an occupation.
+
+    * **nforma=Higher education** (Score: 2665.0): This is the second most important feature. Having a higher education level is extremely predictive, likely indicating a strong positive association with being employed.
+
+    * **eciv1=Married** (Score: 2414.0): Being married is also a very influential feature, possibly acting as a proxy for factors like age or stable employment history.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(optimized_booster, plt):
+    from xgboost import plot_importance
+
+    plt.figure(figsize=(12, 6))
+
+    plot_importance(
+        optimized_booster.get_booster(),
+        max_num_features=10,
+        height=.7,
+    )
+
+    plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(dict_vectorizer, mo, optimized_booster):
+    from xgboost import to_graphviz
+    from pathlib import Path
+
+    optimized_booster.get_booster().feature_names = dict_vectorizer.get_feature_names_out().tolist()
+
+    booster_graph = to_graphviz(
+        optimized_booster.get_booster(),
+        tree_idx=1,
+        rankdir="LR",
+        layout="dot",
+        size="100,60",
+        ratio="fill",
+        dpi="300",
+        condition_node_params={
+            "fontsize": "128",
+            "shape": "rect",
+        },
+        leaf_node_params={
+            "fontsize": "128",
+        }
+    )
+
+    graph_pdf = booster_graph.render("booster_tree", format="pdf", view=False)
+    mo.pdf(src=Path(graph_pdf))
     return
 
 

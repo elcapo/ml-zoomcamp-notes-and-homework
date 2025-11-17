@@ -2,3 +2,4 @@ marimo==0.17.6
 pandas==2.3.3
 scikit_learn==1.7.2
 seaborn==0.13.2
+graphviz==0.21

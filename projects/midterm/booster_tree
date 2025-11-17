@@ -1,0 +1,1792 @@
+digraph {
+    graph [ rankdir=TB ]
+    graph [ dpi="300" ]
+    graph [ layout="dot" ]
+    graph [ rankdir="LR" ]
+    graph [ ratio="fill" ]
+    graph [ size="100,60" ]
+
+    0 [ label="edad1=65 or more years<1" fontsize="128" shape="rect" ]
+    0 -> 1 [label="yes" color="#FF0000"]
+    0 -> 2 [label="no, missing" color="#0000FF"]
+
+    1 [ label="edad1=16 to 19 years<1" fontsize="128" shape="rect" ]
+    1 -> 3 [label="yes" color="#FF0000"]
+    1 -> 4 [label="no, missing" color="#0000FF"]
+
+    3 [ label="prov=Melilla<1" fontsize="128" shape="rect" ]
+    3 -> 7 [label="yes" color="#FF0000"]
+    3 -> 8 [label="no, missing" color="#0000FF"]
+
+    7 [ label="prov=Ceuta<1" fontsize="128" shape="rect" ]
+    7 -> 15 [label="yes" color="#FF0000"]
+    7 -> 16 [label="no, missing" color="#0000FF"]
+
+    15 [ label="prov=Soria<1" fontsize="128" shape="rect" ]
+    15 -> 29 [label="yes" color="#FF0000"]
+    15 -> 30 [label="no, missing" color="#0000FF"]
+
+    29 [ label="nforma=Illiterate<1" fontsize="128" shape="rect" ]
+    29 -> 45 [label="yes" color="#FF0000"]
+    29 -> 46 [label="no, missing" color="#0000FF"]
+
+    45 [ label="prov=Girona<1" fontsize="128" shape="rect" ]
+    45 -> 63 [label="yes" color="#FF0000"]
+    45 -> 64 [label="no, missing" color="#0000FF"]
+
+    63 [ label="prov=Balears, Illes<1" fontsize="128" shape="rect" ]
+    63 -> 87 [label="yes" color="#FF0000"]
+    63 -> 88 [label="no, missing" color="#0000FF"]
+
+    87 [ label="prov=Segovia<1" fontsize="128" shape="rect" ]
+    87 -> 103 [label="yes" color="#FF0000"]
+    87 -> 104 [label="no, missing" color="#0000FF"]
+
+    103 [ label="prov=Lleida<1" fontsize="128" shape="rect" ]
+    103 -> 123 [label="yes" color="#FF0000"]
+    103 -> 124 [label="no, missing" color="#0000FF"]
+
+    123 [ label="prov=Cádiz<1" fontsize="128" shape="rect" ]
+    123 -> 143 [label="yes" color="#FF0000"]
+    123 -> 144 [label="no, missing" color="#0000FF"]
+
+    143 [ label="prov=Huesca<1" fontsize="128" shape="rect" ]
+    143 -> 171 [label="yes" color="#FF0000"]
+    143 -> 172 [label="no, missing" color="#0000FF"]
+
+    171 [ label="prov=Rioja, La<1" fontsize="128" shape="rect" ]
+    171 -> 191 [label="yes" color="#FF0000"]
+    171 -> 192 [label="no, missing" color="#0000FF"]
+
+    191 [ label="prov=Lugo<1" fontsize="128" shape="rect" ]
+    191 -> 215 [label="yes" color="#FF0000"]
+    191 -> 216 [label="no, missing" color="#0000FF"]
+
+    215 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    215 -> 239 [label="yes" color="#FF0000"]
+    215 -> 240 [label="no, missing" color="#0000FF"]
+
+    239 [ label="prov=Pontevedra<1" fontsize="128" shape="rect" ]
+    239 -> 267 [label="yes" color="#FF0000"]
+    239 -> 268 [label="no, missing" color="#0000FF"]
+
+    267 [ label="prov=Córdoba<1" fontsize="128" shape="rect" ]
+    267 -> 303 [label="yes" color="#FF0000"]
+    267 -> 304 [label="no, missing" color="#0000FF"]
+
+    303 [ label="prov=Jaén<1" fontsize="128" shape="rect" ]
+    303 -> 341 [label="yes" color="#FF0000"]
+    303 -> 342 [label="no, missing" color="#0000FF"]
+
+    341 [ label="prov=Ciudad Real<1" fontsize="128" shape="rect" ]
+    341 -> 369 [label="yes" color="#FF0000"]
+    341 -> 370 [label="no, missing" color="#0000FF"]
+
+    369 [ label="prov=Santa Cruz de Tenerife<1" fontsize="128" shape="rect" ]
+    369 -> 397 [label="yes" color="#FF0000"]
+    369 -> 398 [label="no, missing" color="#0000FF"]
+
+    397 [ label="eciv1=Widowed<1" fontsize="128" shape="rect" ]
+    397 -> 427 [label="yes" color="#FF0000"]
+    397 -> 428 [label="no, missing" color="#0000FF"]
+
+    427 [ label="prov=Almería<1" fontsize="128" shape="rect" ]
+    427 -> 463 [label="yes" color="#FF0000"]
+    427 -> 464 [label="no, missing" color="#0000FF"]
+
+    463 [ label="prov=Salamanca<1" fontsize="128" shape="rect" ]
+    463 -> 501 [label="yes" color="#FF0000"]
+    463 -> 502 [label="no, missing" color="#0000FF"]
+
+    501 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    501 -> 531 [label="yes" color="#FF0000"]
+    501 -> 532 [label="no, missing" color="#0000FF"]
+
+    531 [ label="prov=Araba<1" fontsize="128" shape="rect" ]
+    531 -> 563 [label="yes" color="#FF0000"]
+    531 -> 564 [label="no, missing" color="#0000FF"]
+
+    563 [ label="leaf=-0.00618230551" fontsize="128" ]
+
+    564 [ label="leaf=-0.231064603" fontsize="128" ]
+
+    532 [ label="prov=Zamora<1" fontsize="128" shape="rect" ]
+    532 -> 565 [label="yes" color="#FF0000"]
+    532 -> 566 [label="no, missing" color="#0000FF"]
+
+    565 [ label="leaf=-0.0915769786" fontsize="128" ]
+
+    566 [ label="leaf=0.718874812" fontsize="128" ]
+
+    502 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    502 -> 533 [label="yes" color="#FF0000"]
+    502 -> 534 [label="no, missing" color="#0000FF"]
+
+    533 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    533 -> 567 [label="yes" color="#FF0000"]
+    533 -> 568 [label="no, missing" color="#0000FF"]
+
+    567 [ label="leaf=-0.215219483" fontsize="128" ]
+
+    568 [ label="leaf=0.33727926" fontsize="128" ]
+
+    534 [ label="leaf=0.626734018" fontsize="128" ]
+
+    464 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    464 -> 503 [label="yes" color="#FF0000"]
+    464 -> 504 [label="no, missing" color="#0000FF"]
+
+    503 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    503 -> 535 [label="yes" color="#FF0000"]
+    503 -> 536 [label="no, missing" color="#0000FF"]
+
+    535 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    535 -> 569 [label="yes" color="#FF0000"]
+    535 -> 570 [label="no, missing" color="#0000FF"]
+
+    569 [ label="leaf=-0.487835526" fontsize="128" ]
+
+    570 [ label="leaf=-0.0296246335" fontsize="128" ]
+
+    536 [ label="leaf=0.25272426" fontsize="128" ]
+
+    504 [ label="leaf=0.310119092" fontsize="128" ]
+
+    428 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    428 -> 465 [label="yes" color="#FF0000"]
+    428 -> 466 [label="no, missing" color="#0000FF"]
+
+    465 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    465 -> 505 [label="yes" color="#FF0000"]
+    465 -> 506 [label="no, missing" color="#0000FF"]
+
+    505 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    505 -> 537 [label="yes" color="#FF0000"]
+    505 -> 538 [label="no, missing" color="#0000FF"]
+
+    537 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    537 -> 571 [label="yes" color="#FF0000"]
+    537 -> 572 [label="no, missing" color="#0000FF"]
+
+    571 [ label="leaf=-0.451536447" fontsize="128" ]
+
+    572 [ label="leaf=-0.269027293" fontsize="128" ]
+
+    538 [ label="leaf=-0.149608865" fontsize="128" ]
+
+    506 [ label="leaf=-0.0581986047" fontsize="128" ]
+
+    466 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    466 -> 507 [label="yes" color="#FF0000"]
+    466 -> 508 [label="no, missing" color="#0000FF"]
+
+    507 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    507 -> 539 [label="yes" color="#FF0000"]
+    507 -> 540 [label="no, missing" color="#0000FF"]
+
+    539 [ label="leaf=-0.156594068" fontsize="128" ]
+
+    540 [ label="leaf=-0.0615409315" fontsize="128" ]
+
+    508 [ label="leaf=0.199336037" fontsize="128" ]
+
+    398 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    398 -> 429 [label="yes" color="#FF0000"]
+    398 -> 430 [label="no, missing" color="#0000FF"]
+
+    429 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    429 -> 467 [label="yes" color="#FF0000"]
+    429 -> 468 [label="no, missing" color="#0000FF"]
+
+    467 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    467 -> 509 [label="yes" color="#FF0000"]
+    467 -> 510 [label="no, missing" color="#0000FF"]
+
+    509 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    509 -> 541 [label="yes" color="#FF0000"]
+    509 -> 542 [label="no, missing" color="#0000FF"]
+
+    541 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    541 -> 573 [label="yes" color="#FF0000"]
+    541 -> 574 [label="no, missing" color="#0000FF"]
+
+    573 [ label="leaf=-0.0478672422" fontsize="128" ]
+
+    574 [ label="leaf=0.280180454" fontsize="128" ]
+
+    542 [ label="leaf=0.349366546" fontsize="128" ]
+
+    510 [ label="leaf=-0.317891002" fontsize="128" ]
+
+    468 [ label="leaf=-0.703827202" fontsize="128" ]
+
+    430 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    430 -> 469 [label="yes" color="#FF0000"]
+    430 -> 470 [label="no, missing" color="#0000FF"]
+
+    469 [ label="edad1=25 to 29 years<1" fontsize="128" shape="rect" ]
+    469 -> 511 [label="yes" color="#FF0000"]
+    469 -> 512 [label="no, missing" color="#0000FF"]
+
+    511 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    511 -> 543 [label="yes" color="#FF0000"]
+    511 -> 544 [label="no, missing" color="#0000FF"]
+
+    543 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    543 -> 575 [label="yes" color="#FF0000"]
+    543 -> 576 [label="no, missing" color="#0000FF"]
+
+    575 [ label="leaf=-0.352184445" fontsize="128" ]
+
+    576 [ label="leaf=-0.622702122" fontsize="128" ]
+
+    544 [ label="leaf=0.0288377497" fontsize="128" ]
+
+    512 [ label="leaf=0.0389436781" fontsize="128" ]
+
+    470 [ label="leaf=-0.895321429" fontsize="128" ]
+
+    370 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    370 -> 399 [label="yes" color="#FF0000"]
+    370 -> 400 [label="no, missing" color="#0000FF"]
+
+    399 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    399 -> 431 [label="yes" color="#FF0000"]
+    399 -> 432 [label="no, missing" color="#0000FF"]
+
+    431 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    431 -> 471 [label="yes" color="#FF0000"]
+    431 -> 472 [label="no, missing" color="#0000FF"]
+
+    471 [ label="edad1=20 to 24 years<1" fontsize="128" shape="rect" ]
+    471 -> 513 [label="yes" color="#FF0000"]
+    471 -> 514 [label="no, missing" color="#0000FF"]
+
+    513 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    513 -> 545 [label="yes" color="#FF0000"]
+    513 -> 546 [label="no, missing" color="#0000FF"]
+
+    545 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    545 -> 577 [label="yes" color="#FF0000"]
+    545 -> 578 [label="no, missing" color="#0000FF"]
+
+    577 [ label="leaf=-0.424725294" fontsize="128" ]
+
+    578 [ label="leaf=-0.117427282" fontsize="128" ]
+
+    546 [ label="leaf=-0.0463334695" fontsize="128" ]
+
+    514 [ label="leaf=-0.700416148" fontsize="128" ]
+
+    472 [ label="leaf=-0.775120437" fontsize="128" ]
+
+    432 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    432 -> 473 [label="yes" color="#FF0000"]
+    432 -> 474 [label="no, missing" color="#0000FF"]
+
+    473 [ label="leaf=0.547442257" fontsize="128" ]
+
+    474 [ label="leaf=-0.445451349" fontsize="128" ]
+
+    400 [ label="leaf=0.289304703" fontsize="128" ]
+
+    342 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    342 -> 371 [label="yes" color="#FF0000"]
+    342 -> 372 [label="no, missing" color="#0000FF"]
+
+    371 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    371 -> 401 [label="yes" color="#FF0000"]
+    371 -> 402 [label="no, missing" color="#0000FF"]
+
+    401 [ label="edad1=40 to 44 years<1" fontsize="128" shape="rect" ]
+    401 -> 433 [label="yes" color="#FF0000"]
+    401 -> 434 [label="no, missing" color="#0000FF"]
+
+    433 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    433 -> 475 [label="yes" color="#FF0000"]
+    433 -> 476 [label="no, missing" color="#0000FF"]
+
+    475 [ label="leaf=-0.47339198" fontsize="128" ]
+
+    476 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    476 -> 515 [label="yes" color="#FF0000"]
+    476 -> 516 [label="no, missing" color="#0000FF"]
+
+    515 [ label="leaf=-0.279136688" fontsize="128" ]
+
+    516 [ label="leaf=-0.442157596" fontsize="128" ]
+
+    434 [ label="leaf=-0.0436666086" fontsize="128" ]
+
+    402 [ label="leaf=0.08616402" fontsize="128" ]
+
+    372 [ label="leaf=0.443031996" fontsize="128" ]
+
+    304 [ label="edad1=40 to 44 years<1" fontsize="128" shape="rect" ]
+    304 -> 343 [label="yes" color="#FF0000"]
+    304 -> 344 [label="no, missing" color="#0000FF"]
+
+    343 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    343 -> 373 [label="yes" color="#FF0000"]
+    343 -> 374 [label="no, missing" color="#0000FF"]
+
+    373 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    373 -> 403 [label="yes" color="#FF0000"]
+    373 -> 404 [label="no, missing" color="#0000FF"]
+
+    403 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    403 -> 435 [label="yes" color="#FF0000"]
+    403 -> 436 [label="no, missing" color="#0000FF"]
+
+    435 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    435 -> 477 [label="yes" color="#FF0000"]
+    435 -> 478 [label="no, missing" color="#0000FF"]
+
+    477 [ label="leaf=-0.78562963" fontsize="128" ]
+
+    478 [ label="leaf=-0.419357508" fontsize="128" ]
+
+    436 [ label="leaf=-0.192750916" fontsize="128" ]
+
+    404 [ label="leaf=-0.229616582" fontsize="128" ]
+
+    374 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    374 -> 405 [label="yes" color="#FF0000"]
+    374 -> 406 [label="no, missing" color="#0000FF"]
+
+    405 [ label="leaf=0.0131591624" fontsize="128" ]
+
+    406 [ label="leaf=-0.386992306" fontsize="128" ]
+
+    344 [ label="leaf=0.187123343" fontsize="128" ]
+
+    268 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    268 -> 305 [label="yes" color="#FF0000"]
+    268 -> 306 [label="no, missing" color="#0000FF"]
+
+    305 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    305 -> 345 [label="yes" color="#FF0000"]
+    305 -> 346 [label="no, missing" color="#0000FF"]
+
+    345 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    345 -> 375 [label="yes" color="#FF0000"]
+    345 -> 376 [label="no, missing" color="#0000FF"]
+
+    375 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    375 -> 407 [label="yes" color="#FF0000"]
+    375 -> 408 [label="no, missing" color="#0000FF"]
+
+    407 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    407 -> 437 [label="yes" color="#FF0000"]
+    407 -> 438 [label="no, missing" color="#0000FF"]
+
+    437 [ label="leaf=0.717188656" fontsize="128" ]
+
+    438 [ label="leaf=0.409398347" fontsize="128" ]
+
+    408 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    408 -> 439 [label="yes" color="#FF0000"]
+    408 -> 440 [label="no, missing" color="#0000FF"]
+
+    439 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    439 -> 479 [label="yes" color="#FF0000"]
+    439 -> 480 [label="no, missing" color="#0000FF"]
+
+    479 [ label="leaf=0.588728428" fontsize="128" ]
+
+    480 [ label="leaf=0.313449591" fontsize="128" ]
+
+    440 [ label="leaf=-0.10433241" fontsize="128" ]
+
+    376 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    376 -> 409 [label="yes" color="#FF0000"]
+    376 -> 410 [label="no, missing" color="#0000FF"]
+
+    409 [ label="leaf=-0.168333665" fontsize="128" ]
+
+    410 [ label="leaf=-0.0728136599" fontsize="128" ]
+
+    346 [ label="leaf=-0.239023745" fontsize="128" ]
+
+    306 [ label="leaf=-0.267764807" fontsize="128" ]
+
+    240 [ label="prov=Bizkaia<1" fontsize="128" shape="rect" ]
+    240 -> 269 [label="yes" color="#FF0000"]
+    240 -> 270 [label="no, missing" color="#0000FF"]
+
+    269 [ label="prov=Sevilla<1" fontsize="128" shape="rect" ]
+    269 -> 307 [label="yes" color="#FF0000"]
+    269 -> 308 [label="no, missing" color="#0000FF"]
+
+    307 [ label="prov=Guadalajara<1" fontsize="128" shape="rect" ]
+    307 -> 347 [label="yes" color="#FF0000"]
+    307 -> 348 [label="no, missing" color="#0000FF"]
+
+    347 [ label="prov=Toledo<1" fontsize="128" shape="rect" ]
+    347 -> 377 [label="yes" color="#FF0000"]
+    347 -> 378 [label="no, missing" color="#0000FF"]
+
+    377 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    377 -> 411 [label="yes" color="#FF0000"]
+    377 -> 412 [label="no, missing" color="#0000FF"]
+
+    411 [ label="nforma=Incomplete primary education<1" fontsize="128" shape="rect" ]
+    411 -> 441 [label="yes" color="#FF0000"]
+    411 -> 442 [label="no, missing" color="#0000FF"]
+
+    441 [ label="prov=Ciudad Real<1" fontsize="128" shape="rect" ]
+    441 -> 481 [label="yes" color="#FF0000"]
+    441 -> 482 [label="no, missing" color="#0000FF"]
+
+    481 [ label="prov=Araba<1" fontsize="128" shape="rect" ]
+    481 -> 517 [label="yes" color="#FF0000"]
+    481 -> 518 [label="no, missing" color="#0000FF"]
+
+    517 [ label="prov=Teruel<1" fontsize="128" shape="rect" ]
+    517 -> 547 [label="yes" color="#FF0000"]
+    517 -> 548 [label="no, missing" color="#0000FF"]
+
+    547 [ label="prov=Ourense<1" fontsize="128" shape="rect" ]
+    547 -> 579 [label="yes" color="#FF0000"]
+    547 -> 580 [label="no, missing" color="#0000FF"]
+
+    579 [ label="leaf=0.000612694828" fontsize="128" ]
+
+    580 [ label="leaf=-0.242425025" fontsize="128" ]
+
+    548 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    548 -> 581 [label="yes" color="#FF0000"]
+    548 -> 582 [label="no, missing" color="#0000FF"]
+
+    581 [ label="leaf=0.116257191" fontsize="128" ]
+
+    582 [ label="leaf=0.479284257" fontsize="128" ]
+
+    518 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    518 -> 549 [label="yes" color="#FF0000"]
+    518 -> 550 [label="no, missing" color="#0000FF"]
+
+    549 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    549 -> 583 [label="yes" color="#FF0000"]
+    549 -> 584 [label="no, missing" color="#0000FF"]
+
+    583 [ label="leaf=-0.122972399" fontsize="128" ]
+
+    584 [ label="leaf=-0.0175310764" fontsize="128" ]
+
+    550 [ label="leaf=-0.781801641" fontsize="128" ]
+
+    482 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    482 -> 519 [label="yes" color="#FF0000"]
+    482 -> 520 [label="no, missing" color="#0000FF"]
+
+    519 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    519 -> 551 [label="yes" color="#FF0000"]
+    519 -> 552 [label="no, missing" color="#0000FF"]
+
+    551 [ label="leaf=-0.619635582" fontsize="128" ]
+
+    552 [ label="leaf=-0.208986372" fontsize="128" ]
+
+    520 [ label="leaf=0.0841288194" fontsize="128" ]
+
+    442 [ label="leaf=-0.384210616" fontsize="128" ]
+
+    412 [ label="prov=Ávila<1" fontsize="128" shape="rect" ]
+    412 -> 443 [label="yes" color="#FF0000"]
+    412 -> 444 [label="no, missing" color="#0000FF"]
+
+    443 [ label="edad1=40 to 44 years<1" fontsize="128" shape="rect" ]
+    443 -> 483 [label="yes" color="#FF0000"]
+    443 -> 484 [label="no, missing" color="#0000FF"]
+
+    483 [ label="prov=Albacete<1" fontsize="128" shape="rect" ]
+    483 -> 521 [label="yes" color="#FF0000"]
+    483 -> 522 [label="no, missing" color="#0000FF"]
+
+    521 [ label="prov=Zamora<1" fontsize="128" shape="rect" ]
+    521 -> 553 [label="yes" color="#FF0000"]
+    521 -> 554 [label="no, missing" color="#0000FF"]
+
+    553 [ label="prov=Palencia<1" fontsize="128" shape="rect" ]
+    553 -> 585 [label="yes" color="#FF0000"]
+    553 -> 586 [label="no, missing" color="#0000FF"]
+
+    585 [ label="leaf=0.000439038995" fontsize="128" ]
+
+    586 [ label="leaf=0.313363582" fontsize="128" ]
+
+    554 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    554 -> 587 [label="yes" color="#FF0000"]
+    554 -> 588 [label="no, missing" color="#0000FF"]
+
+    587 [ label="leaf=0.460012645" fontsize="128" ]
+
+    588 [ label="leaf=0.073534213" fontsize="128" ]
+
+    522 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    522 -> 555 [label="yes" color="#FF0000"]
+    522 -> 556 [label="no, missing" color="#0000FF"]
+
+    555 [ label="leaf=0.345388472" fontsize="128" ]
+
+    556 [ label="leaf=0.0987046808" fontsize="128" ]
+
+    484 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    484 -> 523 [label="yes" color="#FF0000"]
+    484 -> 524 [label="no, missing" color="#0000FF"]
+
+    523 [ label="prov=Cantabria<1" fontsize="128" shape="rect" ]
+    523 -> 557 [label="yes" color="#FF0000"]
+    523 -> 558 [label="no, missing" color="#0000FF"]
+
+    557 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    557 -> 589 [label="yes" color="#FF0000"]
+    557 -> 590 [label="no, missing" color="#0000FF"]
+
+    589 [ label="leaf=0.130741641" fontsize="128" ]
+
+    590 [ label="leaf=-0.0797918588" fontsize="128" ]
+
+    558 [ label="leaf=0.512872934" fontsize="128" ]
+
+    524 [ label="leaf=0.509969473" fontsize="128" ]
+
+    444 [ label="leaf=0.597221971" fontsize="128" ]
+
+    378 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    378 -> 413 [label="yes" color="#FF0000"]
+    378 -> 414 [label="no, missing" color="#0000FF"]
+
+    413 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    413 -> 445 [label="yes" color="#FF0000"]
+    413 -> 446 [label="no, missing" color="#0000FF"]
+
+    445 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    445 -> 485 [label="yes" color="#FF0000"]
+    445 -> 486 [label="no, missing" color="#0000FF"]
+
+    485 [ label="nforma=Primary education<1" fontsize="128" shape="rect" ]
+    485 -> 525 [label="yes" color="#FF0000"]
+    485 -> 526 [label="no, missing" color="#0000FF"]
+
+    525 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    525 -> 559 [label="yes" color="#FF0000"]
+    525 -> 560 [label="no, missing" color="#0000FF"]
+
+    559 [ label="edad1=20 to 24 years<1" fontsize="128" shape="rect" ]
+    559 -> 591 [label="yes" color="#FF0000"]
+    559 -> 592 [label="no, missing" color="#0000FF"]
+
+    591 [ label="leaf=0.228181034" fontsize="128" ]
+
+    592 [ label="leaf=-0.166177288" fontsize="128" ]
+
+    560 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    560 -> 593 [label="yes" color="#FF0000"]
+    560 -> 594 [label="no, missing" color="#0000FF"]
+
+    593 [ label="leaf=-0.159686536" fontsize="128" ]
+
+    594 [ label="leaf=-0.01758538" fontsize="128" ]
+
+    526 [ label="leaf=0.488099396" fontsize="128" ]
+
+    486 [ label="leaf=0.286328673" fontsize="128" ]
+
+    446 [ label="leaf=0.445870906" fontsize="128" ]
+
+    414 [ label="leaf=0.545815408" fontsize="128" ]
+
+    348 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    348 -> 379 [label="yes" color="#FF0000"]
+    348 -> 380 [label="no, missing" color="#0000FF"]
+
+    379 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    379 -> 415 [label="yes" color="#FF0000"]
+    379 -> 416 [label="no, missing" color="#0000FF"]
+
+    415 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    415 -> 447 [label="yes" color="#FF0000"]
+    415 -> 448 [label="no, missing" color="#0000FF"]
+
+    447 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    447 -> 487 [label="yes" color="#FF0000"]
+    447 -> 488 [label="no, missing" color="#0000FF"]
+
+    487 [ label="leaf=0.530322134" fontsize="128" ]
+
+    488 [ label="leaf=0.337669879" fontsize="128" ]
+
+    448 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    448 -> 489 [label="yes" color="#FF0000"]
+    448 -> 490 [label="no, missing" color="#0000FF"]
+
+    489 [ label="leaf=-0.141879067" fontsize="128" ]
+
+    490 [ label="leaf=0.224456578" fontsize="128" ]
+
+    416 [ label="leaf=-0.236685082" fontsize="128" ]
+
+    380 [ label="leaf=0.920750499" fontsize="128" ]
+
+    308 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    308 -> 349 [label="yes" color="#FF0000"]
+    308 -> 350 [label="no, missing" color="#0000FF"]
+
+    349 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    349 -> 381 [label="yes" color="#FF0000"]
+    349 -> 382 [label="no, missing" color="#0000FF"]
+
+    381 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    381 -> 417 [label="yes" color="#FF0000"]
+    381 -> 418 [label="no, missing" color="#0000FF"]
+
+    417 [ label="edad1=40 to 44 years<1" fontsize="128" shape="rect" ]
+    417 -> 449 [label="yes" color="#FF0000"]
+    417 -> 450 [label="no, missing" color="#0000FF"]
+
+    449 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    449 -> 491 [label="yes" color="#FF0000"]
+    449 -> 492 [label="no, missing" color="#0000FF"]
+
+    491 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    491 -> 527 [label="yes" color="#FF0000"]
+    491 -> 528 [label="no, missing" color="#0000FF"]
+
+    527 [ label="leaf=0.561931729" fontsize="128" ]
+
+    528 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    528 -> 561 [label="yes" color="#FF0000"]
+    528 -> 562 [label="no, missing" color="#0000FF"]
+
+    561 [ label="leaf=0.0944580883" fontsize="128" ]
+
+    562 [ label="leaf=0.28602311" fontsize="128" ]
+
+    492 [ label="leaf=0.153401926" fontsize="128" ]
+
+    450 [ label="leaf=-0.0989535004" fontsize="128" ]
+
+    418 [ label="edad1=25 to 29 years<1" fontsize="128" shape="rect" ]
+    418 -> 451 [label="yes" color="#FF0000"]
+    418 -> 452 [label="no, missing" color="#0000FF"]
+
+    451 [ label="edad1=20 to 24 years<1" fontsize="128" shape="rect" ]
+    451 -> 493 [label="yes" color="#FF0000"]
+    451 -> 494 [label="no, missing" color="#0000FF"]
+
+    493 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    493 -> 529 [label="yes" color="#FF0000"]
+    493 -> 530 [label="no, missing" color="#0000FF"]
+
+    529 [ label="leaf=-0.281447828" fontsize="128" ]
+
+    530 [ label="leaf=-0.482398689" fontsize="128" ]
+
+    494 [ label="leaf=-0.179858923" fontsize="128" ]
+
+    452 [ label="leaf=0.408838481" fontsize="128" ]
+
+    382 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    382 -> 419 [label="yes" color="#FF0000"]
+    382 -> 420 [label="no, missing" color="#0000FF"]
+
+    419 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    419 -> 453 [label="yes" color="#FF0000"]
+    419 -> 454 [label="no, missing" color="#0000FF"]
+
+    453 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    453 -> 495 [label="yes" color="#FF0000"]
+    453 -> 496 [label="no, missing" color="#0000FF"]
+
+    495 [ label="leaf=-0.259236515" fontsize="128" ]
+
+    496 [ label="leaf=-0.164801359" fontsize="128" ]
+
+    454 [ label="leaf=0.0446322821" fontsize="128" ]
+
+    420 [ label="leaf=-0.694134474" fontsize="128" ]
+
+    350 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    350 -> 383 [label="yes" color="#FF0000"]
+    350 -> 384 [label="no, missing" color="#0000FF"]
+
+    383 [ label="leaf=-0.873392105" fontsize="128" ]
+
+    384 [ label="leaf=-0.390884697" fontsize="128" ]
+
+    270 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    270 -> 309 [label="yes" color="#FF0000"]
+    270 -> 310 [label="no, missing" color="#0000FF"]
+
+    309 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    309 -> 351 [label="yes" color="#FF0000"]
+    309 -> 352 [label="no, missing" color="#0000FF"]
+
+    351 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    351 -> 385 [label="yes" color="#FF0000"]
+    351 -> 386 [label="no, missing" color="#0000FF"]
+
+    385 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    385 -> 421 [label="yes" color="#FF0000"]
+    385 -> 422 [label="no, missing" color="#0000FF"]
+
+    421 [ label="leaf=-0.486306697" fontsize="128" ]
+
+    422 [ label="leaf=-0.251389027" fontsize="128" ]
+
+    386 [ label="leaf=-0.120028764" fontsize="128" ]
+
+    352 [ label="leaf=-0.0506495312" fontsize="128" ]
+
+    310 [ label="leaf=0.257256001" fontsize="128" ]
+
+    216 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    216 -> 241 [label="yes" color="#FF0000"]
+    216 -> 242 [label="no, missing" color="#0000FF"]
+
+    241 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    241 -> 271 [label="yes" color="#FF0000"]
+    241 -> 272 [label="no, missing" color="#0000FF"]
+
+    271 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    271 -> 311 [label="yes" color="#FF0000"]
+    271 -> 312 [label="no, missing" color="#0000FF"]
+
+    311 [ label="leaf=0.00909499824" fontsize="128" ]
+
+    312 [ label="leaf=0.293893546" fontsize="128" ]
+
+    272 [ label="leaf=0.640818596" fontsize="128" ]
+
+    242 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    242 -> 273 [label="yes" color="#FF0000"]
+    242 -> 274 [label="no, missing" color="#0000FF"]
+
+    273 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    273 -> 313 [label="yes" color="#FF0000"]
+    273 -> 314 [label="no, missing" color="#0000FF"]
+
+    313 [ label="leaf=0.391157687" fontsize="128" ]
+
+    314 [ label="leaf=-0.00607395684" fontsize="128" ]
+
+    274 [ label="leaf=-0.32588464" fontsize="128" ]
+
+    192 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    192 -> 217 [label="yes" color="#FF0000"]
+    192 -> 218 [label="no, missing" color="#0000FF"]
+
+    217 [ label="eciv1=Separated or divorced<1" fontsize="128" shape="rect" ]
+    217 -> 243 [label="yes" color="#FF0000"]
+    217 -> 244 [label="no, missing" color="#0000FF"]
+
+    243 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    243 -> 275 [label="yes" color="#FF0000"]
+    243 -> 276 [label="no, missing" color="#0000FF"]
+
+    275 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    275 -> 315 [label="yes" color="#FF0000"]
+    275 -> 316 [label="no, missing" color="#0000FF"]
+
+    315 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    315 -> 353 [label="yes" color="#FF0000"]
+    315 -> 354 [label="no, missing" color="#0000FF"]
+
+    353 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    353 -> 387 [label="yes" color="#FF0000"]
+    353 -> 388 [label="no, missing" color="#0000FF"]
+
+    387 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    387 -> 423 [label="yes" color="#FF0000"]
+    387 -> 424 [label="no, missing" color="#0000FF"]
+
+    423 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    423 -> 455 [label="yes" color="#FF0000"]
+    423 -> 456 [label="no, missing" color="#0000FF"]
+
+    455 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    455 -> 497 [label="yes" color="#FF0000"]
+    455 -> 498 [label="no, missing" color="#0000FF"]
+
+    497 [ label="leaf=0.0926870629" fontsize="128" ]
+
+    498 [ label="leaf=-0.00122888456" fontsize="128" ]
+
+    456 [ label="leaf=-0.612665176" fontsize="128" ]
+
+    424 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    424 -> 457 [label="yes" color="#FF0000"]
+    424 -> 458 [label="no, missing" color="#0000FF"]
+
+    457 [ label="leaf=-0.157565564" fontsize="128" ]
+
+    458 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    458 -> 499 [label="yes" color="#FF0000"]
+    458 -> 500 [label="no, missing" color="#0000FF"]
+
+    499 [ label="leaf=0.134096682" fontsize="128" ]
+
+    500 [ label="leaf=0.355692327" fontsize="128" ]
+
+    388 [ label="leaf=0.121004894" fontsize="128" ]
+
+    354 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    354 -> 389 [label="yes" color="#FF0000"]
+    354 -> 390 [label="no, missing" color="#0000FF"]
+
+    389 [ label="leaf=0.322444171" fontsize="128" ]
+
+    390 [ label="leaf=0.171603471" fontsize="128" ]
+
+    316 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    316 -> 355 [label="yes" color="#FF0000"]
+    316 -> 356 [label="no, missing" color="#0000FF"]
+
+    355 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    355 -> 391 [label="yes" color="#FF0000"]
+    355 -> 392 [label="no, missing" color="#0000FF"]
+
+    391 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    391 -> 425 [label="yes" color="#FF0000"]
+    391 -> 426 [label="no, missing" color="#0000FF"]
+
+    425 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    425 -> 459 [label="yes" color="#FF0000"]
+    425 -> 460 [label="no, missing" color="#0000FF"]
+
+    459 [ label="leaf=0.0604866706" fontsize="128" ]
+
+    460 [ label="leaf=0.153374404" fontsize="128" ]
+
+    426 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    426 -> 461 [label="yes" color="#FF0000"]
+    426 -> 462 [label="no, missing" color="#0000FF"]
+
+    461 [ label="leaf=0.572904229" fontsize="128" ]
+
+    462 [ label="leaf=0.325114459" fontsize="128" ]
+
+    392 [ label="leaf=0.102142937" fontsize="128" ]
+
+    356 [ label="leaf=0.0132482992" fontsize="128" ]
+
+    276 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    276 -> 317 [label="yes" color="#FF0000"]
+    276 -> 318 [label="no, missing" color="#0000FF"]
+
+    317 [ label="leaf=0.562782764" fontsize="128" ]
+
+    318 [ label="leaf=0.0793977529" fontsize="128" ]
+
+    244 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    244 -> 277 [label="yes" color="#FF0000"]
+    244 -> 278 [label="no, missing" color="#0000FF"]
+
+    277 [ label="leaf=0.59133631" fontsize="128" ]
+
+    278 [ label="leaf=0.047665745" fontsize="128" ]
+
+    218 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    218 -> 245 [label="yes" color="#FF0000"]
+    218 -> 246 [label="no, missing" color="#0000FF"]
+
+    245 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    245 -> 279 [label="yes" color="#FF0000"]
+    245 -> 280 [label="no, missing" color="#0000FF"]
+
+    279 [ label="leaf=0.0980147645" fontsize="128" ]
+
+    280 [ label="leaf=-0.0152692478" fontsize="128" ]
+
+    246 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    246 -> 281 [label="yes" color="#FF0000"]
+    246 -> 282 [label="no, missing" color="#0000FF"]
+
+    281 [ label="leaf=-0.0544769838" fontsize="128" ]
+
+    282 [ label="leaf=-0.311081856" fontsize="128" ]
+
+    172 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    172 -> 193 [label="yes" color="#FF0000"]
+    172 -> 194 [label="no, missing" color="#0000FF"]
+
+    193 [ label="edad1=25 to 29 years<1" fontsize="128" shape="rect" ]
+    193 -> 219 [label="yes" color="#FF0000"]
+    193 -> 220 [label="no, missing" color="#0000FF"]
+
+    219 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    219 -> 247 [label="yes" color="#FF0000"]
+    219 -> 248 [label="no, missing" color="#0000FF"]
+
+    247 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    247 -> 283 [label="yes" color="#FF0000"]
+    247 -> 284 [label="no, missing" color="#0000FF"]
+
+    283 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    283 -> 319 [label="yes" color="#FF0000"]
+    283 -> 320 [label="no, missing" color="#0000FF"]
+
+    319 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    319 -> 357 [label="yes" color="#FF0000"]
+    319 -> 358 [label="no, missing" color="#0000FF"]
+
+    357 [ label="leaf=0.139473811" fontsize="128" ]
+
+    358 [ label="leaf=-0.206836656" fontsize="128" ]
+
+    320 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    320 -> 359 [label="yes" color="#FF0000"]
+    320 -> 360 [label="no, missing" color="#0000FF"]
+
+    359 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    359 -> 393 [label="yes" color="#FF0000"]
+    359 -> 394 [label="no, missing" color="#0000FF"]
+
+    393 [ label="leaf=0.236187473" fontsize="128" ]
+
+    394 [ label="leaf=0.0266157277" fontsize="128" ]
+
+    360 [ label="leaf=0.419866681" fontsize="128" ]
+
+    284 [ label="leaf=0.438213229" fontsize="128" ]
+
+    248 [ label="leaf=0.477277935" fontsize="128" ]
+
+    220 [ label="leaf=0.719876528" fontsize="128" ]
+
+    194 [ label="leaf=-0.125519305" fontsize="128" ]
+
+    144 [ label="edad1=30 to 34 years<1" fontsize="128" shape="rect" ]
+    144 -> 173 [label="yes" color="#FF0000"]
+    144 -> 174 [label="no, missing" color="#0000FF"]
+
+    173 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    173 -> 195 [label="yes" color="#FF0000"]
+    173 -> 196 [label="no, missing" color="#0000FF"]
+
+    195 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    195 -> 221 [label="yes" color="#FF0000"]
+    195 -> 222 [label="no, missing" color="#0000FF"]
+
+    221 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    221 -> 249 [label="yes" color="#FF0000"]
+    221 -> 250 [label="no, missing" color="#0000FF"]
+
+    249 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    249 -> 285 [label="yes" color="#FF0000"]
+    249 -> 286 [label="no, missing" color="#0000FF"]
+
+    285 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    285 -> 321 [label="yes" color="#FF0000"]
+    285 -> 322 [label="no, missing" color="#0000FF"]
+
+    321 [ label="leaf=-0.357087702" fontsize="128" ]
+
+    322 [ label="leaf=0.0263421852" fontsize="128" ]
+
+    286 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    286 -> 323 [label="yes" color="#FF0000"]
+    286 -> 324 [label="no, missing" color="#0000FF"]
+
+    323 [ label="leaf=-0.596217811" fontsize="128" ]
+
+    324 [ label="leaf=-0.411737502" fontsize="128" ]
+
+    250 [ label="leaf=-0.961196065" fontsize="128" ]
+
+    222 [ label="nforma=Primary education<1" fontsize="128" shape="rect" ]
+    222 -> 251 [label="yes" color="#FF0000"]
+    222 -> 252 [label="no, missing" color="#0000FF"]
+
+    251 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    251 -> 287 [label="yes" color="#FF0000"]
+    251 -> 288 [label="no, missing" color="#0000FF"]
+
+    287 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    287 -> 325 [label="yes" color="#FF0000"]
+    287 -> 326 [label="no, missing" color="#0000FF"]
+
+    325 [ label="leaf=0.110979758" fontsize="128" ]
+
+    326 [ label="leaf=-0.178993866" fontsize="128" ]
+
+    288 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    288 -> 327 [label="yes" color="#FF0000"]
+    288 -> 328 [label="no, missing" color="#0000FF"]
+
+    327 [ label="leaf=-0.678735197" fontsize="128" ]
+
+    328 [ label="leaf=-0.361884415" fontsize="128" ]
+
+    252 [ label="leaf=0.658237159" fontsize="128" ]
+
+    196 [ label="edad1=40 to 44 years<1" fontsize="128" shape="rect" ]
+    196 -> 223 [label="yes" color="#FF0000"]
+    196 -> 224 [label="no, missing" color="#0000FF"]
+
+    223 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    223 -> 253 [label="yes" color="#FF0000"]
+    223 -> 254 [label="no, missing" color="#0000FF"]
+
+    253 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    253 -> 289 [label="yes" color="#FF0000"]
+    253 -> 290 [label="no, missing" color="#0000FF"]
+
+    289 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    289 -> 329 [label="yes" color="#FF0000"]
+    289 -> 330 [label="no, missing" color="#0000FF"]
+
+    329 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    329 -> 361 [label="yes" color="#FF0000"]
+    329 -> 362 [label="no, missing" color="#0000FF"]
+
+    361 [ label="leaf=0.349207312" fontsize="128" ]
+
+    362 [ label="leaf=0.0234955903" fontsize="128" ]
+
+    330 [ label="leaf=-0.15424946" fontsize="128" ]
+
+    290 [ label="leaf=-0.185508728" fontsize="128" ]
+
+    254 [ label="edad1=25 to 29 years<1" fontsize="128" shape="rect" ]
+    254 -> 291 [label="yes" color="#FF0000"]
+    254 -> 292 [label="no, missing" color="#0000FF"]
+
+    291 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    291 -> 331 [label="yes" color="#FF0000"]
+    291 -> 332 [label="no, missing" color="#0000FF"]
+
+    331 [ label="leaf=-0.0320572704" fontsize="128" ]
+
+    332 [ label="leaf=-0.426851869" fontsize="128" ]
+
+    292 [ label="leaf=-0.601551116" fontsize="128" ]
+
+    224 [ label="leaf=0.443092436" fontsize="128" ]
+
+    174 [ label="leaf=0.388139188" fontsize="128" ]
+
+    124 [ label="eciv1=Separated or divorced<1" fontsize="128" shape="rect" ]
+    124 -> 145 [label="yes" color="#FF0000"]
+    124 -> 146 [label="no, missing" color="#0000FF"]
+
+    145 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    145 -> 175 [label="yes" color="#FF0000"]
+    145 -> 176 [label="no, missing" color="#0000FF"]
+
+    175 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    175 -> 197 [label="yes" color="#FF0000"]
+    175 -> 198 [label="no, missing" color="#0000FF"]
+
+    197 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    197 -> 225 [label="yes" color="#FF0000"]
+    197 -> 226 [label="no, missing" color="#0000FF"]
+
+    225 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    225 -> 255 [label="yes" color="#FF0000"]
+    225 -> 256 [label="no, missing" color="#0000FF"]
+
+    255 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    255 -> 293 [label="yes" color="#FF0000"]
+    255 -> 294 [label="no, missing" color="#0000FF"]
+
+    293 [ label="leaf=-0.112598412" fontsize="128" ]
+
+    294 [ label="leaf=0.215094194" fontsize="128" ]
+
+    256 [ label="leaf=0.538979352" fontsize="128" ]
+
+    226 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    226 -> 257 [label="yes" color="#FF0000"]
+    226 -> 258 [label="no, missing" color="#0000FF"]
+
+    257 [ label="leaf=0.0797331184" fontsize="128" ]
+
+    258 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    258 -> 295 [label="yes" color="#FF0000"]
+    258 -> 296 [label="no, missing" color="#0000FF"]
+
+    295 [ label="leaf=0.0546915196" fontsize="128" ]
+
+    296 [ label="leaf=-0.201932326" fontsize="128" ]
+
+    198 [ label="leaf=0.740381718" fontsize="128" ]
+
+    176 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    176 -> 199 [label="yes" color="#FF0000"]
+    176 -> 200 [label="no, missing" color="#0000FF"]
+
+    199 [ label="leaf=0.205292329" fontsize="128" ]
+
+    200 [ label="leaf=1.06401241" fontsize="128" ]
+
+    146 [ label="leaf=-0.217452034" fontsize="128" ]
+
+    104 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    104 -> 125 [label="yes" color="#FF0000"]
+    104 -> 126 [label="no, missing" color="#0000FF"]
+
+    125 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    125 -> 147 [label="yes" color="#FF0000"]
+    125 -> 148 [label="no, missing" color="#0000FF"]
+
+    147 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    147 -> 177 [label="yes" color="#FF0000"]
+    147 -> 178 [label="no, missing" color="#0000FF"]
+
+    177 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    177 -> 201 [label="yes" color="#FF0000"]
+    177 -> 202 [label="no, missing" color="#0000FF"]
+
+    201 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    201 -> 227 [label="yes" color="#FF0000"]
+    201 -> 228 [label="no, missing" color="#0000FF"]
+
+    227 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    227 -> 259 [label="yes" color="#FF0000"]
+    227 -> 260 [label="no, missing" color="#0000FF"]
+
+    259 [ label="leaf=0.526017368" fontsize="128" ]
+
+    260 [ label="leaf=0.318173051" fontsize="128" ]
+
+    228 [ label="leaf=0.671115279" fontsize="128" ]
+
+    202 [ label="leaf=0.249644995" fontsize="128" ]
+
+    178 [ label="leaf=0.204820186" fontsize="128" ]
+
+    148 [ label="leaf=0.194265604" fontsize="128" ]
+
+    126 [ label="leaf=-0.00406611897" fontsize="128" ]
+
+    88 [ label="edad1=40 to 44 years<1" fontsize="128" shape="rect" ]
+    88 -> 105 [label="yes" color="#FF0000"]
+    88 -> 106 [label="no, missing" color="#0000FF"]
+
+    105 [ label="edad1=30 to 34 years<1" fontsize="128" shape="rect" ]
+    105 -> 127 [label="yes" color="#FF0000"]
+    105 -> 128 [label="no, missing" color="#0000FF"]
+
+    127 [ label="edad1=35 to 39 years<1" fontsize="128" shape="rect" ]
+    127 -> 149 [label="yes" color="#FF0000"]
+    127 -> 150 [label="no, missing" color="#0000FF"]
+
+    149 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    149 -> 179 [label="yes" color="#FF0000"]
+    149 -> 180 [label="no, missing" color="#0000FF"]
+
+    179 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    179 -> 203 [label="yes" color="#FF0000"]
+    179 -> 204 [label="no, missing" color="#0000FF"]
+
+    203 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    203 -> 229 [label="yes" color="#FF0000"]
+    203 -> 230 [label="no, missing" color="#0000FF"]
+
+    229 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    229 -> 261 [label="yes" color="#FF0000"]
+    229 -> 262 [label="no, missing" color="#0000FF"]
+
+    261 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    261 -> 297 [label="yes" color="#FF0000"]
+    261 -> 298 [label="no, missing" color="#0000FF"]
+
+    297 [ label="edad1=20 to 24 years<1" fontsize="128" shape="rect" ]
+    297 -> 333 [label="yes" color="#FF0000"]
+    297 -> 334 [label="no, missing" color="#0000FF"]
+
+    333 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    333 -> 363 [label="yes" color="#FF0000"]
+    333 -> 364 [label="no, missing" color="#0000FF"]
+
+    363 [ label="edad1=25 to 29 years<1" fontsize="128" shape="rect" ]
+    363 -> 395 [label="yes" color="#FF0000"]
+    363 -> 396 [label="no, missing" color="#0000FF"]
+
+    395 [ label="leaf=-0.0221691187" fontsize="128" ]
+
+    396 [ label="leaf=0.112500794" fontsize="128" ]
+
+    364 [ label="leaf=0.448976815" fontsize="128" ]
+
+    334 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    334 -> 365 [label="yes" color="#FF0000"]
+    334 -> 366 [label="no, missing" color="#0000FF"]
+
+    365 [ label="leaf=0.042653013" fontsize="128" ]
+
+    366 [ label="leaf=-0.119635791" fontsize="128" ]
+
+    298 [ label="eciv1=Separated or divorced<1" fontsize="128" shape="rect" ]
+    298 -> 335 [label="yes" color="#FF0000"]
+    298 -> 336 [label="no, missing" color="#0000FF"]
+
+    335 [ label="leaf=-0.178012669" fontsize="128" ]
+
+    336 [ label="leaf=-0.335186601" fontsize="128" ]
+
+    262 [ label="leaf=-0.347972363" fontsize="128" ]
+
+    230 [ label="leaf=0.382466197" fontsize="128" ]
+
+    204 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    204 -> 231 [label="yes" color="#FF0000"]
+    204 -> 232 [label="no, missing" color="#0000FF"]
+
+    231 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    231 -> 263 [label="yes" color="#FF0000"]
+    231 -> 264 [label="no, missing" color="#0000FF"]
+
+    263 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    263 -> 299 [label="yes" color="#FF0000"]
+    263 -> 300 [label="no, missing" color="#0000FF"]
+
+    299 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    299 -> 337 [label="yes" color="#FF0000"]
+    299 -> 338 [label="no, missing" color="#0000FF"]
+
+    337 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    337 -> 367 [label="yes" color="#FF0000"]
+    337 -> 368 [label="no, missing" color="#0000FF"]
+
+    367 [ label="leaf=-0.158053428" fontsize="128" ]
+
+    368 [ label="leaf=0.394131541" fontsize="128" ]
+
+    338 [ label="leaf=0.42155534" fontsize="128" ]
+
+    300 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    300 -> 339 [label="yes" color="#FF0000"]
+    300 -> 340 [label="no, missing" color="#0000FF"]
+
+    339 [ label="leaf=0.66713804" fontsize="128" ]
+
+    340 [ label="leaf=0.308344662" fontsize="128" ]
+
+    264 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    264 -> 301 [label="yes" color="#FF0000"]
+    264 -> 302 [label="no, missing" color="#0000FF"]
+
+    301 [ label="leaf=-0.252607316" fontsize="128" ]
+
+    302 [ label="leaf=0.454494119" fontsize="128" ]
+
+    232 [ label="leaf=-0.165353134" fontsize="128" ]
+
+    180 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    180 -> 205 [label="yes" color="#FF0000"]
+    180 -> 206 [label="no, missing" color="#0000FF"]
+
+    205 [ label="leaf=0.57802546" fontsize="128" ]
+
+    206 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    206 -> 233 [label="yes" color="#FF0000"]
+    206 -> 234 [label="no, missing" color="#0000FF"]
+
+    233 [ label="leaf=0.275242776" fontsize="128" ]
+
+    234 [ label="leaf=-0.149801657" fontsize="128" ]
+
+    150 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    150 -> 181 [label="yes" color="#FF0000"]
+    150 -> 182 [label="no, missing" color="#0000FF"]
+
+    181 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    181 -> 207 [label="yes" color="#FF0000"]
+    181 -> 208 [label="no, missing" color="#0000FF"]
+
+    207 [ label="leaf=0.0410929807" fontsize="128" ]
+
+    208 [ label="leaf=0.393452495" fontsize="128" ]
+
+    182 [ label="leaf=0.567907929" fontsize="128" ]
+
+    128 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    128 -> 151 [label="yes" color="#FF0000"]
+    128 -> 152 [label="no, missing" color="#0000FF"]
+
+    151 [ label="leaf=0.285051644" fontsize="128" ]
+
+    152 [ label="leaf=0.795705855" fontsize="128" ]
+
+    106 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    106 -> 129 [label="yes" color="#FF0000"]
+    106 -> 130 [label="no, missing" color="#0000FF"]
+
+    129 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    129 -> 153 [label="yes" color="#FF0000"]
+    129 -> 154 [label="no, missing" color="#0000FF"]
+
+    153 [ label="leaf=-0.130878806" fontsize="128" ]
+
+    154 [ label="leaf=-0.301339567" fontsize="128" ]
+
+    130 [ label="leaf=0.0819252655" fontsize="128" ]
+
+    64 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    64 -> 89 [label="yes" color="#FF0000"]
+    64 -> 90 [label="no, missing" color="#0000FF"]
+
+    89 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    89 -> 107 [label="yes" color="#FF0000"]
+    89 -> 108 [label="no, missing" color="#0000FF"]
+
+    107 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    107 -> 131 [label="yes" color="#FF0000"]
+    107 -> 132 [label="no, missing" color="#0000FF"]
+
+    131 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    131 -> 155 [label="yes" color="#FF0000"]
+    131 -> 156 [label="no, missing" color="#0000FF"]
+
+    155 [ label="leaf=0.909888625" fontsize="128" ]
+
+    156 [ label="leaf=0.564097881" fontsize="128" ]
+
+    132 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    132 -> 157 [label="yes" color="#FF0000"]
+    132 -> 158 [label="no, missing" color="#0000FF"]
+
+    157 [ label="leaf=0.444703102" fontsize="128" ]
+
+    158 [ label="leaf=0.0526219085" fontsize="128" ]
+
+    108 [ label="leaf=-0.0843243077" fontsize="128" ]
+
+    90 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    90 -> 109 [label="yes" color="#FF0000"]
+    90 -> 110 [label="no, missing" color="#0000FF"]
+
+    109 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    109 -> 133 [label="yes" color="#FF0000"]
+    109 -> 134 [label="no, missing" color="#0000FF"]
+
+    133 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    133 -> 159 [label="yes" color="#FF0000"]
+    133 -> 160 [label="no, missing" color="#0000FF"]
+
+    159 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    159 -> 183 [label="yes" color="#FF0000"]
+    159 -> 184 [label="no, missing" color="#0000FF"]
+
+    183 [ label="leaf=0.555834353" fontsize="128" ]
+
+    184 [ label="leaf=0.205243811" fontsize="128" ]
+
+    160 [ label="leaf=0.0652994439" fontsize="128" ]
+
+    134 [ label="leaf=-0.0707244202" fontsize="128" ]
+
+    110 [ label="leaf=-0.423825443" fontsize="128" ]
+
+    46 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    46 -> 65 [label="yes" color="#FF0000"]
+    46 -> 66 [label="no, missing" color="#0000FF"]
+
+    65 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    65 -> 91 [label="yes" color="#FF0000"]
+    65 -> 92 [label="no, missing" color="#0000FF"]
+
+    91 [ label="leaf=-0.518135846" fontsize="128" ]
+
+    92 [ label="leaf=-0.0761128813" fontsize="128" ]
+
+    66 [ label="leaf=-0.876637101" fontsize="128" ]
+
+    30 [ label="edad1=45 to 49 years<1" fontsize="128" shape="rect" ]
+    30 -> 47 [label="yes" color="#FF0000"]
+    30 -> 48 [label="no, missing" color="#0000FF"]
+
+    47 [ label="edad1=20 to 24 years<1" fontsize="128" shape="rect" ]
+    47 -> 67 [label="yes" color="#FF0000"]
+    47 -> 68 [label="no, missing" color="#0000FF"]
+
+    67 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    67 -> 93 [label="yes" color="#FF0000"]
+    67 -> 94 [label="no, missing" color="#0000FF"]
+
+    93 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    93 -> 111 [label="yes" color="#FF0000"]
+    93 -> 112 [label="no, missing" color="#0000FF"]
+
+    111 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    111 -> 135 [label="yes" color="#FF0000"]
+    111 -> 136 [label="no, missing" color="#0000FF"]
+
+    135 [ label="edad1=60 to 64 years<1" fontsize="128" shape="rect" ]
+    135 -> 161 [label="yes" color="#FF0000"]
+    135 -> 162 [label="no, missing" color="#0000FF"]
+
+    161 [ label="leaf=0.211092725" fontsize="128" ]
+
+    162 [ label="leaf=0.615041077" fontsize="128" ]
+
+    136 [ label="leaf=0.077560313" fontsize="128" ]
+
+    112 [ label="leaf=0.932736456" fontsize="128" ]
+
+    94 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    94 -> 113 [label="yes" color="#FF0000"]
+    94 -> 114 [label="no, missing" color="#0000FF"]
+
+    113 [ label="edad1=50 to 54 years<1" fontsize="128" shape="rect" ]
+    113 -> 137 [label="yes" color="#FF0000"]
+    113 -> 138 [label="no, missing" color="#0000FF"]
+
+    137 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    137 -> 163 [label="yes" color="#FF0000"]
+    137 -> 164 [label="no, missing" color="#0000FF"]
+
+    163 [ label="leaf=0.442550957" fontsize="128" ]
+
+    164 [ label="leaf=0.118625902" fontsize="128" ]
+
+    138 [ label="leaf=-0.0876147598" fontsize="128" ]
+
+    114 [ label="leaf=-0.200909555" fontsize="128" ]
+
+    68 [ label="leaf=0.67813319" fontsize="128" ]
+
+    48 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    48 -> 69 [label="yes" color="#FF0000"]
+    48 -> 70 [label="no, missing" color="#0000FF"]
+
+    69 [ label="leaf=1.01788354" fontsize="128" ]
+
+    70 [ label="leaf=0.296201646" fontsize="128" ]
+
+    16 [ label="edad1=55 to 59 years<1" fontsize="128" shape="rect" ]
+    16 -> 31 [label="yes" color="#FF0000"]
+    16 -> 32 [label="no, missing" color="#0000FF"]
+
+    31 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    31 -> 49 [label="yes" color="#FF0000"]
+    31 -> 50 [label="no, missing" color="#0000FF"]
+
+    49 [ label="leaf=-0.936809897" fontsize="128" ]
+
+    50 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    50 -> 71 [label="yes" color="#FF0000"]
+    50 -> 72 [label="no, missing" color="#0000FF"]
+
+    71 [ label="leaf=-0.459283233" fontsize="128" ]
+
+    72 [ label="leaf=-0.165394202" fontsize="128" ]
+
+    32 [ label="leaf=0.0507777035" fontsize="128" ]
+
+    8 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    8 -> 17 [label="yes" color="#FF0000"]
+    8 -> 18 [label="no, missing" color="#0000FF"]
+
+    17 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    17 -> 33 [label="yes" color="#FF0000"]
+    17 -> 34 [label="no, missing" color="#0000FF"]
+
+    33 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    33 -> 51 [label="yes" color="#FF0000"]
+    33 -> 52 [label="no, missing" color="#0000FF"]
+
+    51 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    51 -> 73 [label="yes" color="#FF0000"]
+    51 -> 74 [label="no, missing" color="#0000FF"]
+
+    73 [ label="leaf=-0.487689614" fontsize="128" ]
+
+    74 [ label="leaf=-0.0818520933" fontsize="128" ]
+
+    52 [ label="leaf=-0.822995603" fontsize="128" ]
+
+    34 [ label="leaf=-1.05836034" fontsize="128" ]
+
+    18 [ label="leaf=-1.19105387" fontsize="128" ]
+
+    4 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    4 -> 9 [label="yes" color="#FF0000"]
+    4 -> 10 [label="no, missing" color="#0000FF"]
+
+    9 [ label="nforma=Upper secondary education — general track<1" fontsize="128" shape="rect" ]
+    9 -> 19 [label="yes" color="#FF0000"]
+    9 -> 20 [label="no, missing" color="#0000FF"]
+
+    19 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    19 -> 35 [label="yes" color="#FF0000"]
+    19 -> 36 [label="no, missing" color="#0000FF"]
+
+    35 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    35 -> 53 [label="yes" color="#FF0000"]
+    35 -> 54 [label="no, missing" color="#0000FF"]
+
+    53 [ label="prov=Madrid<1" fontsize="128" shape="rect" ]
+    53 -> 75 [label="yes" color="#FF0000"]
+    53 -> 76 [label="no, missing" color="#0000FF"]
+
+    75 [ label="leaf=-0.696821928" fontsize="128" ]
+
+    76 [ label="leaf=-0.954501629" fontsize="128" ]
+
+    54 [ label="prov=València<1" fontsize="128" shape="rect" ]
+    54 -> 77 [label="yes" color="#FF0000"]
+    54 -> 78 [label="no, missing" color="#0000FF"]
+
+    77 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    77 -> 95 [label="yes" color="#FF0000"]
+    77 -> 96 [label="no, missing" color="#0000FF"]
+
+    95 [ label="leaf=-0.750514805" fontsize="128" ]
+
+    96 [ label="leaf=-0.554219306" fontsize="128" ]
+
+    78 [ label="leaf=-0.0822533667" fontsize="128" ]
+
+    36 [ label="leaf=-0.0245320573" fontsize="128" ]
+
+    20 [ label="prov=Balears, Illes<1" fontsize="128" shape="rect" ]
+    20 -> 37 [label="yes" color="#FF0000"]
+    20 -> 38 [label="no, missing" color="#0000FF"]
+
+    37 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    37 -> 55 [label="yes" color="#FF0000"]
+    37 -> 56 [label="no, missing" color="#0000FF"]
+
+    55 [ label="leaf=-0.506345332" fontsize="128" ]
+
+    56 [ label="leaf=-0.340657264" fontsize="128" ]
+
+    38 [ label="leaf=-0.0297615658" fontsize="128" ]
+
+    10 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    10 -> 21 [label="yes" color="#FF0000"]
+    10 -> 22 [label="no, missing" color="#0000FF"]
+
+    21 [ label="leaf=-0.0972741544" fontsize="128" ]
+
+    22 [ label="leaf=-0.0348170288" fontsize="128" ]
+
+    2 [ label="nforma=Higher education<1" fontsize="128" shape="rect" ]
+    2 -> 5 [label="yes" color="#FF0000"]
+    2 -> 6 [label="no, missing" color="#0000FF"]
+
+    5 [ label="eciv1=Widowed<1" fontsize="128" shape="rect" ]
+    5 -> 11 [label="yes" color="#FF0000"]
+    5 -> 12 [label="no, missing" color="#0000FF"]
+
+    11 [ label="nforma=Primary education<1" fontsize="128" shape="rect" ]
+    11 -> 23 [label="yes" color="#FF0000"]
+    11 -> 24 [label="no, missing" color="#0000FF"]
+
+    23 [ label="nforma=Incomplete primary education<1" fontsize="128" shape="rect" ]
+    23 -> 39 [label="yes" color="#FF0000"]
+    23 -> 40 [label="no, missing" color="#0000FF"]
+
+    39 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    39 -> 57 [label="yes" color="#FF0000"]
+    39 -> 58 [label="no, missing" color="#0000FF"]
+
+    57 [ label="prov=Asturias<1" fontsize="128" shape="rect" ]
+    57 -> 79 [label="yes" color="#FF0000"]
+    57 -> 80 [label="no, missing" color="#0000FF"]
+
+    79 [ label="nforma=Upper secondary education — vocational track<1" fontsize="128" shape="rect" ]
+    79 -> 97 [label="yes" color="#FF0000"]
+    79 -> 98 [label="no, missing" color="#0000FF"]
+
+    97 [ label="leaf=-0.684492946" fontsize="128" ]
+
+    98 [ label="eciv1=Separated or divorced<1" fontsize="128" shape="rect" ]
+    98 -> 115 [label="yes" color="#FF0000"]
+    98 -> 116 [label="no, missing" color="#0000FF"]
+
+    115 [ label="leaf=-0.0468160473" fontsize="128" ]
+
+    116 [ label="leaf=-0.726956606" fontsize="128" ]
+
+    80 [ label="leaf=-0.167735189" fontsize="128" ]
+
+    58 [ label="prov=Coruña, A<1" fontsize="128" shape="rect" ]
+    58 -> 81 [label="yes" color="#FF0000"]
+    58 -> 82 [label="no, missing" color="#0000FF"]
+
+    81 [ label="prov=Alacant<1" fontsize="128" shape="rect" ]
+    81 -> 99 [label="yes" color="#FF0000"]
+    81 -> 100 [label="no, missing" color="#0000FF"]
+
+    99 [ label="prov=Pontevedra<1" fontsize="128" shape="rect" ]
+    99 -> 117 [label="yes" color="#FF0000"]
+    99 -> 118 [label="no, missing" color="#0000FF"]
+
+    117 [ label="prov=Balears, Illes<1" fontsize="128" shape="rect" ]
+    117 -> 139 [label="yes" color="#FF0000"]
+    117 -> 140 [label="no, missing" color="#0000FF"]
+
+    139 [ label="prov=Zamora<1" fontsize="128" shape="rect" ]
+    139 -> 165 [label="yes" color="#FF0000"]
+    139 -> 166 [label="no, missing" color="#0000FF"]
+
+    165 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    165 -> 185 [label="yes" color="#FF0000"]
+    165 -> 186 [label="no, missing" color="#0000FF"]
+
+    185 [ label="prov=Zaragoza<1" fontsize="128" shape="rect" ]
+    185 -> 209 [label="yes" color="#FF0000"]
+    185 -> 210 [label="no, missing" color="#0000FF"]
+
+    209 [ label="leaf=-0.875251591" fontsize="128" ]
+
+    210 [ label="leaf=-0.513378501" fontsize="128" ]
+
+    186 [ label="prov=Málaga<1" fontsize="128" shape="rect" ]
+    186 -> 211 [label="yes" color="#FF0000"]
+    186 -> 212 [label="no, missing" color="#0000FF"]
+
+    211 [ label="prov=Salamanca<1" fontsize="128" shape="rect" ]
+    211 -> 235 [label="yes" color="#FF0000"]
+    211 -> 236 [label="no, missing" color="#0000FF"]
+
+    235 [ label="leaf=-0.794121385" fontsize="128" ]
+
+    236 [ label="leaf=-0.473437577" fontsize="128" ]
+
+    212 [ label="leaf=-0.466267169" fontsize="128" ]
+
+    166 [ label="leaf=-0.567869365" fontsize="128" ]
+
+    140 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    140 -> 167 [label="yes" color="#FF0000"]
+    140 -> 168 [label="no, missing" color="#0000FF"]
+
+    167 [ label="leaf=-0.765116632" fontsize="128" ]
+
+    168 [ label="leaf=-0.412391007" fontsize="128" ]
+
+    118 [ label="leaf=-0.473799467" fontsize="128" ]
+
+    100 [ label="nforma=Lower secondary education<1" fontsize="128" shape="rect" ]
+    100 -> 119 [label="yes" color="#FF0000"]
+    100 -> 120 [label="no, missing" color="#0000FF"]
+
+    119 [ label="leaf=-0.759669185" fontsize="128" ]
+
+    120 [ label="leaf=-0.3457461" fontsize="128" ]
+
+    82 [ label="leaf=-0.436058134" fontsize="128" ]
+
+    40 [ label="leaf=-1.04720104" fontsize="128" ]
+
+    24 [ label="prov=Santa Cruz de Tenerife<1" fontsize="128" shape="rect" ]
+    24 -> 41 [label="yes" color="#FF0000"]
+    24 -> 42 [label="no, missing" color="#0000FF"]
+
+    41 [ label="prov=Huesca<1" fontsize="128" shape="rect" ]
+    41 -> 59 [label="yes" color="#FF0000"]
+    41 -> 60 [label="no, missing" color="#0000FF"]
+
+    59 [ label="prov=Balears, Illes<1" fontsize="128" shape="rect" ]
+    59 -> 83 [label="yes" color="#FF0000"]
+    59 -> 84 [label="no, missing" color="#0000FF"]
+
+    83 [ label="leaf=-1.02228475" fontsize="128" ]
+
+    84 [ label="leaf=-0.696635962" fontsize="128" ]
+
+    60 [ label="leaf=-0.56072408" fontsize="128" ]
+
+    42 [ label="leaf=-0.486548901" fontsize="128" ]
+
+    12 [ label="leaf=-1.06969035" fontsize="128" ]
+
+    6 [ label="eciv1=Single<1" fontsize="128" shape="rect" ]
+    6 -> 13 [label="yes" color="#FF0000"]
+    6 -> 14 [label="no, missing" color="#0000FF"]
+
+    13 [ label="prov=Alacant<1" fontsize="128" shape="rect" ]
+    13 -> 25 [label="yes" color="#FF0000"]
+    13 -> 26 [label="no, missing" color="#0000FF"]
+
+    25 [ label="prov=Balears, Illes<1" fontsize="128" shape="rect" ]
+    25 -> 43 [label="yes" color="#FF0000"]
+    25 -> 44 [label="no, missing" color="#0000FF"]
+
+    43 [ label="prov=Pontevedra<1" fontsize="128" shape="rect" ]
+    43 -> 61 [label="yes" color="#FF0000"]
+    43 -> 62 [label="no, missing" color="#0000FF"]
+
+    61 [ label="eciv1=Widowed<1" fontsize="128" shape="rect" ]
+    61 -> 85 [label="yes" color="#FF0000"]
+    61 -> 86 [label="no, missing" color="#0000FF"]
+
+    85 [ label="prov=Sevilla<1" fontsize="128" shape="rect" ]
+    85 -> 101 [label="yes" color="#FF0000"]
+    85 -> 102 [label="no, missing" color="#0000FF"]
+
+    101 [ label="prov=València<1" fontsize="128" shape="rect" ]
+    101 -> 121 [label="yes" color="#FF0000"]
+    101 -> 122 [label="no, missing" color="#0000FF"]
+
+    121 [ label="prov=Valladolid<1" fontsize="128" shape="rect" ]
+    121 -> 141 [label="yes" color="#FF0000"]
+    121 -> 142 [label="no, missing" color="#0000FF"]
+
+    141 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    141 -> 169 [label="yes" color="#FF0000"]
+    141 -> 170 [label="no, missing" color="#0000FF"]
+
+    169 [ label="eciv1=Married<1" fontsize="128" shape="rect" ]
+    169 -> 187 [label="yes" color="#FF0000"]
+    169 -> 188 [label="no, missing" color="#0000FF"]
+
+    187 [ label="leaf=-0.48840645" fontsize="128" ]
+
+    188 [ label="leaf=-0.706351161" fontsize="128" ]
+
+    170 [ label="prov=Madrid<1" fontsize="128" shape="rect" ]
+    170 -> 189 [label="yes" color="#FF0000"]
+    170 -> 190 [label="no, missing" color="#0000FF"]
+
+    189 [ label="prov=Barcelona<1" fontsize="128" shape="rect" ]
+    189 -> 213 [label="yes" color="#FF0000"]
+    189 -> 214 [label="no, missing" color="#0000FF"]
+
+    213 [ label="prov=Zaragoza<1" fontsize="128" shape="rect" ]
+    213 -> 237 [label="yes" color="#FF0000"]
+    213 -> 238 [label="no, missing" color="#0000FF"]
+
+    237 [ label="prov=Navarra<1" fontsize="128" shape="rect" ]
+    237 -> 265 [label="yes" color="#FF0000"]
+    237 -> 266 [label="no, missing" color="#0000FF"]
+
+    265 [ label="leaf=-0.666278541" fontsize="128" ]
+
+    266 [ label="leaf=-0.366646349" fontsize="128" ]
+
+    238 [ label="leaf=-0.355561078" fontsize="128" ]
+
+    214 [ label="leaf=-0.346224457" fontsize="128" ]
+
+    190 [ label="leaf=-0.410265893" fontsize="128" ]
+
+    142 [ label="leaf=-0.905834794" fontsize="128" ]
+
+    122 [ label="leaf=-0.353538692" fontsize="128" ]
+
+    102 [ label="leaf=-0.284848958" fontsize="128" ]
+
+    86 [ label="leaf=-0.800511658" fontsize="128" ]
+
+    62 [ label="leaf=-0.330572844" fontsize="128" ]
+
+    44 [ label="leaf=-0.220941752" fontsize="128" ]
+
+    26 [ label="leaf=-0.158576071" fontsize="128" ]
+
+    14 [ label="sexo1=Man<1" fontsize="128" shape="rect" ]
+    14 -> 27 [label="yes" color="#FF0000"]
+    14 -> 28 [label="no, missing" color="#0000FF"]
+
+    27 [ label="leaf=-0.562153459" fontsize="128" ]
+
+    28 [ label="leaf=0.024154108" fontsize="128" ]
+}
