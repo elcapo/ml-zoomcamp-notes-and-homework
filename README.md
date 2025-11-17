@@ -2,73 +2,93 @@
 
 This repository contains my personal **notes and homework** of the [Machine Learning Zoomcamp](https://github.com/DataTalksClub/machine-learning-zoomcamp/).
 
-### Content
+### Notes
 
-| Module | Content | Editable Version | Readable Version |
-| --- | --- | --- | --- |
-| Welcome | **Launch Stream** | [Marimo Notebook](./notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/notes.html) |
-| Introduction to Machine Learning | **Notes**  | [Marimo Notebook](./module-1/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-1/notes.html) |
-| Introduction to Machine Learning | **Homework** | [Marimo Notebook](./module-1/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-1/homework.html) |
-| Linear Regression | **Notes** | [Marimo Notebook](./module-2/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-2/notes.html)
-| Linear Regression | **Homework** | [Marimo Notebook](./module-2/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-2/homework.html) |
-| Classification | **Notes** | [Marimo Notebook](./module-3/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/notes.html)
-| Classification | **Homework** | [Marimo Notebook](./module-3/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/homework.html) |
-| Evaluation | **Notes** | [Marimo Notebook](./module-4/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/notes.html)
-| Evaluation | **Homework** | [Marimo Notebook](./module-4/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/homework.html) |
-| Deployment | **Notes** | [Marimo Notebook](./module-5/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/notes.html)
-| Deployment | **Homework** | [Marimo Notebook](./module-5/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/homework.html) |
-| Decision Trees | **Notes** | [Marimo Notebook](./module-6/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-6/notes.html)
-| Decision Trees | **Homework** | [Marimo Notebook](./module-6/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-6/homework.html) |
+| Module | Editable Version | Readable Version |
+| --- | --- | --- |
+| Launch Stream | [Marimo Notebook](./notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/notes.html) |
+| Introduction to Machine Learning | [Marimo Notebook](./module-1/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-1/notes.html) |
+| Linear Regression | [Marimo Notebook](./module-2/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-2/notes.html)
+| Classification | [Marimo Notebook](./module-3/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/notes.html)
+| Evaluation | [Marimo Notebook](./module-4/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/notes.html)
+| Deployment | [Marimo Notebook](./module-5/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/notes.html)
+| Decision Trees | [Marimo Notebook](./module-6/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-6/notes.html)
+
+### Homework
+
+| Module | Editable Version | Readable Version |
+| --- | --- | --- |
+| Introduction to Machine Learning | [Marimo Notebook](./module-1/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-1/homework.html) |
+| Linear Regression | [Marimo Notebook](./module-2/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-2/homework.html) |
+| Classification | [Marimo Notebook](./module-3/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-3/homework.html) |
+| Evaluation | [Marimo Notebook](./module-4/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-4/homework.html) |
+| Deployment | [Marimo Notebook](./module-5/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/homework.html) |
+| Decision Trees | [Marimo Notebook](./module-6/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-6/homework.html) |
 
 ## Installation
 
-### Clone the Repository
+To download and edit a local copy of this project, follow this steps:
 
 ```bash
+# Clone the repository
 git clone https://github.com/elcapo/ml-zoomcamp-notes-and-homework
 cd ml-zoomcamp-notes-and-homework
-```
 
-### Create and Activate a Virtual Environment
-
-```bash
+# Create and activate a virtual environment
 python -m venv .venv
 source .venv/bin/activate
-```
 
-### Install Dependencies
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
+This will prepare an environment with all the dependencies needed to run all the notebooks, both for notes and homework.
+
 ## Edit the Notebooks
 
+Additionally, you may want to know these commands, which are useful for editing the notebooks and publishing changes
+
 ```bash
+# Edit the notebooks
 marimo edit
-```
 
-### Export the Results (as HTML)
-
-```bash
+# Publish the changes
 ./export.sh
 ```
 
-## Run the Model
+Note that this way of publishing the changes (saving the results as standalone HTML files) is slow, as all the code from each notebook has to be executed.
 
-To run the REST API implemented in module 5 that serves the model:
+As a more efficient alternative, you can use the "Download HTML" manual option whenever you finish editing a notebook.
+
+## Special Environments
+
+For certain projects, additional virtual environments are recommended.
+
+### REST API of Module 5
+
+To run the REST API implemented in module 5 that serves the model, these steps are recommended:
 
 ```bash
-source .venv/bin/activate
+# Change to the project folder
 cd module-5/
+
+# Deactivate any active virtual environment
+deactivate
+
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the model
 python -m model_package.api
 ```
 
-This will run the model "naked". If we want it in the context of a Docker container, we should do:
+This will run the model "naked". If you want to run it in the context of a Docker container, we should do:
 
 ```bash
-cd module-5/
-
 docker build -t ml-zoomcamp .
 docker run -d -p 5000:5000 -it ml-zoomcamp
 ```

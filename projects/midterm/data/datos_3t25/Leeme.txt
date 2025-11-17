@@ -1,0 +1,44 @@
+#########################################################################################################################				
+INSTITUTO NACIONAL DE ESTADÍSTICA	www.ine.es			
+				
+FICHEROS DE MICRODATOS				
+	ENCUESTA DE POBLACIÓN ACTIVA (EPA)			
+	PERIODO: 2025T3		
+				
+Leeme.txt 				
+############################################################				
+				
+Este directorio contiene:				
+				
+1- Este archivo (leeme.txt)				
+			
+2- El fichero de microdatos en formato txt, ancho fijo ("md_EPA_periodo.txt"). La longitud de cada				
+	variable se puede consultar en el fichero Excel del diseño de registro "dr_EPA_2021.xlsx"			
+3- Cinco directorios: CSV, R, SAS, SPSS, STATA				
+				
+Contenido de los directorios:				
+				
+1- El directorio  CSV contiene:				
+	a) El fichero de microdatos en formato CSV, el separador es la TABULACIÓN ("EPA_periodo.tab")			
+				
+2- El directorio R contiene:
+	a) El fichero de microdatos en formato RData ("EPA_periodo.RData")					
+
+3- El directorio SAS contiene:				
+	a) Fichero de microdatos en formato SAS, con los datos codificados (es decir,			
+	   las variables cualitativas son un código numérico, por ejemplo '40' en lugar			
+	   de 'Segovia') ("EPA_periodo.sas7bdat")			
+	b) Programa SAS con las sentencias para dar formato a las variables del fichero			
+	   de microdatos anterior ("EPA_periodo_conFormato.sas")			
+				
+4- El directorio SPSS contiene:				
+	a) Fichero de microdatos en formato SPSS, con los diccionarios de las variables			
+	   integrados ("EPA_periodo.sav")			
+	   			
+5- El directorio STATA contiene:				
+	a) Fichero de microdatos en formato STATA, sin los diccionarios de las variables			
+	   integrados ("EPA_periodo.dta"). Las etiquetas de las variables y valores pueden consultarse en el			
+	   fichero Excel del diseño de registro "dr_EPA_2021.xlsx"			
+	   			
+				
+#########################################################################################################################				
