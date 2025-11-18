@@ -12,7 +12,8 @@ def _():
     import matplotlib.pylab as plt
     import preprocess
     import process
-    return mo, pd, plt, preprocess, process
+    import model_selection
+    return mo, model_selection, plt, preprocess, process
 
 
 @app.cell(hide_code=True)
@@ -303,10 +304,8 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(X_train, pd, y_train):
+def _(X_train, model_selection, y_train):
     from time import time, sleep
-    from sklearn.model_selection import RandomizedSearchCV
-    from sklearn.ensemble import RandomForestClassifier
 
     random_forest_param_distributions = {
         "n_estimators": [50, 100, 200],
@@ -314,26 +313,12 @@ def _(X_train, pd, y_train):
         "min_samples_leaf": [1, 25, 50, 100, 500, 1000],
     }
 
-    def search_random_forest(X_train: pd.DataFrame, y_train: pd.DataFrame, param_distributions: dict) -> RandomizedSearchCV:
-        random_forest = RandomForestClassifier(random_state=1)
-        random_forest_search = RandomizedSearchCV(random_forest, param_distributions, scoring="roc_auc", n_jobs=8)
-        random_forest_search.fit(X_train, y_train)
-
-        return random_forest_search
-
     start_time = time()
-    random_forest_search = search_random_forest(X_train, y_train, random_forest_param_distributions)
+    random_forest_search = model_selection.search_random_forest(X_train, y_train, random_forest_param_distributions)
     end_time = time()
 
     print("Execution time: %s s" % int(end_time - start_time))
-    return (
-        RandomForestClassifier,
-        RandomizedSearchCV,
-        end_time,
-        random_forest_search,
-        start_time,
-        time,
-    )
+    return end_time, random_forest_search, start_time, time
 
 
 @app.cell(hide_code=True)
@@ -347,64 +332,14 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(RandomizedSearchCV, plt, random_forest_search):
-    def plot_experiments(search: RandomizedSearchCV):
-        fit_times = search.cv_results_["mean_fit_time"]
-        scores = search.cv_results_["mean_test_score"]
-
-        fig, ax_scores = plt.subplots(figsize=(12, 6))
-        ax_fit_times = ax_scores.twinx()
-
-        colors = ["royalblue" for _ in range(len(search.cv_results_))]
-        colors[search.best_index_] = "forestgreen"
-
-        ax_scores.bar(x=range(len(scores)), height=scores, color=colors)
-        ax_scores.set_xlabel("Experiment")
-        ax_scores.set_ylabel("Mean test score")
-
-        ax_fit_times.plot(range(len(scores)), fit_times, color="red")
-        ax_scores.set_xticks(range(len(scores)))
-        ax_fit_times.set_ylabel("Mean fit time")
-
-        plt.title("Experiment analysis")
-        plt.show()
-
-    plot_experiments(random_forest_search)
-    return (plot_experiments,)
+def _(model_selection, random_forest_search):
+    model_selection.plot_experiments(random_forest_search)
+    return
 
 
 @app.cell(hide_code=True)
-def _(RandomizedSearchCV, plt, random_forest_search):
-    def plot_random_forest_parameters(search: RandomizedSearchCV):
-        fig, axis = plt.subplots(1, 3, figsize=(16, 3))
-
-        colors = ["royalblue" for _ in range(len(search.cv_results_))]
-        colors[search.best_index_] = "forestgreen"
-
-        n_estimators = [param["n_estimators"] if param["n_estimators"] != None else 0 for param in search.cv_results_["params"]]
-        ax_estimators = axis[0]
-        ax_estimators.bar(x=range(len(n_estimators)), height=n_estimators, color=colors)
-        ax_estimators.set_xticks(range(len(n_estimators)))
-        ax_estimators.set_xlabel("Experiment")
-        ax_estimators.set_title("Number of estimators")
-
-        min_samples_leaf = [param["min_samples_leaf"] for param in search.cv_results_["params"]]
-        ax_min_samples_leaf = axis[1]
-        ax_min_samples_leaf.bar(x=range(len(min_samples_leaf)), height=min_samples_leaf, color=colors)
-        ax_min_samples_leaf.set_xticks(range(len(min_samples_leaf)))
-        ax_min_samples_leaf.set_xlabel("Experiment")
-        ax_min_samples_leaf.set_title("Mimimum samples per leaf")
-
-        max_depth = [param["max_depth"] if param["max_depth"] != None else 0 for param in search.cv_results_["params"]]
-        ax_max_depth = axis[2]
-        ax_max_depth.bar(x=range(len(max_depth)), height=max_depth, color=colors)
-        ax_max_depth.set_xticks(range(len(max_depth)))
-        ax_max_depth.set_xlabel("Experiment")
-        ax_max_depth.set_title("Maximum depth")
-
-        plt.show()
-
-    plot_random_forest_parameters(random_forest_search)
+def _(model_selection, random_forest_search):
+    model_selection.plot_random_forest_parameters(random_forest_search)
     return
 
 
@@ -425,33 +360,11 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(
-    RandomForestClassifier,
-    X_full,
-    X_val,
-    pd,
-    random_forest_search,
-    roc_auc_score,
-    y_full,
-    y_val,
-):
-    from sklearn.base import ClassifierMixin
+def _(X_full, X_val, model_selection, random_forest_search, y_full, y_val):
+    optimized_random_forest = model_selection.train_random_forest(X_full, y_full, param_distributions=random_forest_search.best_params_)
 
-    def train_random_forest(X: pd.DataFrame, y: pd.DataFrame, param_distributions: dict) -> RandomForestClassifier:
-        random_forest = RandomForestClassifier(random_state=1, **param_distributions)
-        random_forest.fit(X, y)
-
-        return random_forest
-
-    def eval_model(X_val: pd.DataFrame, y_val: pd.DataFrame, model: ClassifierMixin):
-        y_pred = model.predict(X_val)
-
-        return roc_auc_score(y_val, y_pred)
-
-    optimized_random_forest = train_random_forest(X_full, y_full, param_distributions=random_forest_search.best_params_)
-
-    print("Randomized search score: %.2f %%" % (eval_model(X_val, y_val, optimized_random_forest) * 100))
-    return (eval_model,)
+    print("Randomized search score: %.2f %%" % (model_selection.eval_model(X_val, y_val, optimized_random_forest) * 100))
+    return
 
 
 @app.cell(hide_code=True)
@@ -466,18 +379,16 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(
-    RandomizedSearchCV,
     X_train,
     X_val,
     end_time,
-    pd,
+    model_selection,
     start_time,
     time,
     y_train,
     y_val,
 ):
     import xgboost as xgb
-    from sklearn.metrics import roc_auc_score
 
     booster_param_distributions = {
         "eta": [0.1, 0.2, 0.3, 1.0],
@@ -485,33 +396,12 @@ def _(
         "min_child_weight": [1, 3, 5, 7],
     }
 
-    def search_xgboost(
-        X_train: pd.DataFrame,
-        y_train: pd.DataFrame,
-        X_val: pd.DataFrame,
-        y_val: pd.DataFrame,
-        param_distributions: dict
-    ) -> RandomizedSearchCV:
-        booster = xgb.XGBClassifier(
-            tree_method="hist",
-            early_stopping_rounds=2,
-            eval_metric=roc_auc_score,
-            random_state=1,
-            objective="binary:logistic",
-            nthread=8,
-        )
-
-        booster_search = RandomizedSearchCV(booster, param_distributions)
-        booster_search.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
-
-        return booster_search
-
     booster_start_time = time()
-    booster_search = search_xgboost(X_train, y_train, X_val, y_val, booster_param_distributions)
+    booster_search = model_selection.search_xgboost(X_train, y_train, X_val, y_val, booster_param_distributions)
     booster_end_time = time()
 
     print("Execution time: %s s" % int(end_time - start_time))
-    return booster_search, roc_auc_score, xgb
+    return (booster_search,)
 
 
 @app.cell(hide_code=True)
@@ -525,43 +415,14 @@ def _(mo):
 
 
 @app.cell
-def _(booster_search, plot_experiments):
-    plot_experiments(booster_search)
+def _(booster_search, model_selection):
+    model_selection.plot_experiments(booster_search)
     return
 
 
 @app.cell(hide_code=True)
-def _(RandomizedSearchCV, booster_search, plt):
-    def plot_xgboost_parameters(search: RandomizedSearchCV):
-        fig, axis = plt.subplots(1, 3, figsize=(16, 3))
-
-        colors = ["royalblue" for _ in range(len(search.cv_results_))]
-        colors[search.best_index_] = "forestgreen"
-
-        eta = [param["eta"] for param in search.cv_results_["params"]]
-        ax_eta = axis[0]
-        ax_eta.bar(x=range(len(eta)), height=eta, color=colors)
-        ax_eta.set_xticks(range(len(eta)))
-        ax_eta.set_xlabel("Experiment")
-        ax_eta.set_title("Eta")
-
-        max_depth = [param["max_depth"] if param["max_depth"] != None else 0 for param in search.cv_results_["params"]]
-        ax_max_depth = axis[1]
-        ax_max_depth.bar(x=range(len(max_depth)), height=max_depth, color=colors)
-        ax_max_depth.set_xticks(range(len(max_depth)))
-        ax_max_depth.set_xlabel("Experiment")
-        ax_max_depth.set_title("Maximum depth")
-
-        min_child_weight = [param["min_child_weight"] for param in search.cv_results_["params"]]
-        ax_min_child_weight = axis[2]
-        ax_min_child_weight.bar(x=range(len(min_child_weight)), height=min_child_weight, color=colors)
-        ax_min_child_weight.set_xticks(range(len(min_child_weight)))
-        ax_min_child_weight.set_xlabel("Experiment")
-        ax_min_child_weight.set_title("Mimimum child weight")
-
-        plt.show()
-
-    plot_xgboost_parameters(booster_search)
+def _(booster_search, model_selection):
+    model_selection.plot_xgboost_parameters(booster_search)
     return
 
 
@@ -582,16 +443,19 @@ def _(mo):
 
 
 @app.cell
-def _(X_full, X_val, booster_search, eval_model, pd, xgb, y_full, y_val):
-    def train_booster(X: pd.DataFrame, y: pd.DataFrame, param_distributions: dict) -> xgb.XGBClassifier:
-        booster = xgb.XGBClassifier(random_state=1, **param_distributions)
-        booster.fit(X, y)
+def _(
+    X_full,
+    X_val,
+    booster_search,
+    dict_vectorizer,
+    model_selection,
+    y_full,
+    y_val,
+):
+    optimized_booster = model_selection.train_booster(X_full, y_full, param_distributions=booster_search.best_params_)
+    optimized_booster.get_booster().feature_names = dict_vectorizer.get_feature_names_out().tolist()
 
-        return booster
-
-    optimized_booster = train_booster(X_full, y_full, param_distributions=booster_search.best_params_)
-
-    print("XGBoost search score: %.2f %%" % (eval_model(X_val, y_val, optimized_booster) * 100))
+    print("XGBoost search score: %.2f %%" % (model_selection.eval_model(X_val, y_val, optimized_booster) * 100))
     return (optimized_booster,)
 
 
@@ -628,11 +492,9 @@ def _(optimized_booster, plt):
 
 
 @app.cell(hide_code=True)
-def _(dict_vectorizer, mo, optimized_booster):
+def _(mo, optimized_booster):
     from xgboost import to_graphviz
     from pathlib import Path
-
-    optimized_booster.get_booster().feature_names = dict_vectorizer.get_feature_names_out().tolist()
 
     booster_graph = to_graphviz(
         optimized_booster.get_booster(),
@@ -653,6 +515,22 @@ def _(dict_vectorizer, mo, optimized_booster):
 
     graph_pdf = booster_graph.render("booster_tree", format="pdf", view=False)
     mo.pdf(src=Path(graph_pdf))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Save the Model
+
+    Finally, let's save the model for later use.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(optimized_booster):
+    optimized_booster.save_model("booster_model.json")
     return
 
 
