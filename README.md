@@ -25,6 +25,12 @@ This repository contains my personal **notes and homework** of the [Machine Lear
 | Deployment | [Marimo Notebook](./module-5/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/homework.html) |
 | Decision Trees | [Marimo Notebook](./module-6/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-6/homework.html) |
 
+### Projects
+
+| Module | Editable Version | Readable Version |
+| --- | --- | --- |
+| Midterm Project | [Marimo Notebook](./projects/midterm/notebook.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/projects/midterm/notebook.html) |
+
 ## Installation
 
 To download and edit a local copy of this project, follow this steps:
