@@ -39,34 +39,45 @@ Marital status also reveals intriguing patterns, with married individuals showin
 
 ### Charts
 
-These questions can be better observed in our SHAP charts. Note that to read them, you must know that:
+### Interpretative Visualizations: SHAP Charts
 
-* the yellow color represents elements in the category
-* the blue color represents elements that do not belong to the category
-* negative values (left side) means correlation with not having a paid occupation
-* positive values (right side) means correlation with having a paid occupation
+To transform our statistical findings into a more intuitive narrative, we've developed SHAP (SHapley Additive exPlanations) charts that visually decode the complex interactions between different features and employment probability. These charts serve as a powerful interpretative tool, allowing us to see beyond mere numbers and understand the nuanced dynamics of employment prediction.
 
-#### Sex
+In these visualizations, color and position become our storytellers:
 
+- The color tells us whether each elements belongs to the analyzed category:
+    * Yellow represents elements within a specific category
+    * Blue highlights elements outside the category
+
+- The horizontal axis reveals the feature's impact: 
+    * Negative values (left side) indicate a correlation with unemployment
+    * Positive values (right side) suggest a stronger likelihood of employment
+
+#### Sex Dynamics
 ![Man](assets/shap/sex_man.png)
 
-#### Education
+The sex-based SHAP chart illustrates the gender disparities in the labor market, revealing how gender can significantly influence employment opportunities.
 
+#### Educational Pathways
 ![Higher education](assets/shap/education_higher.png)
 ![Primary education](assets/shap/education_primary.png)
 
-#### Marital Status
+These charts map the transformative power of education, showing how different educational levels can dramatically alter one's employment trajectory.
 
+#### Marital Status Insights
 ![Married](assets/shap/marital_status_married.png)
 ![Single](assets/shap/marital_status_single.png)
 
-#### Provinces
+Marital status charts unveil unexpected correlations, suggesting how personal life circumstances might intersect with professional opportunities.
 
+#### Geographical Variations
 ![Province](assets/shap/province.png)
 
-### Model Performance
+The provincial SHAP visualization highlights how geographical context can play a subtle yet significant role in employment probabilities.
 
-The XGBoost model demonstrated superior performance in predicting employment status, providing deeper insights into the factors influencing employment.
+### Model Performance: Beyond Prediction
+
+Our XGBoost model transcends traditional predictive approaches, offering a sophisticated lens into employment dynamics. By leveraging advanced ensemble learning techniques, we've developed a model that doesn't just predict employment status but provides deep, actionable insights into the complex web of factors driving professional opportunities.
 
 ## Dependencies
 
