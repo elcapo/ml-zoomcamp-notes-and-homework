@@ -16,7 +16,8 @@ def _():
     import preprocess
     import process
     import model_selection
-    return mo, model_selection, plt, preprocess, process
+    import model
+    return mo, model, model_selection, plt, preprocess, process
 
 
 @app.cell(hide_code=True)
@@ -497,8 +498,9 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
-def _(optimized_booster):
-    optimized_booster.save_model("booster_model.json")
+def _(dict_vectorizer, model, optimized_booster):
+    optimized_booster.save_model("weights/booster_model.json")
+    model.save_dict_vectorizer(dict_vectorizer, "weights/dict_vectorizer.bin")
     return
 
 
@@ -663,10 +665,51 @@ def _(mo):
 
 
 @app.cell(hide_code=True)
+def _(X_val, dict_vectorizer, model, model_selection, y_val):
+    params = {
+        "min_child_weight": 3,
+        "max_depth": 5,
+        "eta": 1.0
+    }
+
+    loaded_booster = model.load_booster("booster_model.json", params)
+    loaded_booster.get_booster().feature_names = dict_vectorizer.get_feature_names_out().tolist()
+
+    print("Loaded model score: %.2f %%" % (model_selection.eval_model(X_val, y_val, loaded_booster) * 100))
+    return (loaded_booster,)
+
+
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
- 
+    ### Predictions
+
+    The code below shows how we'd proceed to use the model in order to make predictions.
     """)
+    return
+
+
+@app.cell
+def _(dict_vectorizer, loaded_booster):
+    tests = [
+        {
+            "prov": "Madrid",
+        	"edad1": "40 to 44 years",
+        	"sexo1": "Man",
+        	"eciv1": "Married",
+        	"nforma": "Higher education",
+        },
+        {
+            "prov": "Santa Cruz de Tenerife",
+        	"edad1": "50 to 54 years",
+        	"sexo1": "Woman",
+        	"eciv1": "Single",
+        	"nforma": "Upper secondary education — vocational track",
+        },
+    ]
+
+    X_test = dict_vectorizer.transform(tests)
+    loaded_booster.predict(X_test)
     return
 
 

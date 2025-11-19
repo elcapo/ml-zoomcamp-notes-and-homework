@@ -95,3 +95,30 @@ To run the analysis, ensure you have the required dependencies installed and use
 ```bash
 marimo run notebook.py
 ```
+
+### API
+
+To run the API endpoint, remember to first load and install the virtual environments so that all the dependencies are ready:
+
+```bash
+pythom -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+python -m api
+```
+
+This will run the model "naked". If you want to run it in the context of a Docker container, we should do:
+
+```bash
+docker build -t ml-midterm .
+docker run -d -p 5000:5000 -it ml-midterm
+```
+
+#### Endpoints
+
+The application offers three API endpoints:
+
+* **ping**: responds **pong**.
+* **generate**: responds every time with a record of random data, ideal for testing predictions.
+* **predict**: receives records as the one documented in the [notebook](notebook.py) and returns a prediction indicating whether a person with the given characteristics is expected to have a paid occupation.

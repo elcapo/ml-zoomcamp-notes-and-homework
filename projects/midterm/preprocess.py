@@ -6,8 +6,8 @@ def read_dataset() -> pd.DataFrame:
 
     return df
 
-def map_prov(df: pd.DataFrame) -> pd.DataFrame:
-    prov_values = {
+def get_prov_values() -> dict:
+    return {
         1: "Araba",
         2: "Albacete",
         3: "Alacant",
@@ -62,10 +62,11 @@ def map_prov(df: pd.DataFrame) -> pd.DataFrame:
         52: "Melilla",
     }
 
-    return df.prov.map(prov_values)
+def map_prov(df: pd.DataFrame) -> pd.DataFrame:
+    return df.prov.map(get_prov_values())
 
-def map_edad1(df: pd.DataFrame) -> pd.DataFrame:
-    edad1_values = {
+def get_edad1_values() -> dict:
+    return {
         0: "0 to 4 years",
         5: "5 to 9 years",
         10: "10 to 15 years",
@@ -82,28 +83,31 @@ def map_edad1(df: pd.DataFrame) -> pd.DataFrame:
         65: "65 or more years",
     }
 
-    return df.edad1.map(edad1_values)
+def map_edad1(df: pd.DataFrame) -> pd.DataFrame:
+    return df.edad1.map(get_edad1_values())
 
-def map_sexo1(df: pd.DataFrame) -> pd.DataFrame:
-    sexo1_values = {
+def get_sexo1_values() -> dict:
+    return {
         1: "Man",
         6: "Woman",
     }
 
-    return df.sexo1.map(sexo1_values)
+def map_sexo1(df: pd.DataFrame) -> pd.DataFrame:
+    return df.sexo1.map(get_sexo1_values())
 
-def map_eciv1(df: pd.DataFrame) -> pd.DataFrame:
-    eciv1_values = {
+def get_eciv1_values() -> dict:
+    return {
         1: "Single",
         2: "Married",
         3: "Widowed",
         4: "Separated or divorced",
     }
 
-    return df.eciv1.map(eciv1_values)
+def map_eciv1(df: pd.DataFrame) -> pd.DataFrame:
+    return df.eciv1.map(get_eciv1_values())
 
-def map_nforma(df: pd.DataFrame) -> pd.DataFrame:
-    nforma_values = {
+def get_nforma_values() -> dict:
+    return {
         "AN": "Illiterate",
         "P1": "Incomplete primary education",
         "P2": "Primary education",
@@ -113,15 +117,17 @@ def map_nforma(df: pd.DataFrame) -> pd.DataFrame:
         "SU": "Higher education",
     }
 
-    return df.nforma.map(nforma_values)
+def map_nforma(df: pd.DataFrame) -> pd.DataFrame:
+    return df.nforma.map(get_nforma_values())
 
-def map_trarem(df: pd.DataFrame) -> pd.DataFrame:
-    trarem_values = {
+def get_trarem_values() -> dict:
+    return {
         1: "Yes",
         6: "No",
     }
 
-    return df.trarem.map(trarem_values)
+def map_trarem(df: pd.DataFrame) -> pd.DataFrame:
+    return df.trarem.map(get_trarem_values())
 
 def reduced_dataset(df: pd.DataFrame) -> pd.DataFrame:
     df_reduced = pd.DataFrame()
