@@ -1,15 +1,18 @@
 import marimo
 
-__generated_with = "0.17.6"
+__generated_with = "0.17.8"
 app = marimo.App(width="medium")
 
 
 @app.cell
 def _():
+    # External dependencies
     import marimo as mo
     import pandas as pd
     import seaborn as sns
     import matplotlib.pylab as plt
+
+    # Internal dependencies
     import preprocess
     import process
     import model_selection
@@ -21,15 +24,30 @@ def _(mo):
     mo.md(r"""
     # Labour Force Survey (LFS)
 
-    ## Exploratory Data Analysis
+    ## Introduction
+
+    In this notebook, we explore the factors that most strongly predict employment status using a logistic regression classifier. Our objectives are:
+
+    1. To identify which sociodemographic and economic features contribute most to the probability of being employed.
+    2. To interpret these effects in a way that is transparent and actionable.
+
+    We will train, evaluate, and interpret our model, leveraging feature importance methods and interpretability techniques.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Dataset
 
     This notebook presents an exploratory data analysis of the microdata from the [third quarter of 2025 of the Labour Force Survey](https://www.ine.es/dyngs/Prensa/EPA3T25.htm) (LFS) conducted by the [Spanish National Statistics Institute](https://www.ine.es) (INE). The main goal of this phase is to become familiar with the data structure, understand the key variables, and detect potential patterns, inconsistencies, or outliers that may influence the analysis.
 
-    ## Goals
+    ### Exploratory Data Analysis
 
     Throughout the EDA, the following aspects will be addressed:
 
-    * Review of the structure and coding of variables (individuals, households, and dwellings).
+    * Review of the structure and coding of variables.
     * Distribution of the population by demographic and labour characteristics.
     * Identification of basic relationships between activity status, occupation, sector, and educational level.
     * Assessment of data quality: missing values, duplicates, and internal consistency between variables.
@@ -195,9 +213,18 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(df_reduced):
-    (df_reduced[df_reduced.eciv1.isnull()].index == df_reduced[df_reduced.nforma.isnull()].index).all() \
-      and \
-    (df_reduced[df_reduced.eciv1.isnull()].index == df_reduced[df_reduced.trarem.isnull()].index).all()
+    eciv1_equals_nforma = (
+        df_reduced[df_reduced.eciv1.isnull()].index
+        == df_reduced[df_reduced.nforma.isnull()].index
+    ).all()
+
+    eciv1_equals_trarem = (
+        df_reduced[df_reduced.eciv1.isnull()].index
+        == df_reduced[df_reduced.trarem.isnull()].index
+    ).all()
+
+    if eciv1_equals_nforma and eciv1_equals_trarem:
+        print("All the nulls from evic1 are the same as nforma and trarem")
     return
 
 
@@ -462,15 +489,31 @@ def _(
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## Model Selection
+
+    As we obtain significatly better results with XGBoost, we'll now save our final model for later use.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(optimized_booster):
+    optimized_booster.save_model("booster_model.json")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ### Inspection
 
-    The most influential features in the model are:
+    As we chose a decision based model, we can now inspect it to see what features correlate better with the target variable (having a paid occupation). The most influential features in the model are:
 
-    * **sexo1=Man** (Score: 4560.0): This is the single most important feature. Being a man is, by far, the most effective feature for making splits that accurately predict the target variable. Which, as a recall, identifies whether the interviewed person had a paid occupation the week before the interview happened. This suggests a strong correlation between being male and having an occupation.
+    * **sexo1=Man**: This is the single most important feature. Being a man is, by far, the most effective feature for making splits that accurately predict the target variable. Which, as a recall, identifies whether the interviewed person had a paid occupation the week before the interview happened. This suggests a strong correlation between being male and having an occupation.
 
-    * **nforma=Higher education** (Score: 2665.0): This is the second most important feature. Having a higher education level is extremely predictive, likely indicating a strong positive association with being employed.
+    * **nforma=Higher education**: This is the second most important feature. Having a higher education level is extremely predictive, likely indicating a strong positive association with being employed.
 
-    * **eciv1=Married** (Score: 2414.0): Being married is also a very influential feature, possibly acting as a proxy for factors like age or stable employment history.
+    * **eciv1=Married**: Being married is also a very influential feature, possibly acting as a proxy for factors like age or stable employment history.
     """)
     return
 
@@ -479,11 +522,9 @@ def _(mo):
 def _(optimized_booster, plt):
     from xgboost import plot_importance
 
-    plt.figure(figsize=(12, 6))
-
     plot_importance(
         optimized_booster.get_booster(),
-        max_num_features=10,
+        max_num_features=3,
         height=.7,
     )
 
@@ -492,45 +533,140 @@ def _(optimized_booster, plt):
 
 
 @app.cell(hide_code=True)
-def _(mo, optimized_booster):
-    from xgboost import to_graphviz
-    from pathlib import Path
+def _(mo):
+    mo.md(r"""
+    ### Shapley Additive Explanations
 
-    booster_graph = to_graphviz(
-        optimized_booster.get_booster(),
-        tree_idx=1,
-        rankdir="LR",
-        layout="dot",
-        size="100,60",
-        ratio="fill",
-        dpi="300",
-        condition_node_params={
-            "fontsize": "128",
-            "shape": "rect",
-        },
-        leaf_node_params={
-            "fontsize": "128",
-        }
+    To deepen our understanding of how each feature influences the model’s predictions, we apply SHAP, which decomposes each individual prediction into contributions from each feature, helping us see not only which features are most important globally, but also how they push the prediction for individual cases.
+    """)
+    return
+
+
+@app.cell
+def _(X_train, dict_vectorizer, optimized_booster):
+    import shap
+
+    explainer = shap.TreeExplainer(
+        optimized_booster,
+        feature_names=dict_vectorizer.get_feature_names_out().tolist(),
     )
 
-    graph_pdf = booster_graph.render("booster_tree", format="pdf", view=False)
-    mo.pdf(src=Path(graph_pdf))
+    samples = shap.sample(X_train, nsamples=500)
+    shap_values = explainer(samples, check_additivity=False)
+
+    def plot_shap_per_feature(feature_prefix: str):
+        feature_names = explainer.feature_names
+        indices = [i for i, name in enumerate(feature_names) if name.startswith(feature_prefix)]
+        features = [feature_names[i] for i in indices]
+
+        filtered_shap_values = shap_values[:, indices]
+        filtered_samples = samples[:, indices]
+
+        shap.summary_plot(filtered_shap_values, filtered_samples, feature_names=features, max_display=100, cmap="cividis", alpha=0.5)
+    return (plot_shap_per_feature,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Per Sex
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("sexo1=Man")
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### Save the Model
+    ### Per Education
+    """)
+    return
 
-    Finally, let's save the model for later use.
+
+@app.cell
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("nforma=Higher education")
+    return
+
+
+@app.cell
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("nforma=Primary education")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Per Age
+    """)
+    return
+
+
+@app.cell
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("edad1=16 to 19 years")
+    return
+
+
+@app.cell
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("edad1=65 or more years")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Per Marital Status
     """)
     return
 
 
 @app.cell(hide_code=True)
-def _(optimized_booster):
-    optimized_booster.save_model("booster_model.json")
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("eciv1=Single")
+    return
+
+
+@app.cell
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("eciv1=Married")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Per Province
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(plot_shap_per_feature):
+    plot_shap_per_feature("prov=")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Publishing the Model
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+ 
+    """)
     return
 
 
