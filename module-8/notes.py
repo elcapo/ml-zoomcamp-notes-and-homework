@@ -355,7 +355,7 @@ def _(transforms):
         input_size = 224
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-    
+
         return transforms.Compose([
             transforms.Resize((input_size, input_size)),
             transforms.ToTensor(),
@@ -389,7 +389,7 @@ def _(ClothingDataset, get_transforms):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""### Create the Model""")
+    mo.md(r"""## Create our First Model""")
     return
 
 
@@ -526,7 +526,7 @@ def _(
 
         model = ClothingClassifierMobileNet(num_classes=10)
         model.to(device)
-    
+
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
         criterion = nn.CrossEntropyLoss()
 
@@ -572,7 +572,7 @@ def _(Path, mo, mobilenet_weights_filename, os, train_mobilenet_model):
 def _(mo):
     mo.md(
         r"""
-    ## Improve the Model
+    ## Add an Inner Layer
 
     We'll not improve the model by adding an inner layer.
     """
@@ -629,7 +629,7 @@ def _(
 
         model = UpgradedClothingClassifierMobileNet(num_classes=10)
         model.to(device)
-    
+
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
         criterion = nn.CrossEntropyLoss()
 
@@ -669,6 +669,108 @@ def _(
         label="Remove the improved MobileNet weights and retrain",
         kind="danger",
         on_click=lambda v: delete_mobilenet_weights(),
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Add a Dropout Layer
+
+    We'll now add a dropout layer.
+    """
+    )
+    return
+
+
+@app.cell
+def _(models, nn, torch):
+    class ClothingClassifierDropoutMobileNet(nn.Module):
+        def __init__(self, size_inner=100, droprate=0.2, num_classes=10):
+            super().__init__()
+        
+            self.base_model = models.mobilenet_v2(weights='IMAGENET1K_V1')
+            for param in self.base_model.parameters():
+                param.requires_grad = False
+            self.base_model.classifier = nn.Identity()
+        
+            self.global_avg_pooling = nn.AdaptiveAvgPool2d((1, 1))
+            self.inner = nn.Linear(1280, size_inner)
+            self.relu = nn.ReLU()
+            self.dropout = nn.Dropout(droprate)  # Add dropout
+            self.output_layer = nn.Linear(size_inner, num_classes)
+
+        def forward(self, x):
+            x = self.base_model.features(x)
+            x = self.global_avg_pooling(x)
+            x = torch.flatten(x, 1)
+            x = self.inner(x)
+            x = self.relu(x)
+            x = self.dropout(x)
+            x = self.output_layer(x)
+            return x
+    return (ClothingClassifierDropoutMobileNet,)
+
+
+@app.cell
+def _(
+    ClothingClassifierDropoutMobileNet,
+    Path,
+    evaluate,
+    get_device,
+    nn,
+    optim,
+    torch,
+    train,
+):
+    dropout_mobilenet_weights_filename = "./module-8/data/dropout_mobilenet-model.torch"
+
+    def get_dropout_mobilenet_classifier(learning_rate: float = 0.01) -> tuple[nn.Module, optim.Adam, nn.CrossEntropyLoss]:
+        device = get_device()
+
+        model = ClothingClassifierDropoutMobileNet(num_classes=10)
+        model.to(device)
+
+        optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+        criterion = nn.CrossEntropyLoss()
+
+        return model, optimizer, criterion
+
+    def train_dropout_mobilenet_model():
+        print("The model weights were not found, so the model will be trained")
+        model, optimizer, criterion = get_dropout_mobilenet_classifier()
+        model = train(model, optimizer, criterion, checkpoint_filename = dropout_mobilenet_weights_filename, num_epochs = 25)
+
+    def evaluate_dropout_mobilenet_model():
+        print("The model weights were found, so the model weights will be loaded and the model will be evaluated")
+        model, optimizer, criterion = get_dropout_mobilenet_classifier()
+        model.load_state_dict(torch.load(dropout_mobilenet_weights_filename, weights_only=True))
+        evaluate(model, criterion)
+
+    if not Path(dropout_mobilenet_weights_filename).exists():
+        train_dropout_mobilenet_model()
+    else:
+        evaluate_dropout_mobilenet_model()
+    return dropout_mobilenet_weights_filename, train_dropout_mobilenet_model
+
+
+@app.cell
+def _(
+    delete_file,
+    dropout_mobilenet_weights_filename,
+    mo,
+    train_dropout_mobilenet_model,
+):
+    def delete_dropout_mobilenet_weights():
+        delete_file(dropout_mobilenet_weights_filename)
+        train_dropout_mobilenet_model()
+
+    mo.ui.button(
+        label="Remove the dropout MobileNet weights and retrain",
+        kind="danger",
+        on_click=lambda v: delete_dropout_mobilenet_weights(),
     )
     return
 
