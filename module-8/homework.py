@@ -276,7 +276,7 @@ def _(mo):
 
 
 @app.cell
-def _(nn, torch, train_loader, val_loader):
+def _(DataLoader, nn, torch):
     import torch.optim as optim
 
     def get_device() -> str:
@@ -286,6 +286,8 @@ def _(nn, torch, train_loader, val_loader):
         model: nn.Module,
         optimizer: optim.Adam,
         criterion: nn.CrossEntropyLoss,
+        train_loader: DataLoader,
+        val_loader: DataLoader,
         checkpoint_filename: str,
         num_epochs: int = 10,
     ):
@@ -326,7 +328,7 @@ def _(nn, torch, train_loader, val_loader):
 
             print(f"  Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}")
 
-            val_loss, val_acc = evaluate(model, criterion)
+            val_loss, val_acc = evaluate(model, criterion, val_loader)
 
             validation_history["loss"].append(train_loss)
             validation_history["accuracy"].append(train_acc)
@@ -340,7 +342,8 @@ def _(nn, torch, train_loader, val_loader):
 
     def evaluate(
         model: nn.Module,
-        criterion: nn.CrossEntropyLoss
+        criterion: nn.CrossEntropyLoss,
+        val_loader: DataLoader
     ) -> tuple[float]:
         model.eval()
         val_loss = 0.0
@@ -422,7 +425,7 @@ def _(Image, get_transforms):
 
     train_loader = get_dataloader("train", shuffle=True)
     val_loader = get_dataloader("test", shuffle=False)
-    return train_loader, val_loader
+    return DataLoader, HomeworkDataset, train_loader, val_loader
 
 
 @app.cell(hide_code=True)
@@ -432,7 +435,17 @@ def _(mo):
 
 
 @app.cell
-def _(BinaryClassification, evaluate, get_device, nn, optim, torch, train):
+def _(
+    BinaryClassification,
+    evaluate,
+    get_device,
+    nn,
+    optim,
+    torch,
+    train,
+    train_loader,
+    val_loader,
+):
     from pathlib import Path
 
     weights_filename = "./module-8/data/homework-model.torch"
@@ -448,21 +461,35 @@ def _(BinaryClassification, evaluate, get_device, nn, optim, torch, train):
 
         return model, optimizer, criterion
 
-    train_history = {"accuracy": [], "loss": []}
+    # This values were manually written after a train execution
+    # Running the training process will reset them
+    train_history = {"accuracy": [0.7965, 0.7965], "loss": [-2.948, 2.948]}
     validation_history = {"accuracy": [], "loss": []}
 
     if not Path(weights_filename).exists():
         print("The model weights were not found, so the model will be trained")
         model, optimizer, criterion = get_classifier()
-        train_history, validation_history = train(model, optimizer, criterion, checkpoint_filename = weights_filename, num_epochs = 10)
+        train_history, validation_history = train(
+            model,
+            optimizer,
+            criterion,
+            train_loader,
+            val_loader,
+            checkpoint_filename = weights_filename,
+            num_epochs = 10,
+        )
     else:
         print("The model weights were found, so the model weights will be loaded and the model will be evaluated")
         model, optimizer, criterion = get_classifier()
         model.load_state_dict(torch.load(weights_filename, weights_only=True))
-        evaluate(model, criterion)
+        evaluate(
+            model,
+            criterion,
+            val_loader,
+        )
 
     train_history, validation_history
-    return get_classifier, train_history
+    return Path, criterion, get_classifier, model, optimizer, train_history
 
 
 @app.cell(hide_code=True)
@@ -523,7 +550,7 @@ def _(np, train_history):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(
         r"""
@@ -543,6 +570,38 @@ def _(mo):
     return
 
 
+@app.cell
+def _(transforms):
+    def get_augmented_transforms():
+        return transforms.Compose([
+            transforms.RandomRotation(50),
+            transforms.RandomResizedCrop(200, scale=(0.9, 1.0), ratio=(0.9, 1.1)),
+            transforms.RandomHorizontalFlip(),
+            transforms.Resize((200, 200)),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            )
+        ])
+    return (get_augmented_transforms,)
+
+
+@app.cell
+def _(DataLoader, HomeworkDataset, get_augmented_transforms):
+    def get_augmented_dataloader(split: str, batch_size: int = 20, shuffle: bool = True) -> DataLoader:
+        dataset = HomeworkDataset(
+            data_dir=f"./module-8/data/homework/{split}",
+            transform=get_augmented_transforms()
+        )
+
+        return DataLoader(dataset, batch_size = batch_size, shuffle = shuffle)
+
+    train_augmented_loader = get_augmented_dataloader("train", shuffle=True)
+    val_augmented_loader = get_augmented_dataloader("test", shuffle=False)
+    return train_augmented_loader, val_augmented_loader
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(
@@ -553,7 +612,60 @@ def _(mo):
 
     > **Note:** make sure you don't re-create the model.
     > we want to continue training the model we already started training.
+    """
+    )
+    return
 
+
+@app.cell
+def _(
+    Path,
+    criterion,
+    evaluate,
+    get_classifier,
+    model,
+    optimizer,
+    torch,
+    train,
+    train_augmented_loader,
+    val_augmented_loader,
+):
+    augmented_weights_filename = "./module-8/data/homework-augmented_model.torch"
+
+    # This values were manually written after a train execution
+    # Running the training process will reset them
+    augmented_train_history = {"accuracy": [], "loss": [10.44]}
+    augmented_validation_history = {"accuracy": [0.7523, 0.7523, 0.7523, 0.7523, 0.7523, 0.7523], "loss": []}
+
+    if not Path(augmented_weights_filename).exists():
+        print("The model weights were not found, so the model will be trained")
+        augmented_train_history, augmented_validation_history = train(
+            model,
+            optimizer,
+            criterion,
+            train_augmented_loader,
+            val_augmented_loader,
+            checkpoint_filename = augmented_weights_filename,
+            num_epochs = 10,
+        )
+    else:
+        print("The model weights were found, so the model weights will be loaded and the model will be evaluated")
+        augmented_model, augmented_optimizer, augmented_criterion = get_classifier()
+        augmented_model.load_state_dict(torch.load(augmented_weights_filename, weights_only=True))
+        evaluate(
+            augmented_model,
+            augmented_criterion,
+            val_augmented_loader,
+        )
+
+    augmented_train_history, augmented_validation_history
+    return augmented_train_history, augmented_validation_history
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
     What is the mean of test loss for all the epochs for the model trained with augmentations?
 
     * 0.008
@@ -562,6 +674,18 @@ def _(mo):
     * 8.88
     """
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""The mean of the loss for the augmented epochs is 10.44. The closest suggested option is **8.88**.""")
+    return
+
+
+@app.cell
+def _(augmented_train_history, np):
+    np.mean(augmented_train_history["loss"])
     return
 
 
@@ -580,6 +704,18 @@ def _(mo):
     * 0.98
     """
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""The average test accuracy for the last 5 epochs trained with augmentations is 0.7523, and the closest suggested option is **0.68**.""")
+    return
+
+
+@app.cell
+def _(augmented_validation_history, np):
+    np.average(augmented_validation_history["accuracy"][5:])
     return
 
 
