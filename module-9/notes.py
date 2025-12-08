@@ -86,7 +86,7 @@ def _(mo):
         r"""
     ## Scikit Learn
 
-    We'll start by deploying the Scikit Learn model that we developed during the 5th module. The model has been copied under [module-9/scikit-learn](module-9/scikit-learn).
+    We'll start by deploying the Scikit Learn model that we developed during the 5th module. The model has been implemented under **module-9/scikit-model**.
     """
     )
     return
