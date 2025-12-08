@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.16.0"
+__generated_with = "0.18.3"
 app = marimo.App(width="medium")
 
 
@@ -19,13 +19,11 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     # Machine Learning Zoomcamp
 
     ## Module 9: **Deploy with AWS Lambda**
-    """
-    )
+    """)
     return
 
 
@@ -82,13 +80,11 @@ def _(chapters):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ## Scikit Learn
 
     We'll start by deploying the Scikit Learn model that we developed during the 5th module. The model has been implemented under **module-9/scikit-model**.
-    """
-    )
+    """)
     return
 
 

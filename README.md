@@ -14,6 +14,7 @@ This repository contains my personal **notes and homework** of the [Machine Lear
 | Deployment | [Marimo Notebook](./module-5/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/notes.html)
 | Decision Trees | [Marimo Notebook](./module-6/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-6/notes.html)
 | Deep Learning | [Marimo Notebook](./module-8/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-8/notes.html)
+| Deploy with AWS Lambda | [Marimo Notebook](./module-9/notes.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-9/notes.html) |
 
 ### Homework
 
@@ -26,6 +27,7 @@ This repository contains my personal **notes and homework** of the [Machine Lear
 | Deployment | [Marimo Notebook](./module-5/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-5/homework.html) |
 | Decision Trees | [Marimo Notebook](./module-6/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-6/homework.html) |
 | Deep Learning | [Marimo Notebook](./module-8/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-8/homework.html) |
+| Deploy with AWS Lambda | [Marimo Notebook](./module-9/homework.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/module-9/homework.html) |
 
 ### Projects
 
