@@ -3,10 +3,6 @@ import marimo
 __generated_with = "0.18.3"
 app = marimo.App(width="medium")
 
-with app.setup:
-    # Initialization code that runs before all other cells
-    pass
-
 
 @app.cell
 def _():
@@ -223,7 +219,7 @@ def _(mo):
     mo.md(r"""
     ## Serve a Model via API
 
-    An API endpoint was implemented in the **workshop/** folder. To start it, go to the folder and run:
+    An API endpoint was implemented in the **module-10/workshop/** folder. To start it, go to the folder and run:
 
     ```bash
     uv run main.py
