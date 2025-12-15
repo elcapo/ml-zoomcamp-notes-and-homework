@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.16.0"
+__generated_with = "0.18.3"
 app = marimo.App(width="medium")
 
 
@@ -19,13 +19,11 @@ def _():
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     # Machine Learning Zoomcamp
 
     ## Module 8: **Deep Learning**
-    """
-    )
+    """)
     return
 
 
@@ -141,8 +139,7 @@ def _(chapters):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ## Fashion Classification
 
     During this module we'll be working with a dataset that consists on a set of photos of clothes, and our goal will be to train a model that's capable of reading new images and determine based on the parameters that it learnt from those images, what type of clothing the new images are.
@@ -150,30 +147,27 @@ def _(mo):
     ### Dataset
 
     > In this session, we'll be working on multiclass image classification with deep learning. Some deep learning frameworks like TensorFlow and Keras will be implemented on clothing dataset to classify images of clothes as t-shirts, hats, pants, etc.
-    > 
+    >
     > The dataset has 5000 images of 20 different classes. However, we'll be using the subset which contains 10 of the most popular classes. The dataset can be downloaded from the above link.
-    > 
+    >
     > Source: [01-fashion-classification.md](https://github.com/DataTalksClub/machine-learning-zoomcamp/blob/master/08-deep-learning/01-fashion-classification.md).
 
     * The dataset is available in Github: [alexeygrigorev/clothing-dataset-small](https://github.com/alexeygrigorev/clothing-dataset-small.git).
     * For convenience, the dataset has been cloned to the sibling [data](modules-8/data/) folder.
-    """
-    )
+    """)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ## Pytorch
 
     * This module was initially recorded using Tensorflow but later rewriten using Pytorch. We'll follow here the updated [Pytorch](https://github.com/DataTalksClub/machine-learning-zoomcamp/tree/master/08-deep-learning/pytorch) version.
     * The module is pretty practique. For a deep dive into the theory of convolutional networks, check the [CS231n: Deep Learning for Computer Vision](https://cs231n.stanford.edu) Standford course.
 
     ### First Look at the Dataset
-    """
-    )
+    """)
     return
 
 
@@ -190,13 +184,11 @@ def _(Image, mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ### Pretrained Models
 
     A quick way to get a image classifier working model is to start with a pretrained one. Here we use [MobileNetV2](https://docs.pytorch.org/vision/main/models/mobilenetv2.html) from **torchvision**.
-    """
-    )
+    """)
     return
 
 
@@ -209,15 +201,13 @@ def _(models):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     #### Image Preprocess
 
     The [documentation of the model](https://docs.pytorch.org/vision/main/models/generated/torchvision.models.mobilenet_v2.html#torchvision.models.mobilenet_v2) describes the preprocessing steps that are required for images to be understood by the model:
 
     The inference transforms are available at `MobileNet_V2_Weights.IMAGENET1K_V2.transforms` and perform the following preprocessing operations: Accepts `PIL.Image`, batched **(B, C, H, W)** and single **(C, H, W)** image `torch.Tensor` objects. The images are resized to `resize_size=[232]` using `interpolation=InterpolationMode.BILINEAR`, followed by a central crop of `crop_size=[224]`. Finally the values are first rescaled to `[0.0, 1.0]` and then normalized using `mean=[0.485, 0.456, 0.406]` and `std=[0.229, 0.224, 0.225]`.
-    """
-    )
+    """)
     return
 
 
@@ -239,13 +229,11 @@ def _(Image, transforms):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ### Predictions
 
     After preprocessing, we can use the model to make predictions. The output vector will contain logits corresponding to each of the 1,000 categories that the model can recognize.
-    """
-    )
+    """)
     return
 
 
@@ -270,7 +258,9 @@ def _(model, torch, x):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""We can now get the list of identifiers of each of the classes ordering them so that the most likely classes are shown first:""")
+    mo.md(r"""
+    We can now get the list of identifiers of each of the classes ordering them so that the most likely classes are shown first:
+    """)
     return
 
 
@@ -290,15 +280,13 @@ def _(mo, single_image, single_prediction, torch):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ## Transfer Learning
 
     With transfer learning we can take a pretrained model and adapt it to our specific needs.
 
     ### Create a Dataset Handler
-    """
-    )
+    """)
     return
 
 
@@ -339,13 +327,11 @@ def _(Image):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ### Define our Transformations
 
     We already showed the transformations that the model expects. We'll now create a function that prepares those transformations so that we can reuse them.
-    """
-    )
+    """)
     return
 
 
@@ -366,7 +352,9 @@ def _(transforms):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""### Define the Dataloaders""")
+    mo.md(r"""
+    ### Define the Dataloaders
+    """)
     return
 
 
@@ -389,7 +377,9 @@ def _(ClothingDataset, get_transforms):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""## Create our First Model""")
+    mo.md(r"""
+    ## Create our First Model
+    """)
     return
 
 
@@ -424,7 +414,9 @@ def _(models, torch):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""### Train the model""")
+    mo.md(r"""
+    ### Train the model
+    """)
     return
 
 
@@ -570,13 +562,11 @@ def _(Path, mo, mobilenet_weights_filename, os, train_mobilenet_model):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ## Add an Inner Layer
 
     We'll not improve the model by adding an inner layer.
-    """
-    )
+    """)
     return
 
 
@@ -675,13 +665,11 @@ def _(
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     ## Add a Dropout Layer
 
     We'll now add a dropout layer.
-    """
-    )
+    """)
     return
 
 
@@ -690,12 +678,12 @@ def _(models, nn, torch):
     class ClothingClassifierDropoutMobileNet(nn.Module):
         def __init__(self, size_inner=100, droprate=0.2, num_classes=10):
             super().__init__()
-        
+
             self.base_model = models.mobilenet_v2(weights='IMAGENET1K_V1')
             for param in self.base_model.parameters():
                 param.requires_grad = False
             self.base_model.classifier = nn.Identity()
-        
+
             self.global_avg_pooling = nn.AdaptiveAvgPool2d((1, 1))
             self.inner = nn.Linear(1280, size_inner)
             self.relu = nn.ReLU()
@@ -753,7 +741,11 @@ def _(
         train_dropout_mobilenet_model()
     else:
         evaluate_dropout_mobilenet_model()
-    return dropout_mobilenet_weights_filename, train_dropout_mobilenet_model
+    return (
+        dropout_mobilenet_weights_filename,
+        get_dropout_mobilenet_classifier,
+        train_dropout_mobilenet_model,
+    )
 
 
 @app.cell
@@ -772,6 +764,46 @@ def _(
         kind="danger",
         on_click=lambda v: delete_dropout_mobilenet_weights(),
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Export to ONNX
+    """)
+    return
+
+
+@app.cell
+def _(
+    dropout_mobilenet_weights_filename,
+    get_dropout_mobilenet_classifier,
+    torch,
+    x,
+):
+    onnx_filename = "./module-8/data/dropout_mobilenet-model.onnx"
+
+    def export_dropout_mobilenet_model(onnx_filename: str):
+        model, optimizer, criterion = get_dropout_mobilenet_classifier()
+        model.load_state_dict(torch.load(dropout_mobilenet_weights_filename, weights_only=True))
+        model.eval()
+
+        model.to("cpu")
+        example_inputs = torch.unsqueeze(x, 0).to("cpu")
+    
+        return torch.onnx.export(
+            model, 
+            example_inputs, 
+            onnx_filename,
+            opset_version=18,
+            input_names=["image"],
+            output_names=["output"],
+            verbose=False
+        )
+
+    onnx_model = export_dropout_mobilenet_model(onnx_filename)
+    onnx_model
     return
 
 
