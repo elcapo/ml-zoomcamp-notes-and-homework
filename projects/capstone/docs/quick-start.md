@@ -2,62 +2,52 @@
 
 This guide will help you get started with the Poverty Risk Analysis project.
 
----
-
 ## Prerequisites
 
 - Python 3.10+
 - [uv](https://github.com/astral-sh/uv) package manager (or pip)
-
----
 
 ## Installation
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/elcapo/ml-zoomcamp-notes-and-homework/
 cd projects/capstone
 ```
 
 ### 2. Install Dependencies
 
-Using uv (recommended):
 ```bash
 uv sync
 ```
-
-Using pip:
-```bash
-pip install pandas numpy scikit-learn matplotlib seaborn
-```
-
----
 
 ## Data Preparation
 
 ### 1. Verify Data Files
 
 Ensure you have the following data files:
+
 ```
 data/
+├── merged.csv
 ├── ECV_Th_2024/CSV/ECV_Th_2024.tab    # Household data
 └── ECV_Tp_2024/CSV/ECV_Tp_2024.tab    # Person data
 ```
 
 ### 2. Merge Household and Person Data
 
-Run the merging script:
+The **data/merge.csv** file was generated from the other **tab** files by running a merging script that's available for (re)execution as:
+
 ```bash
 uv run merge.py
 ```
 
 This creates `data/merged.csv` with:
-- 29,781 households
-- ~35 features (household-level + aggregated person-level)
-- Target variable: `vhPobreza`
 
----
+- 29,781 households.
+- ~35 features (household-level + aggregated person-level).
+- Target variable: `vhPobreza`.
 
 ## Exploratory Data Analysis
 
@@ -73,7 +63,7 @@ import seaborn as sns
 df = pd.read_csv('data/merged.csv')
 
 print(f"Dataset shape: {df.shape}")
-print(f"\nFirst few rows:")
+print("\nFirst rows:")
 print(df.head())
 ```
 
@@ -127,8 +117,6 @@ missing_df = pd.DataFrame({
 print("\nMissing values:")
 print(missing_df[missing_df['Missing'] > 0].sort_values('Missing', ascending=False))
 ```
-
----
 
 ## Build Baseline Model
 
@@ -212,8 +200,6 @@ plt.tight_layout()
 plt.show()
 ```
 
----
-
 ## Train Advanced Models
 
 ### Random Forest
@@ -275,8 +261,6 @@ print(f"F1-Score: {f1_score(y_test, y_pred_xgb):.4f}")
 print(f"AUC-ROC: {roc_auc_score(y_test, y_proba_xgb):.4f}")
 ```
 
----
-
 ## Model Comparison
 
 ```python
@@ -309,8 +293,6 @@ plt.tight_layout()
 plt.show()
 ```
 
----
-
 ## Save Model
 
 ```python
@@ -323,8 +305,6 @@ joblib.dump(scaler, 'scaler.pkl')
 
 print("Model saved successfully!")
 ```
-
----
 
 ## Next Steps
 
@@ -362,8 +342,6 @@ print("Model saved successfully!")
 
 4. **Deployment:** Create prediction API or web interface
 
----
-
 ## Troubleshooting
 
 ### Import Errors
@@ -383,8 +361,6 @@ If the dataset is too large, try:
 - Verify preprocessing steps
 - Try different feature engineering approaches
 - Consider addressing class imbalance with SMOTE
-
----
 
 ## Additional Resources
 
