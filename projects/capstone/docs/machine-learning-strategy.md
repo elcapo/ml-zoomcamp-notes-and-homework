@@ -6,8 +6,6 @@
 
 Since `vhPobreza` is binary (0/1), we're predicting whether a household is at risk of poverty.
 
----
-
 ## Data Merging Strategy
 
 ### Hybrid Aggregation Approach
@@ -20,7 +18,9 @@ We use a **hybrid strategy** that combines:
 This provides the best balance between capturing individual profiles and household dynamics.
 
 #### Part 1: Household Head Features
+
 Extract characteristics of the first person in each household:
+
 - Age, sex, marital status
 - Education level
 - Employment status and work hours
@@ -28,7 +28,9 @@ Extract characteristics of the first person in each household:
 - Health status
 
 #### Part 2: Household Composition
+
 Aggregate statistics across all household members:
+
 - Household size
 - Average age and standard deviation
 - Number of males/females
@@ -38,47 +40,51 @@ Aggregate statistics across all household members:
 - Average health
 
 #### Part 3: Derived Features
-Calculate meaningful metrics:
-- **Employment rate:** employed members / household size
-- **Age composition:** children (<18), elderly (≥65), working-age adults
-- **Dependency ratio:** (children + elderly) / working-age adults
-- **Income per capita:** total income / household size
 
----
+Calculate meaningful metrics:
+
+- **Employment rate**: employed members / household size
+- **Age composition**: children (<18), elderly (≥65), working-age adults
+- **Dependency ratio**: (children + elderly) / working-age adults
+- **Income per capita**: total income / household size
 
 ## Recommended Feature Engineering
 
 ### Age-Related
+
 - Calculate age from birth year: `2024 - PB110`
 - Create age groups: 0-18, 19-35, 36-50, 51-65, 65+
 
 ### Income-Related
-- **Income-to-members ratio:** `HY020 / HB070` (per capita income)
-- **Diversified income:** Count number of active income sources
-- **Income concentration:** Standard deviation / mean within household
+
+- **Income-to-members ratio**: `HY020 / HB070` (per capita income)
+- **Diversified income**: Count number of active income sources
+- **Income concentration**: Standard deviation / mean within household
 
 ### Household Composition
-- **Dependency ratio:** `(children + elderly) / working-age adults`
-- **Household employment:** `Number employed / total adults`
-- **Maximum education level in household:** `max(PE021)` per household
+
+- **Dependency ratio**: `(children + elderly) / working-age adults`
+- **Household employment**: `Number employed / total adults`
+- **Maximum education level in household**: `max(PE021)` per household
 
 ### Material Deprivation
-- **Deprivation index:** Sum of HS/HH binary indicators
-- **Essential needs:** Combine heating, food, emergency funds
 
----
+- **Deprivation index**: Sum of HS/HH binary indicators
+- **Essential needs**: Combine heating, food, emergency funds
 
 ## Model Selection
 
 ### Classification Models
 
 #### Baseline
+
 - **Logistic Regression**
   - Interpretable coefficients
   - Fast training
   - Good for understanding feature importance
 
 #### Advanced Models
+
 - **Random Forest**
   - Handles non-linear relationships
   - Feature importance built-in
@@ -98,20 +104,21 @@ Calculate meaningful metrics:
 ### Alternative: Regression Approach
 
 Predict continuous income (`HY020`) and derive risk threshold:
+
 - **Linear Regression** (baseline)
 - **Ridge/Lasso/ElasticNet** (with regularization)
 - **Gradient Boosting Regression**
 
----
-
 ## Validation Strategy
 
 ### Cross-Validation
-- **Method:** Stratified K-Fold (k=5 or 10)
-- **Why stratified:** Maintains class distribution in each fold
-- **Metric:** Track consistency across folds
+
+- **Method**: Stratified K-Fold (k=5 or 10)
+- **Why stratified**: Maintains class distribution in each fold
+- **Metric**: Track consistency across folds
 
 ### Train-Test Split
+
 ```python
 from sklearn.model_selection import train_test_split
 
@@ -123,22 +130,23 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 ```
 
----
-
 ## Evaluation Metrics
 
 ### Primary Metric
+
 - **F1-Score** (balanced between precision and recall)
   - Important if dataset is imbalanced
   - Harmonic mean of precision and recall
 
 ### Secondary Metrics
-- **Precision:** Of predicted poor households, how many are actually poor?
-- **Recall:** Of actual poor households, how many did we identify?
-- **AUC-ROC:** Overall model discrimination ability
-- **Confusion Matrix:** Detailed breakdown of predictions
+
+- **Precision**: Of predicted poor households, how many are actually poor?
+- **Recall**: Of actual poor households, how many did we identify?
+- **AUC-ROC**: Overall model discrimination ability
+- **Confusion Matrix**: Detailed breakdown of predictions
 
 ### Metric Selection Rationale
+
 ```python
 from sklearn.metrics import classification_report, f1_score, roc_auc_score
 
@@ -151,8 +159,6 @@ print(f"F1-Score: {f1_score(y_test, y_pred):.4f}")
 print(f"AUC-ROC: {roc_auc_score(y_test, y_proba):.4f}")
 ```
 
----
-
 ## Important Considerations
 
 ### 1. Class Imbalance
@@ -163,7 +169,7 @@ print(y.value_counts())
 print(y.value_counts(normalize=True))
 ```
 
-**If imbalanced, use:**
+**If imbalanced, use**:
 - SMOTE for oversampling minority class
 - `class_weight='balanced'` in scikit-learn models
 - Stratified sampling in cross-validation
@@ -177,7 +183,7 @@ import numpy as np
 df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 ```
 
-**Imputation strategies:**
+**Imputation strategies**:
 - Median for numeric features
 - Mode for categorical features
 - Advanced: KNN imputation or iterative imputation
@@ -185,7 +191,7 @@ df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 
 ### 3. Multicollinearity
 
-**Income variables are highly correlated:**
+**Income variables are highly correlated**:
 - `HY020`, `HY022`, `HY023` (different income definitions)
 - Consider using only `HY020` (total disposable income)
 - Check VIF (Variance Inflation Factor)
@@ -194,7 +200,7 @@ df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 
 ### 4. Feature Scaling
 
-**Normalize/standardize continuous variables:**
+**Normalize/standardize continuous variables**:
 ```python
 from sklearn.preprocessing import StandardScaler
 
@@ -202,13 +208,13 @@ scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X_numeric)
 ```
 
-**When to scale:**
+**When to scale**:
 - Always for: Linear models, SVM, Neural Networks
 - Not necessary for: Tree-based models (RF, XGBoost)
 
 ### 5. Categorical Encoding
 
-**For categorical variables:**
+**For categorical variables**:
 - **One-hot encoding** for nominal variables (sex, marital status)
 - **Ordinal encoding** for ordered variables (education level)
 - **Label encoding** for tree-based models
@@ -219,8 +225,6 @@ from sklearn.preprocessing import OneHotEncoder
 encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
 X_encoded = encoder.fit_transform(X_categorical)
 ```
-
----
 
 ## Pipeline Template
 
@@ -269,8 +273,6 @@ y_pred = model.predict(X_test)
 print(classification_report(y_test, y_pred))
 ```
 
----
-
 ## Suggested Research Questions
 
 1. **What demographic factors are most predictive of poverty risk?**
@@ -296,16 +298,14 @@ print(classification_report(y_test, y_pred))
    - Correlation between vhMATDEP and vhPobreza
    - Does it add predictive power beyond income?
 
----
-
 ## Model Comparison Strategy
 
-1. **Start simple:** Logistic Regression baseline
-2. **Add complexity:** Random Forest, XGBoost
-3. **Compare models:** Cross-validation scores
-4. **Feature importance:** Identify key predictors
-5. **Hyperparameter tuning:** Grid search on best model
-6. **Final evaluation:** Test set performance
+1. **Start simple**: Logistic Regression baseline
+2. **Add complexity**: Random Forest, XGBoost
+3. **Compare models**: Cross-validation scores
+4. **Feature importance**: Identify key predictors
+5. **Hyperparameter tuning**: Grid search on best model
+6. **Final evaluation**: Test set performance
 
 ```python
 from sklearn.model_selection import cross_val_score
@@ -317,12 +317,16 @@ models = {
 }
 
 for name, model in models.items():
-    scores = cross_val_score(model, X_train, y_train,
-                             cv=5, scoring='f1')
+    scores = cross_val_score(
+        model,
+        X_train,
+        y_train,
+        cv=5,
+        scoring='f1'
+    )
+    
     print(f"{name}: {scores.mean():.4f} (+/- {scores.std():.4f})")
 ```
-
----
 
 ## Next Steps
 

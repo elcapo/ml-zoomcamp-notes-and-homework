@@ -10,12 +10,10 @@ The Living Conditions Survey (ECV) 2024 dataset consists of **4 cross-sectional 
 |------|---------|-------------|--------|
 | **ECV_Td_2024** | 29,781 | Basic household data | CSV/TAB |
 | **ECV_Tr_2024** | - | Basic person data | CSV/TAB |
-| **ECV_Th_2024** ⭐ | 29,781 | Detailed household data (includes target variable) | TSV |
-| **ECV_Tp_2024** ⭐ | 61,526 | Detailed adult data (demographics, employment, income) | TSV |
+| **ECV_Th_2024** (*) | 29,781 | Detailed household data (includes target variable) | TSV |
+| **ECV_Tp_2024** (*) | 61,526 | Detailed adult data (demographics, employment, income) | TSV |
 
-⭐ Primary files used for analysis
-
----
+(*) Primary files used for analysis
 
 ## File Relationships
 
@@ -29,8 +27,6 @@ The Living Conditions Survey (ECV) 2024 dataset consists of **4 cross-sectional 
 - Household 1 → Persons: 101, 102
 - Household 2 → Persons: 201, 202, 203
 - Household 3 → Persons: 301, 302
-
----
 
 ## Target Variable: Poverty Risk
 
@@ -54,8 +50,6 @@ Household 3: Size=10 persons, vhPobreza=0, Income=€32,569
 ### Complementary Variable
 
 - **`vhMATDEP`** (Column 132): Material deprivation of the household (0=No, 1=Yes)
-
----
 
 ## Key Predictor Variables
 
@@ -144,8 +138,6 @@ All refer to previous year, net amounts in €:
 | **HH050** | Can keep home warm | 1=Yes, 2=No |
 | **HH070** | Housing costs (rent/mortgage + utilities) | Numeric (€) |
 
----
-
 ## Missing Values
 
 Files use special codes for missing data:
@@ -160,8 +152,6 @@ Files use special codes for missing data:
 ```python
 df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 ```
-
----
 
 ## Variable Conventions
 
@@ -182,8 +172,6 @@ df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 - **H** (second position) = Health
 - **S** = Material deprivation (Shortage)
 
----
-
 ## Directory Structure
 
 ```
@@ -198,11 +186,11 @@ data/
 │   ├── CSV/
 │   │   └── ECV_Td_2024.tab              # Basic household data (TSV)
 │   └── md_ECV_Td_2024.txt               # Metadata
-├── ECV_Th_2024/                         # ⭐ Contains target variable
+├── ECV_Th_2024/                         # Contains target variable
 │   ├── CSV/
 │   │   └── ECV_Th_2024.tab              # Detailed household data (TSV)
 │   └── md_ECV_Th_2024.txt
-├── ECV_Tp_2024/                         # ⭐ Contains demographic variables
+├── ECV_Tp_2024/                         # Contains demographic variables
 │   ├── CSV/
 │   │   └── ECV_Tp_2024.tab              # Detailed person data (TSV)
 │   └── md_ECV_Tp_2024.txt
@@ -212,16 +200,12 @@ data/
     └── md_ECV_Tr_2024.txt
 ```
 
----
-
 ## Technical Notes
 
 - **Encoding:** CSV files use `latin-1` or `ISO-8859-1` (Spanish characters with accents)
 - **Separator:** TAB (`\t`) in `.tab` files
 - **Sample weights:** Some variables include elevation factors for population representativeness
 - **Reference year:** 2024 data may refer to income from previous year (2023)
-
----
 
 ## Additional Documentation
 
