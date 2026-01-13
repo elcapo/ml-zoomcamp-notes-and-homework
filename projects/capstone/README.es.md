@@ -341,6 +341,197 @@ print(classification_report(y_test, y_pred))
 
 ---
 
+## Referencia Completa de Variables
+
+### Referencia Rápida: Variables Más Importantes
+
+A continuación se presenta una lista curada de las 46 variables más importantes para el análisis de riesgo de pobreza:
+
+#### Variables Objetivo
+
+| Variable | Archivo | Descripción | Valores |
+|----------|---------|-------------|---------|
+| **vhPobreza** | Hogar | En riesgo de pobreza | 0=No, 1=Sí |
+| **vhMATDEP** | Hogar | Privación material severa | 0=No, 1=Sí |
+
+#### Demografía
+
+| Variable | Archivo | Descripción | Tipo | Valores |
+|----------|---------|-------------|------|---------|
+| **PB140** | Persona | Año de nacimiento | Numérico | 1950-2008 |
+| **PB150** | Persona | Sexo | Categórico | 1=Hombre, 2=Mujer |
+| **PB190** | Persona | Estado civil | Categórico | 1=Soltero, 2=Casado, 3=Separado, 4=Viudo, 5=Divorciado |
+| **HB120** | Hogar | Número de miembros del hogar | Numérico | 1-10+ |
+
+#### Educación
+
+| Variable | Archivo | Descripción | Tipo | Valores |
+|----------|---------|-------------|------|---------|
+| **PE021** | Persona | Nivel educativo | Ordinal | 0=Menos que primaria, 10=Primaria, 20=Secundaria inferior, 30=Secundaria superior, 40=Postsecundaria, 50=Superior |
+
+#### Empleo
+
+| Variable | Archivo | Descripción | Tipo |
+|----------|---------|-------------|------|
+| **PL051A** | Persona | Situación laboral actual | Categórico (ISCO08) |
+| **PL060** | Persona | Horas trabajadas por semana | Numérico (0-80) |
+| **PL073** | Persona | Meses trabajados tiempo completo (asalariado) | Numérico (0-12) |
+| **PL074** | Persona | Meses trabajados tiempo parcial (asalariado) | Numérico (0-12) |
+| **PL075** | Persona | Meses trabajados tiempo completo (autónomo) | Numérico (0-12) |
+| **PL076** | Persona | Meses trabajados tiempo parcial (autónomo) | Numérico (0-12) |
+| **PL080** | Persona | Meses en desempleo | Numérico (0-12) |
+
+#### Ingresos Individuales (Todos se refieren al año anterior, importes netos en €)
+
+| Variable | Archivo | Descripción |
+|----------|---------|-------------|
+| **PY010N** | Persona | Ingresos netos como empleado |
+| **PY020N** | Persona | Ingresos no monetarios netos como empleado |
+| **PY050N** | Persona | Ingresos netos de trabajo por cuenta propia |
+| **PY090N** | Persona | Prestaciones por desempleo |
+| **PY100N** | Persona | Pensión de jubilación |
+| **PY110N** | Persona | Prestaciones de supervivencia |
+| **PY120N** | Persona | Prestaciones por enfermedad |
+| **PY130N** | Persona | Prestaciones por discapacidad |
+| **PY140N** | Persona | Ayudas para estudios |
+
+#### Ingresos del Hogar (Todos se refieren al año anterior, importes netos en €)
+
+| Variable | Archivo | Descripción |
+|----------|---------|-------------|
+| **HY020** | Hogar | **Ingreso disponible total** (predictor más importante) |
+| **HY022** | Hogar | Ingreso antes de transferencias sociales (excepto pensiones) |
+| **HY023** | Hogar | Ingreso antes de todas las transferencias sociales |
+| **HY030N** | Hogar | Alquiler imputado |
+| **HY040N** | Hogar | Ingresos por alquiler |
+| **HY050N** | Hogar | Ayudas familiares/hijos |
+| **HY060N** | Hogar | Asistencia social |
+| **HY070N** | Hogar | Ayudas para vivienda |
+
+#### Salud
+
+| Variable | Archivo | Descripción | Valores |
+|----------|---------|-------------|---------|
+| **PH010** | Persona | Estado general de salud | 1=Muy bueno, 2=Bueno, 3=Regular, 4=Malo, 5=Muy malo |
+| **PH020** | Persona | Enfermedad crónica | 1=Sí, 2=No |
+| **PH030** | Persona | Limitación en actividades | 1=Muy limitado, 2=Limitado, 3=No limitado |
+
+#### Privación Material
+
+| Variable | Archivo | Descripción | Valores |
+|----------|---------|-------------|---------|
+| **HS040** | Hogar | Puede permitirse vacaciones | 1=Sí, 2=No |
+| **HS050** | Hogar | Puede permitirse comida con proteína | 1=Sí, 2=No |
+| **HS060** | Hogar | Puede afrontar gastos imprevistos | 1=Sí, 2=No |
+| **HS090** | Hogar | Tiene ordenador | 1=Sí, 2=No |
+| **HS110** | Hogar | Puede permitirse coche | 1=Sí, 2=No |
+
+#### Vivienda
+
+| Variable | Archivo | Descripción | Valores |
+|----------|---------|-------------|---------|
+| **HH010** | Hogar | Tipo de vivienda | 1=Unifamiliar, 2=Adosada, 3=Apartamento |
+| **HH030** | Hogar | Número de habitaciones | Numérico (1-10+) |
+| **HH040** | Hogar | Goteras/humedades | 1=Sí, 2=No |
+| **HH050** | Hogar | Puede mantener la casa caliente | 1=Sí, 2=No |
+| **HH070** | Hogar | Gastos de vivienda (alquiler/hipoteca + servicios) | Numérico (€) |
+
+#### Variables de Enlace
+
+| Variable | Archivo | Descripción |
+|----------|---------|-------------|
+| **PB030** | Persona | ID de persona = id_hogar × 100 + número_persona |
+| **HB030** | Hogar | ID del hogar |
+
+**Relación:** `id_hogar = floor(PB030 / 100)`
+- Ejemplo: Persona 101 → Hogar 1, Persona 202 → Hogar 2
+
+### Convenciones de Variables
+
+#### Valores Faltantes
+Reemplazar códigos negativos con NaN antes del análisis:
+```python
+df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
+```
+
+Significado de los códigos:
+- `-1` = Faltante
+- `-2` = No aplicable
+- `-3` = Encuestado no seleccionado
+- `-4` = No se pudo establecer
+- `-5` = No completado (serie bruta completada en su lugar)
+- `-6` = Mezcla de valores y faltantes
+
+#### Sufijos de Variables
+- **_F** = Variable flag (indicador de calidad de datos)
+  - `1` o `11` = Datos de buena calidad
+  - Valores negativos = Problemas (ver valores faltantes arriba)
+- **N** = Importe neto (después de impuestos)
+- **G** = Importe bruto (antes de impuestos)
+
+#### Prefijos de Variables
+- **P** = Nivel de persona
+- **H** = Nivel de hogar
+- **B** = Información básica
+- **E** = Educación
+- **L** = Empleo/Trabajo (del francés "Labeur")
+- **Y** = Ingresos (del inglés "Yield")
+- **H** (segunda posición) = Salud
+- **S** = Privación material (del inglés "Shortage")
+
+### Cálculo de Edad
+```python
+edad = 2024 - PB140  # Edad actual
+```
+
+### Ejemplos de Feature Engineering
+
+**Ratio de Dependencia:**
+```python
+ratio_dependencia = (num_niños + num_ancianos) / num_edad_laboral
+```
+
+**Ingreso Per Cápita:**
+```python
+ingreso_per_capita = HY020 / HB120
+```
+
+**Intensidad de Empleo:**
+```python
+meses_trabajo = PL073 + PL074 + PL075 + PL076
+intensidad_empleo = meses_trabajo / 12
+```
+
+**Puntuación de Privación Material:**
+```python
+puntuacion_privacion = (
+    (HS040 == 2) +  # Sin vacaciones
+    (HS050 == 2) +  # Sin comidas con proteína
+    (HS060 == 2) +  # Sin fondos de emergencia
+    (HS110 == 2) +  # Sin coche
+    (HH050 == 2)    # No puede calentar la casa
+)
+```
+
+**Diversificación de Ingresos:**
+```python
+fuentes_ingreso = sum([
+    PY010N > 0,  # Ingresos como empleado
+    PY050N > 0,  # Trabajo autónomo
+    PY090N > 0,  # Desempleo
+    PY100N > 0,  # Pensión
+    HY040N > 0,  # Ingresos por alquiler
+])
+```
+
+### Documentación Completa de Variables
+
+- **Variables de personas:** 208 variables totales en `data/disreg_ecv_24/dr_ECV_CM_Tp_2024.xlsx`
+- **Variables de hogares:** 187 variables totales en `data/disreg_ecv_24/dr_ECV_CM_Th_2024.xlsx`
+- **Referencia rápida CSV:** Ver `quick_reference_variables.csv` para las 46 variables más importantes
+
+---
+
 ## Recursos Adicionales
 
 - **Web del INE:** https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176807&menu=resultados&idp=1254735976608
