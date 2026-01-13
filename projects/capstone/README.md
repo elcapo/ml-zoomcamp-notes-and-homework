@@ -14,25 +14,25 @@ Living Conditions Survey (Encuesta de Condiciones de Vida - ECV) 2024 from the S
 
 #### Target Variable
 
-`vhPobreza` - Binary indicator of poverty risk (0=No, 1=Yes).
+* **`vhPobreza`** - Binary indicator of poverty risk (0=No, 1=Yes).
 
 #### Key Features
 
-- Household income and composition
-- Individual demographics (age, sex, education)
-- Employment status and work patterns
-- Health indicators
-- Material deprivation measures
-- Housing conditions
+- Household income and composition.
+- Individual demographics (age, sex, education).
+- Employment status and work patterns.
+- Health indicators.
+- Material deprivation measures.
+- Housing conditions.
 
 #### Dataset Summary
+
+The project merges these files using a **hybrid aggregation strategy** that combines household head characteristics with aggregated household statistics.
 
 | File | Records | Description |
 |------|---------|-------------|
 | **ECV_Th_2024** | 29,781 households | Household-level data (includes target variable) |
 | **ECV_Tp_2024** | 61,526 persons | Person-level data (demographics, employment, income) |
-
-The project merges these files using a **hybrid aggregation strategy** that combines household head characteristics with aggregated household statistics.
 
 ## Getting Started
 
@@ -76,9 +76,9 @@ We use a **hybrid aggregation strategy** that combines:
 
 #### Target Variable
 
-- **`vhPobreza`** - At risk of poverty indicator
-- Located in household file (ECV_Th_2024)
-- Binary: 0 (Not at risk) / 1 (At risk)
+- **`vhPobreza`** - At risk of poverty indicator.
+- Located in household file (ECV_Th_2024).
+- Binary: 0 (Not at risk) / 1 (At risk).
 
 ## Project Structure
 
@@ -132,17 +132,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
-# Load data
+# Load the data
 df = pd.read_csv('data/merged.csv')
 X = df.drop('vhPobreza', axis=1)
 y = df['vhPobreza']
 
-# Train-test split
+# Split the dataset
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, stratify=y, random_state=42
 )
 
-# Train model
+# Train the model
 model = RandomForestClassifier(class_weight='balanced', random_state=42)
 model.fit(X_train, y_train)
 
