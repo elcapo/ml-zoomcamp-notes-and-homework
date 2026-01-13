@@ -157,21 +157,49 @@ Household 3: Size=10 persons, vhPobreza=0, Income=€32,569
 
 ### 1. **Data Merging**
 
-To create a complete dataset for the model, you'll need to merge the files:
+To create a complete dataset for the model, we use a **hybrid aggregation strategy** that combines:
+- Individual characteristics of the household head
+- Aggregated statistics for the entire household
 
-```python
-# Pseudocode
-households = pd.read_csv('ECV_Th_2024.tab', sep='\t')  # Target variable here
-persons = pd.read_csv('ECV_Tp_2024.tab', sep='\t')
-
-# Merge by household ID (HB030 in households, PB030 in persons)
-# Option 1: Aggregate person data by household
-# Option 2: Use only head of household/main breadwinner
-```
+This approach provides a good balance between capturing individual profiles and household dynamics.
 
 **Merge keys:**
-- `HB030` (ECV_Th) ↔ `PB030` (ECV_Tp): Household ID
-- `DB030` (ECV_Td) ↔ `HB030` (ECV_Th): Household ID
+- `HB030` (ECV_Th) = Household ID
+- `PB030` (ECV_Tp) = Person ID (household_id = floor(PB030 / 100))
+- Example: Persons 101, 102 → Household 1
+
+#### Hybrid Aggregation Strategy
+
+The merging process consists of three parts:
+
+**Part 1: Household Head Features**
+- Extract characteristics of the first person (household head) in each household
+- Features: age, sex, marital status, education, employment status, work hours, income, health
+
+**Part 2: Household Composition**
+- Aggregate person-level data across all household members
+- Statistics: household size, average age, number of males, maximum education, number employed
+- Income totals: employee income, pensions
+
+**Part 3: Derived Features**
+- Employment rate: employed members / household size
+- Age-based composition: children (<18), elderly (≥65), working-age adults
+- Dependency ratio: (children + elderly) / working-age adults
+- Income per capita: total income / household size
+
+#### Implementation
+
+Use the provided `merge_data.py` script:
+
+```bash
+python merge_data.py
+```
+
+This generates `merged_data.csv` with:
+- Household-level features (income, size, etc.)
+- Household head characteristics (with `head_` prefix)
+- Aggregated household composition features
+- Target variable: `vhPobreza`
 
 ### 2. **Recommended Feature Engineering**
 
