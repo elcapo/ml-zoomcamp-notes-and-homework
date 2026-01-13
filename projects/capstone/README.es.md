@@ -15,27 +15,32 @@ Este conjunto de datos proviene de la **Encuesta de Condiciones de Vida (ECV) 20
 El conjunto de datos se compone de **4 ficheros transversales** (Base 2013):
 
 ### 1. **ECV_Td_2024** - Datos Básicos del Hogar
+
 - **Registros:** 29,781 hogares
 - **Contenido:** Variables básicas a nivel de hogar
 - **Formato:** CSV/TAB en `data/ECV_Td_2024/CSV/`
 
 ### 2. **ECV_Tr_2024** - Datos Básicos de la Persona
+
 - **Contenido:** Variables básicas a nivel individual
 - **Formato:** CSV/TAB en `data/ECV_Tr_2024/CSV/`
 
 ### 3. **ECV_Th_2024** - Datos Detallados del Hogar ⭐
+
 - **Registros:** 29,781 hogares
 - **Contenido:** Variables detalladas del hogar incluyendo **riesgo de pobreza** (variable objetivo)
 - **Archivo principal:** `data/ECV_Th_2024/CSV/ECV_Th_2024.tab`
 - **Formato:** TSV (campos separados por tabulador)
 
 ### 4. **ECV_Tp_2024** - Datos Detallados de los Adultos ⭐
+
 - **Registros:** 61,526 adultos
 - **Contenido:** Variables demográficas, educación, empleo, salud, ingresos individuales
 - **Archivo principal:** `data/ECV_Tp_2024/CSV/ECV_Tp_2024.tab`
 - **Formato:** TSV (campos separados por tabulador)
 
 ### Documentación Adicional
+
 - **Diseños de registro:** `data/disreg_ecv_24/*.xlsx` (descripciones de variables en Excel)
 - **Metadatos:** `data/ECV_T*/md_ECV_T*_2024.txt` (diccionarios de datos detallados)
 - **Instrucciones:** `data/LeemeECV_2024.txt`
@@ -45,6 +50,7 @@ El conjunto de datos se compone de **4 ficheros transversales** (Base 2013):
 ## Variable Objetivo: Riesgo de Pobreza
 
 ### `vhPobreza` (Columna 131 en ECV_Th_2024)
+
 - **Ubicación:** Archivo de hogares detallados (`ECV_Th_2024`)
 - **Tipo:** Binaria (categórica)
 - **Valores:**
@@ -53,6 +59,7 @@ El conjunto de datos se compone de **4 ficheros transversales** (Base 2013):
 - **Descripción:** Indica si el hogar está en riesgo de pobreza según los criterios EU-SILC
 
 ### Ejemplo de Datos Reales:
+
 ```
 Hogar 1: Tamaño=5 personas, vhPobreza=1, Ingreso=4,600€
 Hogar 2: Tamaño=8 personas, vhPobreza=0, Ingreso=42,420€
@@ -60,6 +67,7 @@ Hogar 3: Tamaño=10 personas, vhPobreza=0, Ingreso=32,569€
 ```
 
 ### Variable Complementaria: `vhMATDEP` (Columna 132)
+
 - **Descripción:** Privación material del hogar
 - **Valores:** 0 (No) / 1 (Sí)
 
@@ -153,7 +161,7 @@ Para crear un conjunto de datos completo para el modelo, necesitarás unir los a
 
 ```python
 # Pseudocódigo
-hogares = pd.read_csv('ECV_Th_2024.tab', sep='\t')  # Variable objetivo aquí
+hogares = pd.read_csv('ECV_Th_2024.tab', sep='\t')  # Variable objetivo
 personas = pd.read_csv('ECV_Tp_2024.tab', sep='\t')
 
 # Unir por ID de hogar (HB030 en hogares, PB030 en personas)
@@ -176,16 +184,18 @@ personas = pd.read_csv('ECV_Tp_2024.tab', sep='\t')
 - **Composición familiar:** Variables dummy para tipos de hogar
 - **Indicadores de privación:** Suma de variables HS/HH
 
-### 3. **Tipos de Modelos Sugeridos**
+### 3. **Tipos de Modelos Posibles**
 
-#### Clasificación (Recomendado)
+#### Clasificación
+
 Dado que `vhPobreza` es binaria (0/1):
 - **Regresión Logística** (baseline interpretable)
 - **Random Forest / Gradient Boosting** (XGBoost, LightGBM)
 - **SVM con kernel RBF**
 - **Redes Neuronales** (si hay suficientes datos)
 
-#### Regresión (Alternativa)
+#### Regresión
+
 Predecir ingresos continuos (HY020) y derivar riesgo:
 - **Regresión Lineal** (baseline)
 - **Ridge/Lasso/ElasticNet** (con regularización)
@@ -202,6 +212,7 @@ Para el problema de clasificación:
 ### 5. **Consideraciones Importantes**
 
 #### Desbalanceo de Clases
+
 ```python
 # Verificar distribución de vhPobreza
 print(hogares['vhPobreza'].value_counts())
@@ -213,6 +224,7 @@ print(hogares['vhPobreza'].value_counts())
 ```
 
 #### Valores Faltantes
+
 Los archivos usan códigos especiales:
 - `-1`, `-2`, `-3`, `-4`, `-5`, `-6`: Diferentes tipos de missing data
 - Variables con sufijo `_F`: Flags de calidad de datos
@@ -223,11 +235,13 @@ df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 ```
 
 #### Multicolinealidad
+
 - Cuidado con variables de ingresos (HY020, HY022, HY023) altamente correlacionadas
 - Usar VIF (Variance Inflation Factor) o eliminar variables redundantes
 - Considerar PCA si hay muchas variables correlacionadas
 
 #### Feature Scaling
+
 - Normalizar/estandarizar variables continuas (ingresos, edad, horas trabajadas)
 - Dejar variables categóricas como dummy variables
 
@@ -236,22 +250,28 @@ df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 ## Guía Rápida de Inicio
 
 ### 1. Cargar Datos
+
 ```python
 import pandas as pd
 
-# Hogares (incluye variable objetivo)
-hogares = pd.read_csv('data/ECV_Th_2024/CSV/ECV_Th_2024.tab',
-                       sep='\t', encoding='latin-1')
+hogares = pd.read_csv(
+   'data/ECV_Th_2024/CSV/ECV_Th_2024.tab',
+   sep='\t',
+   encoding='latin-1'
+)
 
-# Personas
-personas = pd.read_csv('data/ECV_Tp_2024/CSV/ECV_Tp_2024.tab',
-                        sep='\t', encoding='latin-1')
+personas = pd.read_csv(
+   'data/ECV_Tp_2024/CSV/ECV_Tp_2024.tab',
+   sep='\t',
+   encoding='latin-1'
+)
 
 print(f"Hogares: {hogares.shape}")
 print(f"Personas: {personas.shape}")
 ```
 
 ### 2. Explorar Variable Objetivo
+
 ```python
 # Distribución de riesgo de pobreza
 print(hogares['vhPobreza'].value_counts())
@@ -262,6 +282,7 @@ hogares.groupby('vhPobreza')['HY020'].describe()
 ```
 
 ### 3. Seleccionar Variables Clave
+
 ```python
 # Variables de hogar
 vars_hogar = ['HB030', 'HB070', 'HB100', 'HY020', 'HY022', 'vhPobreza']
@@ -273,6 +294,7 @@ personas_subset = personas[vars_persona]
 ```
 
 ### 4. Pipeline Básico
+
 ```python
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier

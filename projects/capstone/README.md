@@ -15,27 +15,32 @@ This dataset comes from the **Living Conditions Survey (Encuesta de Condiciones 
 The dataset consists of **4 cross-sectional files** (Base 2013):
 
 ### 1. **ECV_Td_2024** - Basic Household Data
+
 - **Records:** 29,781 households
 - **Content:** Basic household-level variables
 - **Format:** CSV/TAB in `data/ECV_Td_2024/CSV/`
 
 ### 2. **ECV_Tr_2024** - Basic Person Data
+
 - **Content:** Basic individual-level variables
 - **Format:** CSV/TAB in `data/ECV_Tr_2024/CSV/`
 
 ### 3. **ECV_Th_2024** - Detailed Household Data ⭐
+
 - **Records:** 29,781 households
 - **Content:** Detailed household variables including **poverty risk** (target variable)
 - **Main file:** `data/ECV_Th_2024/CSV/ECV_Th_2024.tab`
 - **Format:** TSV (tab-separated values)
 
 ### 4. **ECV_Tp_2024** - Detailed Adult Data ⭐
+
 - **Records:** 61,526 adults
 - **Content:** Demographic variables, education, employment, health, individual income
 - **Main file:** `data/ECV_Tp_2024/CSV/ECV_Tp_2024.tab`
 - **Format:** TSV (tab-separated values)
 
 ### Additional Documentation
+
 - **Record designs:** `data/disreg_ecv_24/*.xlsx` (variable descriptions in Excel)
 - **Metadata:** `data/ECV_T*/md_ECV_T*_2024.txt` (detailed data dictionaries)
 - **Instructions:** `data/LeemeECV_2024.txt`
@@ -45,6 +50,7 @@ The dataset consists of **4 cross-sectional files** (Base 2013):
 ## Target Variable: Poverty Risk
 
 ### `vhPobreza` (Column 131 in ECV_Th_2024)
+
 - **Location:** Detailed household file (`ECV_Th_2024`)
 - **Type:** Binary (categorical)
 - **Values:**
@@ -53,6 +59,7 @@ The dataset consists of **4 cross-sectional files** (Base 2013):
 - **Description:** Indicates whether the household is at risk of poverty according to EU-SILC criteria
 
 ### Real Data Example:
+
 ```
 Household 1: Size=5 persons, vhPobreza=1, Income=€4,600
 Household 2: Size=8 persons, vhPobreza=0, Income=€42,420
@@ -60,6 +67,7 @@ Household 3: Size=10 persons, vhPobreza=0, Income=€32,569
 ```
 
 ### Complementary Variable: `vhMATDEP` (Column 132)
+
 - **Description:** Material deprivation of the household
 - **Values:** 0 (No) / 1 (Yes)
 
@@ -176,16 +184,18 @@ persons = pd.read_csv('ECV_Tp_2024.tab', sep='\t')
 - **Family composition:** Dummy variables for household types
 - **Deprivation indicators:** Sum of HS/HH variables
 
-### 3. **Suggested Model Types**
+### 3. **Possible Model Types**
 
-#### Classification (Recommended)
+#### Classification
+
 Since `vhPobreza` is binary (0/1):
 - **Logistic Regression** (interpretable baseline)
 - **Random Forest / Gradient Boosting** (XGBoost, LightGBM)
 - **SVM with RBF kernel**
 - **Neural Networks** (if sufficient data)
 
-#### Regression (Alternative)
+#### Regression
+
 Predict continuous income (HY020) and derive risk:
 - **Linear Regression** (baseline)
 - **Ridge/Lasso/ElasticNet** (with regularization)
@@ -202,6 +212,7 @@ For the classification problem:
 ### 5. **Important Considerations**
 
 #### Class Imbalance
+
 ```python
 # Check vhPobreza distribution
 print(households['vhPobreza'].value_counts())
@@ -213,6 +224,7 @@ print(households['vhPobreza'].value_counts())
 ```
 
 #### Missing Values
+
 Files use special codes:
 - `-1`, `-2`, `-3`, `-4`, `-5`, `-6`: Different types of missing data
 - Variables with `_F` suffix: Data quality flags
@@ -223,11 +235,13 @@ df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 ```
 
 #### Multicollinearity
+
 - Be careful with income variables (HY020, HY022, HY023) which are highly correlated
 - Use VIF (Variance Inflation Factor) or eliminate redundant variables
 - Consider PCA if many correlated variables
 
 #### Feature Scaling
+
 - Normalize/standardize continuous variables (income, age, hours worked)
 - Leave categorical variables as dummy variables
 
@@ -236,22 +250,28 @@ df = df.replace([-1, -2, -3, -4, -5, -6], np.nan)
 ## Quick Start Guide
 
 ### 1. Load Data
+
 ```python
 import pandas as pd
 
-# Households (includes target variable)
-households = pd.read_csv('data/ECV_Th_2024/CSV/ECV_Th_2024.tab',
-                          sep='\t', encoding='latin-1')
+households = pd.read_csv(
+   'data/ECV_Th_2024/CSV/ECV_Th_2024.tab',
+   sep='\t',
+   encoding='latin-1'
+)
 
-# Persons
-persons = pd.read_csv('data/ECV_Tp_2024/CSV/ECV_Tp_2024.tab',
-                       sep='\t', encoding='latin-1')
+persons = pd.read_csv(
+   'data/ECV_Tp_2024/CSV/ECV_Tp_2024.tab',
+   sep='\t',
+   encoding='latin-1'
+)
 
 print(f"Households: {households.shape}")
 print(f"Persons: {persons.shape}")
 ```
 
 ### 2. Explore Target Variable
+
 ```python
 # Poverty risk distribution
 print(households['vhPobreza'].value_counts())
@@ -262,6 +282,7 @@ households.groupby('vhPobreza')['HY020'].describe()
 ```
 
 ### 3. Select Key Variables
+
 ```python
 # Household variables
 vars_household = ['HB030', 'HB070', 'HB100', 'HY020', 'HY022', 'vhPobreza']
@@ -273,6 +294,7 @@ persons_subset = persons[vars_person]
 ```
 
 ### 4. Basic Pipeline
+
 ```python
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
