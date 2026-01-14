@@ -6,7 +6,7 @@ Machine learning project to predict poverty risk in Spanish households using dat
 
 ### Objective
 
-Develop a classification model to predict whether a household is at risk of poverty using demographic and socioeconomic data.
+Develop a classification model to predict whether a household would be considered to be at risk of poverty using demographic and socioeconomic data. In other words, we are reverse engineering the risk poverty calculation in order to create a model that can reproduce and explain the calculation.
 
 ### Dataset
 
@@ -53,6 +53,11 @@ The project merges these files using a **hybrid aggregation strategy** that comb
    ```python
    import pandas as pd
    df = pd.read_csv('data/merged.csv')
+   ```
+
+4. **Edit the notebook:**
+   ```bash
+   uv run marimo edit notebook.py
    ```
 
 ## Documentation
