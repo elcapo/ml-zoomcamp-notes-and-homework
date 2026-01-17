@@ -376,7 +376,7 @@ def _(df_full, df_test, df_train, df_val):
     X_full, y_full = separate_features_and_target(df_full)
     X_val, y_val = separate_features_and_target(df_val)
     X_test, y_test = separate_features_and_target(df_test)
-    return X_full, X_test, X_train, X_val, y_test, y_train
+    return X_full, X_test, X_train, X_val, y_full, y_test, y_train, y_val
 
 
 @app.cell(hide_code=True)
@@ -463,7 +463,7 @@ def _(X_test_scaled, logistic_regression_model, y_test):
     logistic_regression_evaluation = evaluate_classifier(logistic_regression_model, X_test_scaled, y_test)
 
     logistic_regression_evaluation
-    return (evaluate_classifier,)
+    return evaluate_classifier, roc_auc_score
 
 
 @app.cell(hide_code=True)
@@ -620,7 +620,7 @@ def _(X_train, y_train):
         return model
 
     xgboost_classifier_model = train_xgboost_classifier()
-    return (xgboost_classifier_model,)
+    return XGBClassifier, xgboost_classifier_model
 
 
 @app.cell(hide_code=True)
@@ -658,7 +658,9 @@ def _(mo):
     mo.md(r"""
     ### Comparisson
 
-    | Metric | Logistic regression (sensible) | Random forest (conservative) | XGBoost (balanced) |
+    From the completed evaluations, we'll continue with the **XGBoost** model. The reason is that although it performed more or less like the random forest, it seems to have identified better the households in poverty risk, which seems more important than wrongly identifying a household as being at risk when it's not.
+
+    | Metric | Logistic regression | Random forest | XGBoost |
     | --- | --- | --- | --- |
     | Precision (class 1) | 0.76 | 0.97 | 0.93 |
     | Recall (class 1) | 0.97 | 0.92 | 0.95 |
@@ -669,6 +671,161 @@ def _(mo):
     | AUC-ROC | 0.991 | 0.994 | 0.996 |
     | Profile | Inclusive | Restrictive | Balanced |
     """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Hyperparameter Tuning
+
+    We'll now search for better XGBoost parameters by training several models with a distribution of parameters.
+    """)
+    return
+
+
+@app.cell
+def _(XGBClassifier, X_train, X_val, roc_auc_score, y_train, y_val):
+    from sklearn.model_selection import RandomizedSearchCV
+
+    booster_param_distributions = {
+        "eta": [0.1, 0.2, 0.3, 1.0],
+        "max_depth": [5, 25, 50],
+        "min_child_weight": [1, 3, 5, 7],
+    }
+
+    def search_best_xgboost(X_train, y_train, X_val, y_val, param_distributions):
+        booster = XGBClassifier(
+            tree_method="hist",
+            early_stopping_rounds=2,
+            eval_metric=roc_auc_score,
+            random_state=1,
+            objective="binary:logistic",
+            nthread=8,
+        )
+
+        booster_search = RandomizedSearchCV(booster, param_distributions)
+        booster_search.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
+
+        return booster_search
+
+    booster_search = search_best_xgboost(X_train, y_train, X_val, y_val, booster_param_distributions)
+    return (booster_search,)
+
+
+@app.cell(hide_code=True)
+def _(booster_search, plt):
+    def plot_experiments(search):
+        fit_times = search.cv_results_["mean_fit_time"]
+        scores = search.cv_results_["mean_test_score"]
+
+        fig, ax_scores = plt.subplots(figsize=(12, 6))
+        ax_fit_times = ax_scores.twinx()
+
+        colors = ["royalblue" for _ in range(len(search.cv_results_))]
+        colors[search.best_index_] = "forestgreen"
+
+        ax_scores.bar(x=range(len(scores)), height=scores, color=colors)
+        ax_scores.set_xlabel("Experiment")
+        ax_scores.set_ylabel("Mean test score")
+
+        ax_fit_times.plot(range(len(scores)), fit_times, color="red")
+        ax_scores.set_xticks(range(len(scores)))
+        ax_fit_times.set_ylabel("Mean fit time")
+
+        plt.title("Experiment analysis")
+        plt.show()
+
+    plot_experiments(booster_search)
+    return
+
+
+@app.cell(hide_code=True)
+def _(booster_search, plt):
+    def plot_xgboost_parameters(search):
+        _, axis = plt.subplots(1, 3, figsize=(16, 3))
+
+        colors = ["royalblue" for _ in range(len(search.cv_results_))]
+        colors[search.best_index_] = "forestgreen"
+
+        eta = [param["eta"] for param in search.cv_results_["params"]]
+        ax_eta = axis[0]
+        ax_eta.bar(x=range(len(eta)), height=eta, color=colors)
+        ax_eta.set_xticks(range(len(eta)))
+        ax_eta.set_xlabel("Experiment")
+        ax_eta.set_title("Eta")
+
+        max_depth = [param["max_depth"] if param["max_depth"] != None else 0 for param in search.cv_results_["params"]]
+        ax_max_depth = axis[1]
+        ax_max_depth.bar(x=range(len(max_depth)), height=max_depth, color=colors)
+        ax_max_depth.set_xticks(range(len(max_depth)))
+        ax_max_depth.set_xlabel("Experiment")
+        ax_max_depth.set_title("Maximum depth")
+
+        min_child_weight = [param["min_child_weight"] for param in search.cv_results_["params"]]
+        ax_min_child_weight = axis[2]
+        ax_min_child_weight.bar(x=range(len(min_child_weight)), height=min_child_weight, color=colors)
+        ax_min_child_weight.set_xticks(range(len(min_child_weight)))
+        ax_min_child_weight.set_xlabel("Experiment")
+        ax_min_child_weight.set_title("Mimimum child weight")
+
+        plt.show()
+
+    plot_xgboost_parameters(booster_search)
+    return
+
+
+@app.cell
+def _(booster_search):
+    booster_search.best_params_
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Final Model
+
+    #### Train
+    """)
+    return
+
+
+@app.cell
+def _(XGBClassifier, X_full, y_full):
+    def train_final_xgboost_classifier(min_child_weight, max_depth, eta):
+        class_ratio = (y_full == 0).sum() / (y_full == 1).sum()
+
+        model = XGBClassifier(
+            min_child_weight=min_child_weight,
+            max_depth=max_depth,
+            eta=eta,
+            scale_pos_weight=class_ratio,
+            random_state=1,
+            n_jobs=-1
+        )
+
+        model.fit(X_full, y_full)
+
+        return model
+
+    final_model = train_final_xgboost_classifier(min_child_weight=1, max_depth=50, eta=1.0)
+    return (final_model,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    #### Evaluate
+    """)
+    return
+
+
+@app.cell
+def _(X_test, evaluate_classifier, final_model, y_test):
+    final_model_evaluation = evaluate_classifier(final_model, X_test, y_test)
+
+    final_model_evaluation
     return
 
 
