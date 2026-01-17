@@ -87,7 +87,12 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    By aggregating people rows to the household records, we obtained a dataset with the same number of rows as households but with additional columns.
+    * By aggregating people rows to the household records, we obtained a dataset with the same number of rows as households but with additional columns.
+
+    At the same time, during the merge:
+
+    * We also replaced negative values (which represent codes for different missing values) with _NaN_.
+    * We applied some data transformations in order to keep the notebook clean.
     """)
     return
 
@@ -135,27 +140,163 @@ def _(mo):
     return
 
 
-@app.cell
-def _(df_renamed):
-    df_renamed['poverty_risk'].value_counts()
-    return
-
-
-@app.cell
-def _(df_renamed):
-    df_renamed['poverty_risk'].value_counts(normalize=True).round(2)
-    return
-
-
 @app.cell(hide_code=True)
 def _(df_renamed, plt):
     plt.figure(figsize=(12, 6))
-    df_renamed['poverty_risk'].value_counts().plot(kind='bar')
+    df_renamed['poverty_risk'].value_counts().plot(kind='bar', alpha=0.5, color='steelblue', edgecolor='gray')
     plt.title('Poverty Risk Distribution')
     plt.xlabel('At Risk of Poverty')
     plt.ylabel('Count')
     plt.xticks([0, 1], ['No (0)', 'Yes (1)'], rotation=0)
     plt.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Features
+
+    In this section, we'll take a look at the most important feature variables.
+
+    ### Household head
+    """)
+    return
+
+
+@app.cell
+def _(plt):
+    def plot_histogram(data, title, xlabel, ylabel):
+        fig, ax = plt.subplots(figsize=(12, 6))
+        data.plot.hist(bins=10, alpha=0.5, color='steelblue', edgecolor='gray', ax=ax)
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        return fig
+
+    def plot_bars(data, title, xlabel, ylabel, xticklabels):
+        fig, ax = plt.subplots(figsize=(12, 6))
+        data.value_counts().plot(kind='bar', alpha=0.5, color='steelblue', edgecolor='gray', ax=ax)
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.set_xticklabels(xticklabels, rotation=0)
+        return fig
+    return plot_bars, plot_histogram
+
+
+@app.cell(hide_code=True)
+def _(df_renamed, mo, plot_bars, plot_histogram):
+    def plot_head_total_disposable_outcome():
+        return plot_histogram(
+            data=df_renamed['total_disposable_income'],
+            title='Total disposable income',
+            xlabel='Income (€)',
+            ylabel='Count',
+        )
+
+    def plot_head_age():
+        return plot_histogram(
+            data=df_renamed['head_age'],
+            title='Age of the household head',
+            xlabel='Age (years)',
+            ylabel='Count',
+        )
+
+    def plot_head_sex():
+        return plot_bars(
+            data=df_renamed['head_sex'],
+            title='Sex',
+            xlabel='Sex',
+            ylabel='Count',
+            xticklabels=['Man', 'Woman'],
+        )
+
+    def plot_head_marital_status():
+        return plot_bars(
+            data=df_renamed['head_marital_status'],
+            title='Marital status',
+            xlabel='Marital status',
+            ylabel='Count',
+            xticklabels=['Single', 'Married', 'Separated', 'Widowed', 'Divorced'],
+        )
+
+    def plot_head_hours_worked_per_week():
+        return plot_histogram(
+            data=df_renamed['head_hours_worked_per_week'],
+            title='Hours worked per week',
+            xlabel='Hours per week',
+            ylabel='Count',
+        )
+
+    def plot_head_general_health_status():
+        return plot_bars(
+            data=df_renamed['head_general_health_status'],
+            title='Health status',
+            xlabel='Health status',
+            ylabel='Count',
+            xticklabels=['Very good', 'Good', 'Fair', 'Bad', 'Very bad'],
+        )
+
+    mo.ui.tabs({
+        "Total disposable outcome": plot_head_total_disposable_outcome(),
+        "Age": plot_head_age(),
+        "Sex": plot_head_sex(),
+        "Marital status": plot_head_marital_status(),
+        "Hours Worked per Week": plot_head_hours_worked_per_week(),
+        "General Health Status": plot_head_general_health_status(),
+    })
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Household members
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(df_renamed, mo, plot_histogram):
+    def plot_household_size():
+        return plot_histogram(
+            data=df_renamed['household_size'],
+            title='Household size',
+            xlabel='People',
+            ylabel='Count'
+        )
+
+    def plot_mean_age():
+        return plot_histogram(
+            data=df_renamed['mean_age'],
+            title='Mean age',
+            xlabel='Age',
+            ylabel='Count'
+        )
+
+    def plot_dependency_ratio():
+        return plot_histogram(
+            data=df_renamed['dependency_ratio'],
+            title='Dependency ratio',
+            xlabel='Ratio',
+            ylabel='Count'
+        )
+
+    def plot_income_per_capita():
+        return plot_histogram(
+            data=df_renamed['income_per_capita'],
+            title='Income per capita',
+            xlabel='Income (€)',
+            ylabel='Count'
+        )
+
+    mo.ui.tabs({
+        "Household size": plot_household_size(),
+        "Mean age": plot_mean_age(),
+        "Dependency ratio": plot_dependency_ratio(),
+        "Income per capita": plot_income_per_capita(),
+    })
     return
 
 

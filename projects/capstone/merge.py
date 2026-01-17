@@ -34,7 +34,7 @@ def preprocess_persons(persons):
     """Clean and prepare person data"""
 
     persons['household_id'] = (persons['PB030'] / 100).astype(int)
-    persons['age'] = 2024 - persons['PB110']
+    persons['age'] = persons['PB110'] - persons['PB140']
     persons = persons.replace([-1, -2, -3, -4, -5, -6], np.nan)
 
     return persons
