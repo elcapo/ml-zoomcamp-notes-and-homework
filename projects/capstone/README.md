@@ -55,7 +55,12 @@ The project merges these files using a **hybrid aggregation strategy** that comb
    df = pd.read_csv('data/merged.csv')
    ```
 
-4. **Edit the notebook:**
+4. **View the notebook:**
+   ```bash
+   uv run marimo run notebook.py
+   ```
+
+5. **Edit the notebook:**
    ```bash
    uv run marimo edit notebook.py
    ```
