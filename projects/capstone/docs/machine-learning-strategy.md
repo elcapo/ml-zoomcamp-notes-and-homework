@@ -52,7 +52,7 @@ Calculate meaningful metrics:
 
 ### Age-Related
 
-- Calculate age from birth year: `2024 - PB110`
+- Calculate age from birth year: `PB110 - PB140`
 - Create age groups: 0-18, 19-35, 36-50, 51-65, 65+
 
 ### Income-Related
