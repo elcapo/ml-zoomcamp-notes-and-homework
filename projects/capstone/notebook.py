@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.2"
+__generated_with = "0.19.4"
 app = marimo.App(width="medium")
 
 
@@ -26,7 +26,7 @@ def _(mo):
 
     ### Objective
 
-    Develop a classification model to predict whether a household would be considered to be at risk of poverty using demographic and socioeconomic data. In other words, we are reverse engineering the risk poverty calculation in order to create a model that can reproduce and explain the calculation.
+    Develop a classification model to predict whether a household would be considered to be at risk of poverty using demographic and socioeconomic data. In other words, we are reverse engineering the poverty risk calculation in order to create a model that can reproduce and explain the calculation.
 
     ### Dataset
 
@@ -112,6 +112,8 @@ def _(mo):
 def _(load_dataset, pd):
     from sklearn.impute import SimpleImputer
 
+    imputer = SimpleImputer(strategy='median')
+
     def rename_columns(dataset):
         return dataset.rename(columns={
             "HY020": "total_disposable_income",
@@ -127,7 +129,6 @@ def _(load_dataset, pd):
         }).drop(columns=["HY022", "HB070", "HB100"])
 
     def handle_missing_values(dataset):
-        imputer = SimpleImputer(strategy='median')
         return pd.DataFrame(
             imputer.fit_transform(dataset),
             columns=dataset.columns
@@ -138,12 +139,18 @@ def _(load_dataset, pd):
         return handle_missing_values(renamed_dataset)
 
     df = normalize_dataset(load_dataset())
-    return (df,)
+    return df, imputer
 
 
 @app.cell
 def _(df):
     df.head()
+    return
+
+
+@app.cell
+def _(df):
+    df.describe()
     return
 
 
@@ -393,8 +400,9 @@ def _(mo):
 def _(X_full, X_test, X_train, X_val):
     from sklearn.preprocessing import StandardScaler
 
+    scaler = StandardScaler()
+
     def scale_features(X_train, X_full, X_val, X_test):
-        scaler = StandardScaler()
         X_train_scaled = scaler.fit_transform(X_train)
         X_full_scaled = scaler.transform(X_full)
         X_val_scaled = scaler.transform(X_val)
@@ -402,7 +410,7 @@ def _(X_full, X_test, X_train, X_val):
         return X_train_scaled, X_full_scaled, X_val_scaled, X_test_scaled
 
     X_train_scaled, X_full_scaled, X_val_scaled, X_test_scaled = scale_features(X_train, X_full, X_val, X_test)
-    return X_test_scaled, X_train_scaled
+    return X_test_scaled, X_train_scaled, scaler
 
 
 @app.cell(hide_code=True)
@@ -495,7 +503,7 @@ def _(X_train, logistic_regression_model, pd, plt):
             'Feature': X_train.columns,
             'Coefficient': logistic_regression_model.coef_[0]
         }).sort_values('Coefficient', key=abs, ascending=True)
-    
+
         fig, ax = plt.subplots(figsize=(12, 6))
         logistic_regression_feature_importance.tail(15).plot(x='Feature', y='Coefficient', kind='barh', ax=ax)
         ax.set_title('Logistic regression - Feature importances')
@@ -581,7 +589,7 @@ def _(X_train, pd, plt, random_forest_model):
             'Feature': X_train.columns,
             'Importance': random_forest_model.feature_importances_
         }).sort_values('Importance', ascending=True)
-    
+
         fig, ax = plt.subplots(figsize=(12, 6))
         random_forest_feature_importance.tail(15).plot(x='Feature', y='Importance', kind='barh', ax=ax)
         ax.set_title('Random forest - Feature importances')
@@ -826,6 +834,117 @@ def _(X_test, evaluate_classifier, final_model, y_test):
     final_model_evaluation = evaluate_classifier(final_model, X_test, y_test)
 
     final_model_evaluation
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    #### Save
+    """)
+    return
+
+
+@app.cell
+def _(final_model, imputer, scaler):
+    import pickle
+
+    def save_model():
+        with open('dist/model/model.pkl', "wb") as f:
+            pickle.dump(final_model, f)
+        with open('dist/model/imputer.pkl', "wb") as f:
+            pickle.dump(imputer, f)
+        with open('dist/model/scaler.pkl', "wb") as f:
+            pickle.dump(scaler, f)
+
+    save_model()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Voilà ! We already trained and saved our model. Now, we'll prepare a container so where it can be easily executed.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Dockerization
+
+    The containerized version of this model is available in the **dist/** folder next to this notebook.
+
+    ### Installation
+
+    To test it locally, you must first clone the repository:
+
+    ```bash
+    git clone https://github.com/elcapo/ml-zoomcamp-notes-and-homework
+    cd ml-zoomcamp-notes-and-homework/projects/capstone/dist
+    ```
+
+    The repository contains other projects and even some datasets, so the download may take a few minutes.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Local Development
+
+    To quickly test the service, you don't even need Docker. You can run the FastAPI server with:
+
+    ```bash
+    uv run fastapi dev serve.py
+
+    # or in a specific port (ex. 8383)
+    uv run fastapi dev --port 8383 serve.py
+    ```
+
+    This will start a local service that you can query locally with your web browser.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Run the Container
+
+    The folder also provides a Docker image that runs the service using Uvicorn. To run it:
+
+    ```bash
+    docker compose up -d
+
+    # or in a specific port (ex. 8383)
+    PORT=8383 docker compose up -d
+    ```
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Usage
+
+    Thanks to FastAPI, you can navigate to the **/docs** URL of the server to see the documentation. The URL, only available from your own computer, would look like this: http://127.0.0.1:8383/docs.
+
+    There are 3 endpoints available:
+
+    * **ping**: helper to test that the service is up and running
+    * **random_request**: returns a random household record (for testing purposes)
+    * **predict**: receives a household record and returns a boolean indicating if its in poverty risk
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.image(src="dist/docs.png")
     return
 
 

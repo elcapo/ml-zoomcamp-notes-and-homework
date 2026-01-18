@@ -36,6 +36,7 @@ This repository contains my personal **notes and homework** of the [Machine Lear
 | Module | Editable Version | Readable Version |
 | --- | --- | --- |
 | Midterm Project | [Marimo Notebook](./projects/midterm/notebook.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/projects/midterm/notebook.html) |
+| Capstone Project | [Marimo Notebook](./projects/capstone/notebook.py) | [Rendered HTML](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/projects/capstone/notebook.html) |
 
 ## Installation
 
@@ -104,3 +105,7 @@ This will run the model "naked". If you want to run it in the context of a Docke
 docker build -t ml-zoomcamp .
 docker run -d -p 5000:5000 -it ml-zoomcamp
 ```
+
+### Capstone
+
+The instructions to run the capstone project are in its corresponding notebook.

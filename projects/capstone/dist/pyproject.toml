@@ -1,0 +1,13 @@
+[project]
+name = "dist"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.128.0",
+    "pandas>=2.3.3",
+    "uvicorn>=0.40.0",
+    "scikit-learn>=1.8.0",
+    "xgboost>=3.1.3",
+]

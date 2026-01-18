@@ -1,0 +1,6 @@
+services:
+  api:
+    build:
+      dockerfile: docker/Dockerfile
+    ports:
+      - ${PORT:-8080}:80
