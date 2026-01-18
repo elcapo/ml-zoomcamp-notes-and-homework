@@ -2,6 +2,9 @@
 
 Machine learning project to predict poverty risk in Spanish households using data from the Living Conditions Survey (ECV) 2024.
 
+> [!NOTE]
+> This project is based in a [Marimo notebook](notebook.py) and in a [distribution folder](dist/) with a ready to deploy container. The instructions to run the notebook and edit it are below. The notebook contains all the remaining instructions. For easier access, there is also an [HTML pre-rendered version](https://raw.githack.com/elcapo/ml-zoomcamp-notes-and-homework/main/results/projects/capstone/notebook.html) available.
+
 ## Project Overview
 
 ### Objective
